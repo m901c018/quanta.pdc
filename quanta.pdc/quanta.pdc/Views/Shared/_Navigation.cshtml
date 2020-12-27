@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> _userManager
+@{
+    var email = "";
+    var user = await _userManager.GetUserAsync(User);
+    if (user != null)
+    {
+        email = user.Email;
+    }
+}
+<div class="navbar-wrapper">
+    <div class="navbar-brand header-logo">
+        <a href="/Identity/Account/Manage/Index" class="b-brand">
+            <div class="b-bg">
+                <i class="feather icon-radio"></i>
+            </div>
+            <span class="b-title">GoJazz Starter</span>
+        </a>
+        <a class="mobile-menu" id="mobile-collapse" href="#!"><span></span></a>
+    </div>
+    <div class="navbar-content scroll-div">
+        <ul class="nav pcoded-inner-navbar">
+            <li class="nav-item pcoded-menu-caption">
+                <label>Hello @email</label>
+            </li>
+            <li class="nav-item  @Html.IsSelected(controller: Pages.Todo.ControllerName)"><a href="@Pages.Todo.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-calendar"></i></span><span class="pcoded-mtext">@Pages.Todo.NavigationName</span></a></li>
+            <li class="nav-item  @Html.IsSelected(controller: Pages.Membership.ControllerName)"><a href="@Pages.Membership.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-user-plus"></i></span><span class="pcoded-mtext">@Pages.Membership.NavigationName</span></a></li>
+            <li class="nav-item  @Html.IsSelected(controller: Pages.Role.ControllerName)"><a href="@Pages.Role.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-award"></i></span><span class="pcoded-mtext">@Pages.Role.NavigationName</span></a></li>
+            <li class="nav-item  @Html.IsSelected(controller: Pages.Excel.ControllerName)"><a href="@Pages.Excel.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-award"></i></span><span class="pcoded-mtext">@Pages.Excel.NavigationName</span></a></li>
+        </ul>
+    </div>
+</div>

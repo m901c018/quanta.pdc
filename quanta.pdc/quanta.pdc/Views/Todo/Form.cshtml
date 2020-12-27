@@ -1,0 +1,89 @@
+﻿@model Todo
+@{
+    ViewData["Title"] = "Todo Form";
+}
+
+<!-- [ Main Content ] start -->
+<section class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <!-- [ breadcrumb ] start -->
+                <div class="page-header">
+                    <div class="page-block">
+                        <div class="row align-items-center">
+                            <div class="col-md-12">
+                                <div class="page-header-title">
+                                    <h3 class="m-b-10">@ViewData["Title"]</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- [ breadcrumb ] end -->
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <form asp-controller="Todo" asp-action="SubmitForm" method="post">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Create or edit existing todo item</h5>
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <input type="hidden" asp-for="TodoId" />
+                                                    <div class="form-group">
+                                                        <label asp-for="TodoItem"></label>
+                                                        <div class="input-group">
+                                                            <input asp-for="TodoItem" class="form-control" />
+                                                            <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                                                        </div>
+                                                        <span asp-validation-for="TodoItem" class="text-danger"></span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Is Done</label>
+                                                        <div class="switch d-inline m-r-10">
+                                                            <input asp-for="IsDone" class="form-control">
+                                                            <label for="IsDone" class="cr"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <a href="/Todo/Index" class="btn btn-light">Back</a>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- [ Main Content ] end -->
+
+
+@section Styles{
+
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+

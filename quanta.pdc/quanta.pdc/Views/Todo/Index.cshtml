@@ -1,0 +1,117 @@
+﻿@model List<Todo>
+@{
+    ViewData["Title"] = "Todo";
+}
+
+<!-- [ Main Content ] start -->
+<section class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <!-- [ breadcrumb ] start -->
+                <div class="page-header">
+                    <div class="page-block">
+                        <div class="row align-items-center">
+                            <div class="col-md-12">
+                                <div class="page-header-title">
+                                    <h3 class="m-b-10">@ViewData["Title"]</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- [ breadcrumb ] end -->
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+                            </div>
+                            <!-- [ Form Validation ] start -->
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>List of todo</h5>
+                                        <div class="card-header-right">
+                                            <div class="btn-group card-option">
+                                                <form action="/Todo/Form">
+                                                    <button class="btn drp-icon btn-rounded btn-primary" type="submit">
+                                                        <i class="feather icon-plus"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-block">
+                                        <div class="table-responsive">
+                                            <table id="grid" class="display table nowrap table-striped table-hover" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="5%"></th>
+                                                        <th width="5%"></th>
+                                                        <th width="60%">Todo Item</th>
+                                                        <th width="30%">Is Done</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                <a href="/Todo/Form/@item.TodoId"><i class="feather icon-edit"></i></a>
+                                                            </td>
+                                                            <td>
+                                                                <a href="/Todo/Delete/@item.TodoId"><i class="feather icon-trash"></i></a>
+                                                            </td>
+                                                            <td><span style="text-decoration-line:@(item.IsDone ? "line-through" : "none")">@item.TodoItem</span></td>
+                                                            <td>
+                                                                <div class="switch d-inline m-r-10">
+                                                                    <input type="checkbox" @(item.IsDone ? "checked" : "")>
+                                                                    <label class="cr"></label>
+                                                                </div>
+                                                            </td>
+
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- [ Form Validation ] end -->
+                        </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- [ Main Content ] end -->
+
+
+@section Styles{
+    <!-- data tables css -->
+    <link rel="stylesheet" href="~/assets/plugins/data-tables/css/datatables.min.css">
+}
+
+@section Scripts {
+    <!-- datatable Js -->
+    <script src="~/assets/plugins/data-tables/js/datatables.min.js"></script>
+    <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#grid').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: true,
+                scrollX: false,
+                pageLength: 5,
+            });
+        });
+    </script>
+}
+
+

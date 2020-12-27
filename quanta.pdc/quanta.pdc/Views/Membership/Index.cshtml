@@ -1,0 +1,135 @@
+﻿
+@model List<ApplicationUser>
+
+@{
+    ViewData["Title"] = "Membership";
+}
+
+<!-- [ Main Content ] start -->
+<section class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <!-- [ breadcrumb ] start -->
+                <div class="page-header">
+                    <div class="page-block">
+                        <div class="row align-items-center">
+                            <div class="col-md-12">
+                                <div class="page-header-title">
+                                    <h3 class="m-b-10">@ViewData["Title"]</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- [ breadcrumb ] end -->
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                            </div>
+                            <!-- [ Form Validation ] start -->
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>List of member</h5>
+                                        <div class="card-header-right">
+                                            <div class="btn-group card-option">
+                                                <form action="/Membership/Register">
+                                                    <button class="btn drp-icon btn-rounded btn-primary" type="submit">
+                                                        <i class="feather icon-user-plus"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-block">
+                                        <div class="table-responsive">
+                                            <table id="grid" class="table table-hover display  nowrap table-striped" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Member Email</th>
+                                                        <th>Phone Number</th>
+                                                        <th>Status</th>
+                                                        <th>Super Admin?</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                <div class="dropdown d-inline">
+                                                                    <button class="btn drp-icon btn-rounded btn-primary dropdown-toggle" type="button"
+                                                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                        <i class="feather icon-grid"></i>
+                                                                    </button>
+                                                                    <div class="dropdown-menu">
+                                                                        <a class="dropdown-item" href="/Membership/ChangeProfile/@item.Id">Change Profile</a>
+                                                                        <a class="dropdown-item" href="/Membership/ChangePassword/@item.Id">Reset Password</a>
+                                                                        <a class="dropdown-item" href="/Membership/ChangeRole/@item.Id">Change Role</a>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <span>@item.Email</span>
+                                                            </td>
+                                                            <td>@item.PhoneNumber</td>
+                                                            <td>
+                                                                <label href="#!" class="m-t-10 label theme-@(item.EmailConfirmed ? "bg" : "bg2") f-12 text-white" style="border-radius:15px">@(item.EmailConfirmed ? "Active" : "Pending")</label>
+                                                            </td>
+                                                            <td>
+                                                                <div class="switch d-inline m-r-10">
+                                                                    <input type="checkbox" @(item.isSuperAdmin ? "checked" : "")>
+                                                                    <label class="cr"></label>
+                                                                </div>
+                                                            </td>
+
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- [ Form Validation ] end -->
+                        </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- [ Main Content ] end -->
+
+
+@section Styles{
+    <!-- data tables css -->
+    <link rel="stylesheet" href="~/assets/plugins/data-tables/css/datatables.min.css">
+}
+
+@section Scripts {
+    <!-- datatable Js -->
+    <script src="~/assets/plugins/data-tables/js/datatables.min.js"></script>
+    <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#grid').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: true,
+                scrollX: false,
+                pageLength: 5,
+            });
+        });
+    </script>
+}
+
+
+
+
+

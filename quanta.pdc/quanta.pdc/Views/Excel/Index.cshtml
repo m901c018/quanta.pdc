@@ -1,0 +1,124 @@
+﻿@model List<Todo>
+@{
+    ViewData["Title"] = "Excel";
+}
+
+<!-- [ Main Content ] start -->
+<section class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <!-- [ breadcrumb ] start -->
+                <div class="page-header">
+                    <div class="page-block">
+                        <div class="row align-items-center">
+                            <div class="col-md-12">
+                                <div class="page-header-title">
+                                    <h3 class="m-b-10">@ViewData["Title"]</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- [ breadcrumb ] end -->
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+                            </div>
+                            <!-- [ Form Validation ] start -->
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>List of Excel</h5>
+                                    </div>
+                                    <form method="post" enctype="multipart/form-data" action="/Excel/files">
+                                        <input type="file" id="lefile" name="excel" multiple accept=".xls,.xlsx" style="display:none" />
+                                        <div class="input-append">
+                                            <input id="showCover" class="input-large" type="text" style="height:30px;" disabled="disabled">
+                                            <a class="btn" onclick="$('input[id=lefile]').click();">搜尋</a>
+                                            <input type="button" onclick="uploadFile()" id="uploadExcel" value="驗證" class="btn-primary" />
+                                            <input type="button" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" value="範例下載" class="btn-primary" />
+                                        </div>
+                                    </form>
+                                        @*<div class="card-block">
+                <form method="post" enctype="multipart/form-data" action="/Excel/files">
+                    <input type="file" name="excel" multiple accept=".xls,.xlsx" style="display:none" />
+                    <div class="input-append">
+                        <input id="photoCover" class="input-large" type="text" style="height:30px;">
+                        <a class="btn" onclick="$('input[id=lefile]').click();">驗證</a>
+                    </div>
+                    <br />
+                    <input type="submit" value="驗證" />
+                </form>
+            </div>*@
+                                </div>
+                            </div>
+                            <!-- [ Form Validation ] end -->
+                        </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- [ Main Content ] end -->
+
+
+@section Styles{
+    <!-- data tables css -->
+    <link rel="stylesheet" href="~/assets/plugins/data-tables/css/datatables.min.css">
+}
+
+@section Scripts {
+    <!-- datatable Js -->
+    <script src="~/assets/plugins/data-tables/js/datatables.min.js"></script>
+    <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#grid').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: true,
+                scrollX: false,
+                pageLength: 5,
+            });
+        });
+
+        $('input[id=lefile]').change(function () {
+            $('#showCover').val($(this).val());
+        });
+
+        function uploadFile() {
+            var formData = new FormData();
+            formData.append('pId', $('#hidPId').val());
+            formData.append('file', $('#lefile')[0].files[0]); // myFile is the input type="file" control
+
+            var _url = '@Url.Action("UploadFile", "Excel")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (result) {
+                    if (result.status) {
+                    }
+                    else {
+                    }
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                }
+            });
+        }
+
+    </script>
+}
+
+

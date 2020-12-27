@@ -1,0 +1,123 @@
+﻿@model ChangeRoles
+@{
+    ViewData["Title"] = "Change Role";
+}
+
+<!-- [ Main Content ] start -->
+<section class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <!-- [ breadcrumb ] start -->
+                <div class="page-header">
+                    <div class="page-block">
+                        <div class="row align-items-center">
+                            <div class="col-md-12">
+                                <div class="page-header-title">
+                                    <h3 class="m-b-10">@ViewData["Title"]</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- [ breadcrumb ] end -->
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <form asp-controller="Membership" asp-action="SubmitChangeRole" method="post">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Change member roles</h5>
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <input type="hidden" asp-for="Id" />
+                                                    <div class="form-group">
+                                                        <label asp-for="UserName"></label>
+                                                        <input asp-for="UserName" class="form-control" disabled />
+                                                    </div>
+                                                    <div class="table-responsive">
+                                                        <table id="example" class="table" cellspacing="0" style="width:100%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th width="60%">Role Name</th>
+                                                                    <th width="40%">Is Role Registered</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <label class="label theme-bg f-12 text-white" style="border-radius:15px">Todo</label>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="switch d-inline m-r-10">
+                                                                            <input asp-for="IsTodoRegistered" class="form-control">
+                                                                            <label for="IsTodoRegistered" class="cr"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <label class="label theme-bg f-12 text-white" style="border-radius:15px">Membership</label>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="switch d-inline m-r-10">
+                                                                            <input asp-for="IsMembershipRegistered" class="form-control">
+                                                                            <label for="IsMembershipRegistered" class="cr"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <label class="label theme-bg f-12 text-white" style="border-radius:15px">Role</label>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="switch d-inline m-r-10">
+                                                                            <input asp-for="IsRoleRegistered" class="form-control">
+                                                                            <label for="IsRoleRegistered" class="cr"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <a href="/Membership/Index" class="btn btn-light">Back</a>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- [ Main Content ] end -->
+
+
+@section Styles{
+
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
+

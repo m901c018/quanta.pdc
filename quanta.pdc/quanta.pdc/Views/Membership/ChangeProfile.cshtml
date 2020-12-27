@@ -1,0 +1,100 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IdentityUser
+
+@{
+    ViewData["Title"] = "Change Profile";
+}
+
+<!-- [ Main Content ] start -->
+<section class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <!-- [ breadcrumb ] start -->
+                <div class="page-header">
+                    <div class="page-block">
+                        <div class="row align-items-center">
+                            <div class="col-md-12">
+                                <div class="page-header-title">
+                                    <h3 class="m-b-10">@ViewData["Title"]</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- [ breadcrumb ] end -->
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <form asp-controller="Membership" asp-action="SubmitChangeProfile" method="post">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Change member profile</h5>
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="row">
+                                                <div class="col-md-12">
+
+                                                    <input type="hidden" asp-for="Id" />
+                                                    <div class="form-group">
+                                                        <label asp-for="UserName"></label>
+                                                        <input asp-for="UserName" class="form-control" disabled />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label asp-for="Email"></label>
+                                                        <div class="input-group">
+                                                            <input asp-for="Email" class="form-control" />
+                                                            <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                                                        </div>
+                                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label asp-for="PhoneNumber"></label>
+                                                        <input asp-for="PhoneNumber" class="form-control" />
+                                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Active</label>
+                                                        <div class="switch d-inline m-r-10">
+                                                            <input asp-for="EmailConfirmed" class="form-control">
+                                                            <label for="EmailConfirmed" class="cr"></label>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <a href="/Membership/Index" class="btn btn-light">Back</a>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- [ Main Content ] end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- [ Main Content ] end -->
+
+
+@section Styles{
+
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
