@@ -34,27 +34,19 @@
                                     <div class="card-header">
                                         <h5>List of Excel</h5>
                                     </div>
-                                    <form method="post" enctype="multipart/form-data" action="/Excel/files">
-                                        <input type="file" id="lefile" name="excel" multiple accept=".xls,.xlsx" style="display:none" />
-                                        <div class="input-append">
-                                            <input id="showCover" class="input-large" type="text" style="height:30px;" disabled="disabled">
-                                            <a class="btn" onclick="$('input[id=lefile]').click();">搜尋</a>
-                                            <input type="button" onclick="uploadFile()" id="uploadExcel" value="驗證" class="btn-primary" />
-                                            <input type="button" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" value="範例下載" class="btn-primary" />
-                                        </div>
-                                    </form>
-                                        @*<div class="card-block">
-                <form method="post" enctype="multipart/form-data" action="/Excel/files">
-                    <input type="file" name="excel" multiple accept=".xls,.xlsx" style="display:none" />
-                    <div class="input-append">
-                        <input id="photoCover" class="input-large" type="text" style="height:30px;">
-                        <a class="btn" onclick="$('input[id=lefile]').click();">驗證</a>
-                    </div>
-                    <br />
-                    <input type="submit" value="驗證" />
-                </form>
-            </div>*@
+                                    <input type="file" id="lefile" name="excel" multiple accept=".xls,.xlsx" style="display:none" />
+                                    <div class="input-append">
+                                        <input id="showCover" class="input-large" type="text" style="height:30px;" disabled="disabled">
+                                        <a class="btn" onclick="$('input[id=lefile]').click();">搜尋</a>
+                                        <input type="button" onclick="uploadFile()" id="uploadExcel" value="驗證" class="btn-primary" />
+                                        <input type="button" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" value="範例下載" class="btn-primary" />
+                                    </div>
+                                    <div class="card-block" id="ExcelDataTable">
+
+                                    </div>
                                 </div>
+
+                                
                             </div>
                             <!-- [ Form Validation ] end -->
                         </div>
@@ -79,13 +71,13 @@
     <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#grid').DataTable({
-                lengthChange: false,
-                info: false,
-                searching: true,
-                scrollX: false,
-                pageLength: 5,
-            });
+            //$('#grid').DataTable({
+            //    lengthChange: false,
+            //    info: false,
+            //    searching: true,
+            //    scrollX: false,
+            //    pageLength: 5,
+            //});
         });
 
         $('input[id=lefile]').change(function () {
@@ -106,10 +98,15 @@
                 processData: false,  // tell jQuery not to process the data
                 contentType: false,  // tell jQuery not to set contentType
                 success: function (result) {
-                    if (result.status) {
-                    }
-                    else {
-                    }
+                    $('#ExcelDataTable').html(result);
+
+                    $('#grid').DataTable({
+                        lengthChange: false,
+                        info: false,
+                        searching: false,
+                        scrollX: false,
+                        bPaginate: false, // 顯示換頁
+                    });
                 },
                 error: function (jqXHR) {
                 },

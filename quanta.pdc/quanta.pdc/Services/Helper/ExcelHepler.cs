@@ -10,6 +10,8 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using LinqToExcel;
+using cns.ViewModels;
 
 namespace cns.Services.Helper
 {
@@ -23,9 +25,11 @@ namespace cns.Services.Helper
         public static List<StackupColumnModel> StackupColumnList = new List<StackupColumnModel>();
         public static List<string[]> StackupSampleData;
         public static List<StackupDetalModel> stackupDetals;
+        public static List<string> StackupType;
 
         public static string SamplePath;
         public static string ExportPath;
+        public static string rootPath;
 
         public class StackupColumnModel
         {
@@ -110,8 +114,12 @@ namespace cns.Services.Helper
             //讀取範例檔案
             SamplePath = _hostingEnvironment.WebRootPath + "\\File\\CNS_v172.xlsx";
             ExportPath = _hostingEnvironment.WebRootPath + "\\File\\CNS_ExportSample.xlsx";
+            rootPath = _hostingEnvironment.WebRootPath;
 
-
+            StackupType = new List<string>();
+            StackupType.Add("Conductor");
+            StackupType.Add("Dielectric");
+            StackupType.Add("Plane");
 
             StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 1, ColumnCode = "Col_01A", ColumnName = "層別\n(LAYER)", ColumnType = "文字", DataType = "文字", DecimalPlaces = 0, MaxLength = 256, OrderNo = 0, ParentColumnID = 0 });
             StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 2, ColumnCode = "Col_02A", ColumnName = "疊構類別\n(Stack up Type)", ColumnType = "文字", DataType = "文字", DecimalPlaces = 0, MaxLength = 256, OrderNo = 1, ParentColumnID = 0 });
@@ -136,11 +144,11 @@ namespace cns.Services.Helper
             stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 3, IndexNo = 1, ColumnValue = "TOP", DataType = "string" });
             stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 4, IndexNo = 1, ColumnValue = "T", DataType = "string" });
             stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 7, IndexNo = 1, ColumnValue = "Cu + Plating", DataType = "int" });
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 3, IndexNo = 2, ColumnValue = "Dielectric", DataType = "string" });
+            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 2, IndexNo = 2, ColumnValue = "Dielectric", DataType = "string" });
             stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 1, IndexNo = 3, ColumnValue = "L1", DataType = "string" });
             stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 2, IndexNo = 3, ColumnValue = "Conductor", DataType = "string" });
             stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 3, IndexNo = 3, ColumnValue = "BOT", DataType = "string" });
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 4, IndexNo = 3, ColumnValue = "T", DataType = "string" });
+            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 4, IndexNo = 3, ColumnValue = "B", DataType = "string" });
             stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 7, IndexNo = 3, ColumnValue = "Cu + Plating", DataType = "int" });
             stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 7, IndexNo = 4, ColumnValue = "Solder Mask", DataType = "string" });
         }
@@ -161,79 +169,137 @@ namespace cns.Services.Helper
             return templateWorkbook;
         }
 
-        /// <summary> 解析Excel將資料轉為字典Dic<sheetname,DataTable>
+        /// <summary> 儲存檔案並返回檔案路徑
         /// 
         /// </summary>
-        /// <param name="Workbook">NPOI的HSSFWorkbook</param>
+        /// <param name="excel">NetCore檔案類別</param>
         /// <returns></returns>
-        public List<DataTable> ReadExcelAsTableNPOI(XSSFWorkbook Workbook)
+        public string SaveAndGetExcelPath(IFormFile file)
         {
-            List<DataTable> AllSheet = new List<DataTable>();
+            //隨機產生檔案名
+            var FilePath = rootPath + "\\FileUpload\\" + Guid.NewGuid().ToString("N") + ".xlsx";
 
-            for (int i = 0; i < Workbook.NumberOfSheets; i++)
+            using (Stream fileStream = new FileStream(FilePath, FileMode.CreateNew))
             {
-                DataTable table = new DataTable();
-                var sheet = Workbook.GetSheetAt(i);
-                table.TableName = sheet.SheetName;
-                //由第一列取標題做為欄位名稱
-                IRow headerRow = sheet.GetRow(0);
-                int cellCount = headerRow.LastCellNum;
-                for (int j = headerRow.FirstCellNum; j < cellCount; j++)
-                {
-                    if (headerRow.GetCell(j) == null)
-                        continue;
-                    //以欄位文字為名新增欄位，此處全視為字串型別以求簡化
-                    table.Columns.Add(
-                        new DataColumn(headerRow.GetCell(j).StringCellValue));
-                }
-                //略過第零列(標題列)，一直處理至最後一列
-                for (int j = (sheet.FirstRowNum + 1); j <= sheet.LastRowNum; j++)
-                {
-                    IRow row = sheet.GetRow(j);
-                    if (row == null) continue;
-                    if (row.FirstCellNum < 0) continue;
-                    DataRow dataRow = table.NewRow();
-                    //依先前取得的欄位數逐一設定欄位內容
-                    for (int k = row.FirstCellNum; k < table.Columns.Count; k++)
-                        if (row.GetCell(k) != null)
-                            //如要針對不同型別做個別處理，可善用.CellType判斷型別
-                            //再用.StringCellValue, .DateCellValue, .NumericCellValue...取值
-                            //此處只簡單轉成字串
-                            dataRow[k] = row.GetCell(k).ToString();
-                    table.Rows.Add(dataRow);
-                }
-
-                AllSheet.Add(table);
+                file.CopyToAsync(fileStream);
             }
 
-            return AllSheet;
+            return FilePath;
         }
 
-        /// <summary> 欄位設定
-        /// 
-        /// </summary>
-        /// <param name="FontName">字型</param>
-        /// <param name="FontHeight">文字大小</param>
-        /// <param name="Align">文字排列</param>
-        /// <param name="backgroundcolor">背景色(NPOI.HSSF.Util.HSSFColor)</param>
-        /// <returns></returns>
-        public ICellStyle CreateCellStyle(string FontName, double FontHeight, HorizontalAlignment Align, short backgroundcolor = -1)
+
+        public DataTable GetDataTableFromExcel(List<LinqToExcel.Row> ExcelData,Boolean IsStackup)
         {
-            //HSSFWorkbook workbook = new HSSFWorkbook();
-            // 建立字型
-            IFont font1 = workbook.CreateFont();
-            font1.FontName = FontName;
-            font1.FontHeightInPoints = FontHeight;
+            DataTable dtExcelRecords = new DataTable();
+            if(IsStackup)
+            {
+                foreach (StackupColumnModel StackupColumn in StackupColumnList.OrderBy(x => x.OrderNo))
+                {
+                    dtExcelRecords.Columns.Add(StackupColumn.ColumnName);
+                }
+            }
 
-            //  建立樣式
-            ICellStyle styleTitle = workbook.CreateCellStyle();
-            styleTitle.SetFont(font1);
-            styleTitle.Alignment = Align;
-            if (backgroundcolor != -1)
-                styleTitle.FillForegroundColor = backgroundcolor;
+            foreach (var item in ExcelData)
+            {
+                object[] cell = new object[item.Count];
+                for (int idx = 0; idx <= StackupColumnList.Count -1; idx ++)
+                {
+                    cell[idx] = item[idx].Value;
+                    idx++;
+                }
+                dtExcelRecords.Rows.Add(cell);
+            }
 
+            return dtExcelRecords;
+        }
 
-            return styleTitle;
+        public void ExcelCheck(string FilePath, m_ExcelPartial model)
+        {
+            model.Errmsg = string.Empty;
+
+            ExcelQueryFactory factory = new ExcelQueryFactory(FilePath);
+            //取得對應Excel的最後欄位
+            string LastCol = Char.ConvertFromUtf32(StackupColumnList.Count + 64);
+            //左上位置為A5，右下位置則為{ThicknessCol}0，其中0表示取到最後一筆
+            List<LinqToExcel.Row> ExcelData = factory.WorksheetRange("A6", $"{LastCol}0", "Stackup").ToList();
+            //資料轉為Datatable
+            DataTable ExcelDt = GetDataTableFromExcel(ExcelData, true);
+            //Layer數字檢查結果
+            bool LayerNumCheck = false;
+            //StackupType檢查結果
+            bool StackupTypeCheck = false;
+            //Top檢查結果
+            bool TopCheck = false;
+            //Bot檢查結果
+            bool BotCheck = false;
+            //SVCC檢查結果
+            bool SVCCCheck = false;
+            //SGND檢查結果
+            bool SGNDCheck = false;
+
+            int ColIndex = 0;
+            for (int i = 1; i <= ExcelData.Count - 1; i += 2) 
+            {
+                //當前筆數
+                ColIndex += 1;
+                //每筆有兩列
+                LinqToExcel.Row ColFirst = ExcelData[i];
+                LinqToExcel.Row ColSecond = ExcelData[i + 1];
+
+                int LayerIndex = 0;
+                if(Int32.TryParse(System.Text.RegularExpressions.Regex.Replace(ColFirst[0], @"[^0-9]+", ""),out LayerIndex))
+                {
+                    //判斷Layer欄位數字是否
+                    if (LayerIndex != ColIndex)
+                        LayerNumCheck = true;
+                }
+                //判斷疊構類別只能有三種選項
+                if (!StackupType.Where(x => x.Contains(ColFirst[1])).Any() || (!StackupType.Where(x => x.Contains(ColSecond[1])).Any() && ColFirst[2] != "BOT")) 
+                    StackupTypeCheck = true;
+
+                //每個『Conductoe』or『Plane』的下一列必須固定帶上『Dielecatric』。
+                if (ColFirst[2] != "BOT" && (ColFirst[1] == "Conductor" || ColFirst[1] == "Plane"))
+                    ExcelDt.Rows[i+1][1] = "Dielectric";
+                //固定值『TOP』B欄對應『Conductor』且欄位不可編輯，D欄對應『T』且欄位不可編輯，E欄 & F欄必須有值。
+                if (ColFirst[2] == "TOP")
+                {
+                    ExcelDt.Rows[i][1] = "Conductor";
+                    ExcelDt.Rows[i][3] = "T";
+                    if (string.IsNullOrWhiteSpace(ExcelDt.Rows[i][3].ToString()) || string.IsNullOrWhiteSpace(ExcelDt.Rows[i][4].ToString()))
+                        TopCheck = true;
+                }
+                //固定值『BOT』B欄對應『Conductor』且欄位不可編輯，D欄對應『B』且欄位不可編輯，E欄 & F欄必須有值。
+                if (ColFirst[2] == "BOT")
+                {
+                    ExcelDt.Rows[i][1] = "Conductor";
+                    ExcelDt.Rows[i][3] = "B";
+                    if (string.IsNullOrWhiteSpace(ExcelDt.Rows[i][3].ToString()) || string.IsNullOrWhiteSpace(ExcelDt.Rows[i][4].ToString()))
+                        BotCheck = true;
+                }
+                //C欄=『SVCCx』B欄對應『Plane』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄『不填值』且欄位不可編輯。（SVCC, SVCC1 …最多到 9），不得重複。
+                if (ColFirst[2].ToString().StartsWith("SVCC"))
+                {
+                    ExcelDt.Rows[i][1] = "Plane";
+                    ExcelDt.Rows[i][3] = "";
+                    ExcelDt.Rows[i][4] = "";
+                    ExcelDt.Rows[i][5] = "";
+                    //ExcelData.Where(x=>x[2].ToString().StartsWith("SVCC")).Select(x=>x[2].ToString().Replace("SVCC","")).ToList()
+                }
+            }
+
+            if (LayerNumCheck)
+                model.Errmsg += "Layer數字不可跳號\n";
+
+            if (StackupTypeCheck)
+                model.Errmsg += "B欄：只有 Conductor、Dielectric、Plane三種項目。\n";
+
+            if (TopCheck)
+                model.Errmsg += "固定值『TOP』，F欄 & G欄必須有值。\n";
+
+            if (BotCheck)
+                model.Errmsg += "固定值『BOT』，F欄 & G欄必須有值。\n";
+
+            model.ExcelSheetDts.Add(ExcelDt);
         }
 
         /// <summary> 匯出Excel範例
@@ -258,10 +324,10 @@ namespace cns.Services.Helper
             //紀錄範例檔案style
             ICellStyle StackupHeaderStyle = workbookExport.CreateCellStyle();
             StackupHeaderStyle.CloneStyleFrom(StackupSheet.GetRow(4).GetCell(1).CellStyle);
-            ICellStyle StackupHeaderStyle2 = workbookExport.CreateCellStyle();
-            StackupHeaderStyle2.CloneStyleFrom(StackupSheet.GetRow(4).GetCell(7).CellStyle);
-            ICellStyle ThicknessHeaderStyle3 = workbookExport.CreateCellStyle();
-            ThicknessHeaderStyle3.CloneStyleFrom(StackupSheet.GetRow(2).GetCell(8).CellStyle);
+            ICellStyle ThicknessHeaderStyle = workbookExport.CreateCellStyle();
+            ThicknessHeaderStyle.CloneStyleFrom(StackupSheet.GetRow(4).GetCell(7).CellStyle);
+            ICellStyle ThicknessHeaderTotalStyle = workbookExport.CreateCellStyle();
+            ThicknessHeaderTotalStyle.CloneStyleFrom(StackupSheet.GetRow(2).GetCell(8).CellStyle);
             ICellStyle DataStyle = workbookExport.CreateCellStyle();
             DataStyle.CloneStyleFrom(StackupSheet.GetRow(6).GetCell(1).CellStyle);
             //取得版厚欄位排序
@@ -277,12 +343,12 @@ namespace cns.Services.Helper
 
             IRow ThicknessRow1 = sheet.CreateRow(2);
             Thicknesscell[ThicknessNum] = ThicknessRow1.CreateCell(ThicknessNum);
-            Thicknesscell[ThicknessNum].CellStyle = ThicknessHeaderStyle3;
+            Thicknesscell[ThicknessNum].CellStyle = ThicknessHeaderTotalStyle;
             Thicknesscell[ThicknessNum].SetCellValue("總板厚");
 
             IRow ThicknessRow2 = sheet.CreateRow(3);
             Thicknesscell2[ThicknessNum] = ThicknessRow2.CreateCell(ThicknessNum);
-            Thicknesscell2[ThicknessNum].CellStyle = ThicknessHeaderStyle3;
+            Thicknesscell2[ThicknessNum].CellStyle = ThicknessHeaderTotalStyle;
             Thicknesscell2[ThicknessNum].CellFormula = $"ROUND(SUM({ThicknessCol}6:{ThicknessCol}{6 + StackupSampleData.Count - 1}),2)";
 
             IRow headerRow = sheet.CreateRow(4);
@@ -291,7 +357,7 @@ namespace cns.Services.Helper
             for (int i = 0; i <= StackupColumnList.Count - 1; i++)
             {
                 headercell[i] = headerRow.CreateCell(i);
-                headercell[i].CellStyle = StackupColumnList[i].ColumnCode.Contains("B") ? StackupHeaderStyle2 : StackupHeaderStyle;  //  設定標題樣式
+                headercell[i].CellStyle = StackupColumnList[i].ColumnCode.Contains("B") ? ThicknessHeaderStyle : StackupHeaderStyle;  //  設定標題樣式
                 headercell[i].SetCellValue(StackupColumnList[i].ColumnName);
                 //設定欄位寬度
                 sheet.SetColumnWidth(i, StackupSheet.GetColumnWidth(4));
