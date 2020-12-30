@@ -13,6 +13,7 @@ using NPOI.HSSF.UserModel;
 using System.Data;
 using System.Web;
 using Microsoft.AspNetCore.Hosting;
+using cns.ViewModels;
 
 namespace cns.Controllers
 {
@@ -34,39 +35,44 @@ namespace cns.Controllers
         [HttpPost]
         public IActionResult UploadFile(IFormFile file)
         {
+            m_ExcelPartial model = new m_ExcelPartial();
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment); 
-            //讀取檔案轉NPOI
-            XSSFWorkbook templateWorkbook = Helper.LoadExcel(file);
+            //存檔並返回檔案路徑
+            string FilePath = Helper.SaveAndGetExcelPath(file);
+            //驗證資料
+            Helper.ExcelCheck(FilePath, model);
 
-            var sheet = templateWorkbook.GetSheet("Stackup");
+            //var sheet = templateWorkbook.GetSheet("Stackup");
 
-            var style = sheet.GetRow(4).GetCell(1).CellStyle;
+            //var style = sheet.GetRow(4).GetCell(1).CellStyle;
 
-            //把資料轉為DataTable
-            List<DataTable> AllExcel = Helper.ReadExcelAsTableNPOI(templateWorkbook);
-            //設定標題、欄位style
-            ICellStyle headerStyle = Helper.CreateCellStyle("標楷體", 12, HorizontalAlignment.Center, NPOI.HSSF.Util.HSSFColor.Blue.Index);
-            ICellStyle DataStyle = Helper.CreateCellStyle("Arial Unicode MS", 12, HorizontalAlignment.Center);
-            //把Datatable轉為Excel
-            MemoryStream stream = Helper.ExportExcelStream(AllExcel, headerStyle, DataStyle);
+            ////把資料轉為DataTable
+            //List<DataTable> AllExcel = Helper.ReadExcelAsTableNPOI(templateWorkbook);
+            ////設定標題、欄位style
+            //ICellStyle headerStyle = Helper.CreateCellStyle("標楷體", 12, HorizontalAlignment.Center, NPOI.HSSF.Util.HSSFColor.Blue.Index);
+            //ICellStyle DataStyle = Helper.CreateCellStyle("Arial Unicode MS", 12, HorizontalAlignment.Center);
+            ////把Datatable轉為Excel
+            //MemoryStream stream = Helper.ExportExcelStream(AllExcel, headerStyle, DataStyle);
 
-            string sFileName = HttpUtility.UrlEncode("CustomerExport.xlsx");
+            //string sFileName = HttpUtility.UrlEncode("CustomerExport.xlsx");
 
-            #region //將NPOI的Excel轉為pdf
-            //sFileName = HttpUtility.UrlEncode("QuotationExport.pdf");
-            //workbook.Write(ms);
-            //ms.Position = 0;
+            //#region //將NPOI的Excel轉為pdf
+            ////sFileName = HttpUtility.UrlEncode("QuotationExport.pdf");
+            ////workbook.Write(ms);
+            ////ms.Position = 0;
 
-            //Workbook workbook1 = new Workbook(ms);
-            //MemoryStream _WeeklyReportPDF = new MemoryStream();
-            //workbook1.Save(_WeeklyReportPDF, SaveFormat.Pdf);
-            //_WeeklyReportPDF.Position = 0;
-            //ms.Close();
+            ////Workbook workbook1 = new Workbook(ms);
+            ////MemoryStream _WeeklyReportPDF = new MemoryStream();
+            ////workbook1.Save(_WeeklyReportPDF, SaveFormat.Pdf);
+            ////_WeeklyReportPDF.Position = 0;
+            ////ms.Close();
 
-            //return File(_WeeklyReportPDF.ToArray(), "application/vnd.ms-pdf", sFileName); 
-            #endregion
+            ////return File(_WeeklyReportPDF.ToArray(), "application/vnd.ms-pdf", sFileName); 
+            //#endregion
 
-            return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);
+            //return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);
+            //return PartialView
+            return PartialView("m_ExcelPartial", model);
         }
 
         [HttpGet]
