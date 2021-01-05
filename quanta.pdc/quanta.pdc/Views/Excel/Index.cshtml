@@ -34,19 +34,31 @@
                                     <div class="card-header">
                                         <h5>List of Excel</h5>
                                     </div>
-                                    <input type="file" id="lefile" name="excel" multiple accept=".xls,.xlsx" style="display:none" />
+                                    <br />
                                     <div class="input-append">
+                                        <label>範例檔案下載：</label>
+                                        <input type="button" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" value="範例下載" class="btn-primary" />
+                                    </div>
+                                    <div class="input-append">
+                                        <label>驗證檔案上傳：</label>
+                                        <input type="file" id="lefile" name="excel" multiple accept=".xls,.xlsx" style="display:none" />
                                         <input id="showCover" class="input-large" type="text" style="height:30px;" disabled="disabled">
                                         <a class="btn" onclick="$('input[id=lefile]').click();">搜尋</a>
                                         <input type="button" onclick="uploadFile()" id="uploadExcel" value="驗證" class="btn-primary" />
-                                        <input type="button" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" value="範例下載" class="btn-primary" />
                                     </div>
+                                    <br />
+                                    <div class="input-append">
+                                        <input type="button" onclick="AddRow()" id="uploadExcel" value="新增欄位" class="btn-success" />
+                                        <input type="button" onclick="DeleteRow()" id="uploadExcel" value="刪除欄位" class="btn-success" />
+                                    </div>
+
+
                                     <div class="card-block" id="ExcelDataTable">
 
                                     </div>
                                 </div>
 
-                                
+
                             </div>
                             <!-- [ Form Validation ] end -->
                         </div>
@@ -104,7 +116,7 @@
                         lengthChange: false,
                         info: false,
                         searching: false,
-                        scrollX: false,
+                        scrollX: true,
                         bPaginate: false, // 顯示換頁
                     });
                 },
@@ -115,6 +127,46 @@
             });
         }
 
+        function AddRow() {
+            if ($('#grid').length == 0) {
+                alert("請先上傳驗證檔案");
+                return;
+            }
+            var copyrow1 = $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 4).clone();
+            copyrow1.find('td').each(function( index ){
+                $(this).find('input').val('');
+            });
+            var copyrow2 = $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 3).clone();
+            copyrow2.find('td').each(function( index ){
+                $(this).find('input').val('');
+            });
+            var copyrow3 = $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 2).clone();
+            var copyrow4 = $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 1).clone();
+            
+            
+            $('#grid > tbody > tr')[$('#grid > tbody > tr').length - 2].remove();
+            $('#grid > tbody > tr')[$('#grid > tbody > tr').length - 1].remove();
+            
+            $('#grid > tbody').append(copyrow1);
+            $('#grid > tbody').append(copyrow2);
+            $('#grid > tbody').append(copyrow3);
+            $('#grid > tbody').append(copyrow4);
+        }
+
+        function DeleteRow() {
+            if ($('#grid').length == 0) {
+                alert("請先上傳驗證檔案");
+                return;
+            }
+
+            if ($('#grid > tbody > tr').length <= 4) {
+                alert("已沒可刪除資料");
+                return;
+            }
+
+            $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 4).remove();
+            $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 3).remove();
+        }
     </script>
 }
 
