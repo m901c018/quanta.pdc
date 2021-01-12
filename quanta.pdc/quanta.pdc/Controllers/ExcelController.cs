@@ -14,6 +14,7 @@ using System.Data;
 using System.Web;
 using Microsoft.AspNetCore.Hosting;
 using cns.ViewModels;
+using static cns.Services.Helper.ExcelHepler;
 
 namespace cns.Controllers
 {
@@ -38,41 +39,31 @@ namespace cns.Controllers
             m_ExcelPartial model = new m_ExcelPartial();
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment); 
             //存檔並返回檔案路徑
-            string FilePath = Helper.SaveAndGetExcelPath(file);
+            //string FilePath = Helper.SaveAndGetExcelPath(file);
+            Stream stream = file.OpenReadStream();
+            //轉NPOI類型
+            XSSFWorkbook ExcelFile = new XSSFWorkbook(stream);
+
+            ISheet xSSFSheet = ExcelFile.GetSheet("Stackup");
+            //資料轉為Datatable
+            DataTable ExcelDt = Helper.GetDataTableFromExcel(xSSFSheet, true);
             //驗證資料
-            Helper.ExcelCheck(FilePath, model);
-
-            //var sheet = templateWorkbook.GetSheet("Stackup");
-
-            //var style = sheet.GetRow(4).GetCell(1).CellStyle;
-
-            ////把資料轉為DataTable
-            //List<DataTable> AllExcel = Helper.ReadExcelAsTableNPOI(templateWorkbook);
-            ////設定標題、欄位style
-            //ICellStyle headerStyle = Helper.CreateCellStyle("標楷體", 12, HorizontalAlignment.Center, NPOI.HSSF.Util.HSSFColor.Blue.Index);
-            //ICellStyle DataStyle = Helper.CreateCellStyle("Arial Unicode MS", 12, HorizontalAlignment.Center);
-            ////把Datatable轉為Excel
-            //MemoryStream stream = Helper.ExportExcelStream(AllExcel, headerStyle, DataStyle);
-
-            //string sFileName = HttpUtility.UrlEncode("CustomerExport.xlsx");
-
-            //#region //將NPOI的Excel轉為pdf
-            ////sFileName = HttpUtility.UrlEncode("QuotationExport.pdf");
-            ////workbook.Write(ms);
-            ////ms.Position = 0;
-
-            ////Workbook workbook1 = new Workbook(ms);
-            ////MemoryStream _WeeklyReportPDF = new MemoryStream();
-            ////workbook1.Save(_WeeklyReportPDF, SaveFormat.Pdf);
-            ////_WeeklyReportPDF.Position = 0;
-            ////ms.Close();
-
-            ////return File(_WeeklyReportPDF.ToArray(), "application/vnd.ms-pdf", sFileName); 
-            //#endregion
-
-            //return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);
-            //return PartialView
+            Helper.ExcelStackupCheck(ExcelDt, model);
+          
             return PartialView("m_ExcelPartial", model);
+        }
+
+        [HttpPost]
+        public IActionResult SaveCheckFile([FromBody] m_ExcelPartial model)
+        {
+            //m_ExcelPartial model = new m_ExcelPartial();
+            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
+            //存檔並返回檔案路徑
+            DataTable StackupDetalDt = Helper.GetDataTableFromStackupDetail(model.StackupDetalList);
+            //驗證資料
+            Helper.ExcelStackupCheck(StackupDetalDt, model);
+
+            return Json(model.Errmsg);
         }
 
         [HttpGet]

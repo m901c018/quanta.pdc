@@ -44,7 +44,7 @@
                                         <input type="file" id="lefile" name="excel" multiple accept=".xls,.xlsx" style="display:none" />
                                         <input id="showCover" class="input-large" type="text" style="height:30px;" disabled="disabled">
                                         <a class="btn" onclick="$('input[id=lefile]').click();">搜尋</a>
-                                        <input type="button" onclick="uploadFile()" id="uploadExcel" value="驗證" class="btn-primary" />
+                                        <input type="button" onclick="uploadFile()" id="uploadExcel" value="上傳" class="btn-primary" />
                                     </div>
                                     <br />
                                     <div class="input-append">
@@ -83,18 +83,27 @@
     <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            //$('#grid').DataTable({
-            //    lengthChange: false,
-            //    info: false,
-            //    searching: true,
-            //    scrollX: false,
-            //    pageLength: 5,
-            //});
+
+
         });
 
         $('input[id=lefile]').change(function () {
             $('#showCover').val($(this).val());
         });
+
+        function GetTotal() {
+            var table = $('#grid').DataTable();
+            var dd = table.rows().data().toArray();
+            var Sum = 0.00;
+            $.each($('#grid > tbody > tr'), function (index, row) {
+                var value = $(this).find('td').last().find('input').val();
+                if ($.isNumeric(value))
+                {
+                    Sum += Number(value);
+                }
+            });
+            $('#ThicknessTotal').text('總版厚:' + Sum.toFixed(2));
+        }
 
         function uploadFile() {
             var formData = new FormData();
@@ -127,6 +136,42 @@
             });
         }
 
+        function SaveCheckFile() {
+            var table = $('#grid').DataTable();
+            var dd = table.rows().data().toArray();
+            var data = new Array();
+
+            $.each(dd, function (index,row) {
+                $.each(row, function (colIndex,value) {
+                    var StackupDetalList = {};
+                    StackupDetalList.IndexNo = index;
+                    StackupDetalList.Description = value;
+                    StackupDetalList.StackupColumnID = colIndex;
+                    data.push(StackupDetalList);
+                });
+            });
+            var ViewModel = { StackupDetalList: data };
+
+            var _url = '@Url.Action("SaveCheckFile", "Excel")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: JSON.stringify(ViewModel),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    //顯示訊息
+                    $('#ErrorMsg').text(result);
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                }
+            });
+        }
+
+
         function AddRow() {
             if ($('#grid').length == 0) {
                 alert("請先上傳驗證檔案");
@@ -142,11 +187,11 @@
             });
             var copyrow3 = $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 2).clone();
             var copyrow4 = $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 1).clone();
-            
-            
+
+
             $('#grid > tbody > tr')[$('#grid > tbody > tr').length - 2].remove();
             $('#grid > tbody > tr')[$('#grid > tbody > tr').length - 1].remove();
-            
+
             $('#grid > tbody').append(copyrow1);
             $('#grid > tbody').append(copyrow2);
             $('#grid > tbody').append(copyrow3);

@@ -39,5 +39,13 @@ namespace cns.Services.App
             public const string UrlDefault = "/Excel/Index";
             public const string NavigationName = "Excel";
         }
+
+        public static class Configuration
+        {
+            public const string ControllerName = "Configuration";
+            public const string RoleName = "Configuration";
+            public const string UrlDefault = "/Configuration/Index";
+            public const string NavigationName = "Configuration";
+        }
     }
 }

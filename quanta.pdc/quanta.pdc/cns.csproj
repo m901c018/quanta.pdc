@@ -19,11 +19,6 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\ImportModule\ImportModule.csproj" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <Folder Include="wwwroot\FileUpload\" />
   </ItemGroup>
 

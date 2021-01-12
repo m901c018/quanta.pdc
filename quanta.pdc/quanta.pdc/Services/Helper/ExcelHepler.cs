@@ -68,6 +68,10 @@ namespace cns.Services.Helper
             /// 上層節點
             /// </summary>
             public Int64 ParentColumnID { get; set; }
+            /// <summary>
+            /// 資料內容(View傳送用)
+            /// </summary>
+            public string ColumnValue { get; set; }
         }
 
         public class StackupDetalModel
@@ -96,6 +100,10 @@ namespace cns.Services.Helper
             /// 欄位內容
             /// </summary>
             public string ColumnValue { get; set; }
+            /// <summary>
+            /// 該欄位是否唯讀
+            /// </summary>
+            public string IsDisabled { get; set; }
         }
 
         public class StackupStyle
@@ -121,14 +129,14 @@ namespace cns.Services.Helper
             StackupType.Add("Plane");
 
             StackupColumnList = new List<StackupColumnModel>();
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 1, ColumnCode = "Col_01A", ColumnName = "層別\n(LAYER)", ColumnType = "文字", DataType = "文字", DecimalPlaces = 0, MaxLength = 256, OrderNo = 0, ParentColumnID = 0 });
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 2, ColumnCode = "Col_02A", ColumnName = "疊構類別\n(Stack up Type)", ColumnType = "文字", DataType = "文字", DecimalPlaces = 0, MaxLength = 256, OrderNo = 1, ParentColumnID = 0 });
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 3, ColumnCode = "Col_03A", ColumnName = "NAME\n(TOP, GND, GND1, IN1, ..,\nVCC, VCC1, BOTTOM)", ColumnType = "文字", DataType = "文字", DecimalPlaces = 0, MaxLength = 256, OrderNo = 2, ParentColumnID = 0 });
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 4, ColumnCode = "Col_04A", ColumnName = "HIGH SPEED\nGROUP NAME\n(T, 1, 2, 3…)", ColumnType = "文字", DataType = "文字", DecimalPlaces = 0, MaxLength = 256, OrderNo = 3, ParentColumnID = 0 });
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 5, ColumnCode = "Col_05A", ColumnName = "線寬\n(LINE WIDTH)", ColumnType = "文字", DataType = "文字", DecimalPlaces = 0, MaxLength = 256, OrderNo = 4, ParentColumnID = 0 });
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 6, ColumnCode = "Col_06A", ColumnName = "間距\n(SPACING)", ColumnType = "文字", DataType = "文字", DecimalPlaces = 0, MaxLength = 256, OrderNo = 5, ParentColumnID = 0 });
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 7, ColumnCode = "Col_07B", ColumnName = "疊構\n(Stack up)", ColumnType = "文字", DataType = "文字", DecimalPlaces = 0, MaxLength = 256, OrderNo = 6, ParentColumnID = 0 });
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 8, ColumnCode = "Col_08B", ColumnName = "板厚\n(Thickness)", ColumnType = "文字", DataType = "數字", DecimalPlaces = 0, MaxLength = 256, OrderNo = 7, ParentColumnID = 0 });
+            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 1, ColumnCode = "Col_01A", ColumnName = "層別\n(LAYER)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 0, ParentColumnID = 0 });
+            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 2, ColumnCode = "Col_02A", ColumnName = "疊構類別\n(Stack up Type)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 1, ParentColumnID = 0 });
+            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 3, ColumnCode = "Col_03A", ColumnName = "NAME\n(TOP, GND, GND1, IN1, ..,\nVCC, VCC1, BOTTOM)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 2, ParentColumnID = 0 });
+            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 4, ColumnCode = "Col_04A", ColumnName = "HIGH SPEED\nGROUP NAME\n(T, 1, 2, 3…)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 3, ParentColumnID = 0 });
+            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 5, ColumnCode = "Col_05A", ColumnName = "線寬\n(LINE WIDTH)", ColumnType = "文字", DataType = "int", DecimalPlaces = 0, MaxLength = 256, OrderNo = 4, ParentColumnID = 0 });
+            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 6, ColumnCode = "Col_06A", ColumnName = "間距\n(SPACING)", ColumnType = "文字", DataType = "int", DecimalPlaces = 0, MaxLength = 256, OrderNo = 5, ParentColumnID = 0 });
+            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 7, ColumnCode = "Col_07B", ColumnName = "疊構\n(Stack up)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 6, ParentColumnID = 0 });
+            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 8, ColumnCode = "Col_08B", ColumnName = "板厚\n(Thickness)", ColumnType = "文字", DataType = "int", DecimalPlaces = 0, MaxLength = 256, OrderNo = 7, ParentColumnID = 0 });
 
             stackupDetals = new List<StackupDetalModel>();
             stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 7, IndexNo = 0, ColumnValue = "Solder Mask", DataType = "string" });
@@ -180,7 +188,12 @@ namespace cns.Services.Helper
             return FilePath;
         }
 
-
+        /// <summary> 把Sheet資料轉為DataTable
+        /// 
+        /// </summary>
+        /// <param name="xSSFSheet">Excel Sheet</param>
+        /// <param name="IsStackup">是否為Stackup</param>
+        /// <returns></returns>
         public DataTable GetDataTableFromExcel(ISheet xSSFSheet, Boolean IsStackup)
         {
             DataTable dtExcelRecords = new DataTable();
@@ -229,18 +242,17 @@ namespace cns.Services.Helper
             return result;
         }
 
-        public void ExcelCheck(string FilePath, m_ExcelPartial model)
+        /// <summary> 驗證Stackup資料
+        /// 
+        /// </summary>
+        /// <param name="ExcelDt">Stackup資料</param>
+        /// <param name="model">返回ViewModel</param>
+        public void ExcelStackupCheck(DataTable ExcelDt, m_ExcelPartial model)
         {
             model.Errmsg = string.Empty;
-            //轉NPOI類型
-            XSSFWorkbook ExcelFile = new XSSFWorkbook(FilePath);
 
-            ISheet xSSFSheet = ExcelFile.GetSheet("Stackup");
-            //取得對應Excel的最後欄位
-            string LastCol = Char.ConvertFromUtf32(StackupColumnList.Count + 64);
-
-            //資料轉為Datatable
-            DataTable ExcelDt = GetDataTableFromExcel(xSSFSheet, true);
+            List<string> NameList = new List<string>();
+            List<string> GroupNameList = new List<string>();
             //Layer數字檢查結果
             bool LayerNumCheck = false;
             //StackupType檢查結果
@@ -249,70 +261,134 @@ namespace cns.Services.Helper
             bool TopCheck = false;
             //Bot檢查結果
             bool BotCheck = false;
+            //VCC檢查結果
+            bool VCCCheck = false;
+            //GND檢查結果
+            bool GNDCheck = false;
             //SVCC檢查結果
             bool SVCCCheck = false;
             //SGND檢查結果
             bool SGNDCheck = false;
+            //INx檢查結果
+            bool INxCheck = false;
+            //INxNum檢查結果
+            bool INxNumCheck = false;
+            //End檢查結果
+            bool EndCheck = false;
 
+            decimal ThicknessTotal = 0;
 
             int ColIndex = 0;
-            //第七行開始才是資料
-            for (int i = 6; i <= xSSFSheet.LastRowNum - 6; i += 2)
+            //第二行開始才是資料
+            for (int i = 1; i <= ExcelDt.Rows.Count - 1; i += 2)
             {
                 //當前筆數
                 ColIndex += 1;
                 //每筆有兩列
-                XSSFRow ColFirst = (XSSFRow)xSSFSheet.GetRow(i);
-                XSSFRow ColSecond = (XSSFRow)xSSFSheet.GetRow(i + 1);
+                DataRow ColFirst = ExcelDt.Rows[i];
+
+                decimal Thickness1 = 0;
+                if(Decimal.TryParse(ColFirst[7].ToString(),out Thickness1))
+                {
+                    ThicknessTotal += Thickness1;
+                }
+
                 //最後一筆疊構(Stack up)結尾是Solder Mask代表結束
-                if (GetCellValue(ColFirst, 6) == "Solder Mask")
-                    break;
+                if (ColFirst[6].ToString() == "Solder Mask")
+                {
+                    if(i == (ExcelDt.Rows.Count - 1))
+                        break;
+                    else
+                    {
+                        EndCheck = true;
+                        break;
+                    }
+                }
+
+                DataRow ColSecond = ExcelDt.Rows[i + 1];
+
+                decimal Thickness2 = 0;
+                if (Decimal.TryParse(ColSecond[7].ToString(), out Thickness2))
+                {
+                    ThicknessTotal += Thickness2;
+                }
+
+                if (!string.IsNullOrWhiteSpace(ColFirst[2].ToString()))
+                    NameList.Add(ColFirst[2].ToString());
+
+                if (!string.IsNullOrWhiteSpace(ColFirst[3].ToString()))
+                    GroupNameList.Add(ColFirst[3].ToString());
 
                 int LayerIndex = 0;
-                if (Int32.TryParse(System.Text.RegularExpressions.Regex.Replace(GetCellValue(ColFirst, 0), @"[^0-9]+", ""), out LayerIndex))
+                if (Int32.TryParse(System.Text.RegularExpressions.Regex.Replace(ColFirst[0].ToString(), @"[^0-9]+", ""), out LayerIndex))
                 {
                     //判斷Layer欄位數字是否
                     if (LayerIndex != ColIndex)
                         LayerNumCheck = true;
                 }
                 //判斷疊構類別只能有三種選項
-                if (!StackupType.Where(x => x.Contains(GetCellValue(ColFirst, 1))).Any() || (!StackupType.Where(x => x.Contains(GetCellValue(ColSecond, 1))).Any() && GetCellValue(ColFirst, 2) != "BOT"))
+                if (!StackupType.Where(x => x.Contains(ColFirst[1].ToString())).Any() || (!StackupType.Where(x => x.Contains(ColSecond[1].ToString())).Any() && ColFirst[2].ToString() != "BOT"))
                     StackupTypeCheck = true;
 
                 //每個『Conductoe』or『Plane』的下一列必須固定帶上『Dielecatric』。
-                if (GetCellValue(ColFirst, 2) != "BOT" && (GetCellValue(ColFirst, 1) == "Conductor" || GetCellValue(ColFirst, 1) == "Plane"))
-                    ExcelDt.Rows[(i-5) + 1][1] = "Dielectric";
+                if (ColFirst[2].ToString() != "BOT" && (ColFirst[1].ToString() == "Conductor" || ColFirst[1].ToString() == "Plane"))
+                    ColSecond[1] = "Dielectric";
                 //固定值『TOP』B欄對應『Conductor』且欄位不可編輯，D欄對應『T』且欄位不可編輯，E欄 & F欄必須有值。
-                if (GetCellValue(ColFirst, 2) == "TOP")
+                if (ColFirst[2].ToString() == "TOP")
                 {
-                    ExcelDt.Rows[(i-5)][1] = "Conductor";
-                    ExcelDt.Rows[(i-5)][3] = "T";
-                    if (string.IsNullOrWhiteSpace(ExcelDt.Rows[(i-5)][3].ToString()) || string.IsNullOrWhiteSpace(ExcelDt.Rows[(i-5)][4].ToString()))
+                    ColFirst[1] = "Conductor";
+                    ColSecond[1] = "Dielectric";
+                    ColFirst[3] = "T";
+                    if (string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
                         TopCheck = true;
                 }
                 //固定值『BOT』B欄對應『Conductor』且欄位不可編輯，D欄對應『B』且欄位不可編輯，E欄 & F欄必須有值。
-                if (GetCellValue(ColFirst, 2) == "BOT")
+                if (ColFirst[2].ToString() == "BOT")
                 {
-                    ExcelDt.Rows[(i-5)][1] = "Conductor";
-                    ExcelDt.Rows[(i-5)][3] = "B";
-                    if (string.IsNullOrWhiteSpace(ExcelDt.Rows[(i-5)][3].ToString()) || string.IsNullOrWhiteSpace(ExcelDt.Rows[(i-5)][4].ToString()))
+                    ColFirst[1] = "Conductor";
+                    ColFirst[3] = "B";
+                    if (string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
                         BotCheck = true;
                 }
-                //C欄=『SVCCx』B欄對應『Plane』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄『不填值』且欄位不可編輯。（SVCC, SVCC1 …最多到 9），不得重複。
-                if (GetCellValue(ColFirst, 2).ToString().StartsWith("SVCC"))
+                //C欄=『INx』B欄對應『Conductor』且欄位不可編輯，D欄對應『數字』且欄位不可編輯， E欄 & F欄必須有值。（IN1=1, IN2=2, …最多到 9），不得重複。
+                if (ColFirst[2].ToString().StartsWith("IN"))
                 {
-                    ExcelDt.Rows[(i-5)][1] = "Plane";
-                    ExcelDt.Rows[(i-5)][3] = "";
-                    ExcelDt.Rows[(i-5)][4] = "";
-                    ExcelDt.Rows[(i-5)][5] = "";
-                    //ExcelData.Where(x=>x[2].ToString().StartsWith("SVCC")).Select(x=>x[2].ToString().Replace("SVCC","")).ToList()
+                    //判斷INx數字跟D欄『數字』是否對應
+                    if (System.Text.RegularExpressions.Regex.Replace(ColFirst[2].ToString(), @"[^0-9]+", "").ToString() != ColFirst[3].ToString())
+                        INxNumCheck = true;
+
+                    if (ColSecond[1].ToString() != "Conductor" || !string.IsNullOrWhiteSpace(ColFirst[3].ToString()) || string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
+                        INxCheck = true;
+                }
+                //C欄=『VCCx』B欄對應『Conductor』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄必須有值。（VCC, VCC1 …最多到 9），不得重複。
+                if (ColFirst[2].ToString().StartsWith("VCC"))
+                {
+                    if (ColSecond[1].ToString() != "Conductor" || !string.IsNullOrWhiteSpace(ColFirst[3].ToString()) || string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
+                        VCCCheck = true;
+                }
+                //C欄=『SVCCx』B欄對應『Plane』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄『不填值』且欄位不可編輯。（SVCC, SVCC1 …最多到 9），不得重複。
+                if (ColFirst[2].ToString().StartsWith("SVCC"))
+                {
+                    if (ColSecond[1].ToString() != "Plane" || !string.IsNullOrWhiteSpace(ColFirst[3].ToString()) || !string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || !string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
+                        SVCCCheck = true;
+                }
+                //C欄=『GNDx』B欄對應『Conductor』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄必須有值。（GND, GND1 …最多到 9），不得重複。
+                if (ColFirst[2].ToString().StartsWith("GND"))
+                {
+                    if (ColSecond[1].ToString() != "Conductor" || !string.IsNullOrWhiteSpace(ColFirst[3].ToString()) || string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
+                        GNDCheck = true;
+                }
+                //C欄=『SGNDx』B欄對應『Plane』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄『不填值』且欄位不可編輯。（SGND, SGND1, …最多到 9），不得重複。
+                if (ColFirst[2].ToString().StartsWith("SGND"))
+                {
+                    if (ColSecond[1].ToString() != "Plane" || !string.IsNullOrWhiteSpace(ColFirst[3].ToString()) || !string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || !string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
+                        SGNDCheck = true;
                 }
             }
 
             //第一筆資料是起始
-            XSSFRow ColStart = (XSSFRow)xSSFSheet.GetRow(5);
-            if (GetCellValue(ColStart, 6) != "Solder Mask")
-                model.Errmsg += "起始疊構(Stack up)必需為Solder Mask\n";
+            if (ExcelDt.Rows[0][6].ToString() != "Solder Mask")
+                model.Errmsg += "第一筆起始疊構(Stack up)必需為Solder Mask\n";
 
             if (LayerNumCheck)
                 model.Errmsg += "Layer數字不可跳號\n";
@@ -326,7 +402,112 @@ namespace cns.Services.Helper
             if (BotCheck)
                 model.Errmsg += "固定值『BOT』，F欄 & G欄必須有值。\n";
 
+            if (VCCCheck)
+                model.Errmsg += "C欄=『VCCx』B欄對應『Conductor』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄必須有值。\n";
+
+            if (NameList.Where(x => x.StartsWith("VCC")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any())
+                model.Errmsg += "VCC, VCC1 …最多到 9。\n";
+
+            if (GNDCheck)
+                model.Errmsg += "C欄=『GNDx』B欄對應『Conductor』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄必須有值。\n";
+
+            if (NameList.Where(x => x.StartsWith("GND")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any())
+                model.Errmsg += "GND, GND1 …最多到 9。\n";
+
+            if (SVCCCheck)
+                model.Errmsg += "C欄=『SVCCx』B欄對應『Plane』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄『不填值』且欄位不可編輯。\n";
+
+            if (NameList.Where(x => x.StartsWith("SVCC")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any()) 
+                model.Errmsg += "SVCC, SVCC1 …最多到 9。\n";
+
+            if (SGNDCheck)
+                model.Errmsg += "C欄=『SGNDx』B欄對應『Plane』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄『不填值』且欄位不可編輯。\n";
+
+            if (NameList.Where(x => x.StartsWith("SGND")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any()) 
+                model.Errmsg += "SGND, SGND1, …最多到 9。\n";
+
+            if (INxCheck)
+                model.Errmsg += "C欄=『INx』B欄對應『Conductor』且欄位不可編輯， E欄 & F欄必須有值。\n";
+
+            if (INxNumCheck)
+                model.Errmsg += "C欄=『INx』，D欄對應『數字』且欄位不可編輯。\n";
+
+            if (NameList.Where(x => x.StartsWith("IN")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any())
+                model.Errmsg += "IN1=1, IN2=2, …最多到 9。\n";
+
+            for (int i = 0; i <= GroupNameList.Count - 1; i++) 
+            {
+                if (i == 0 && GroupNameList[i] != "T") 
+                {
+                    model.Errmsg += "D欄規則 = T + 數字（小至大自動排序）+ B。\n";
+                    break;
+                }
+
+                if (i == (GroupNameList.Count - 1) && GroupNameList[i] != "B")
+                {
+                    model.Errmsg += "D欄規則 = T + 數字（小至大自動排序）+ B。\n";
+                    break;
+                }
+                int GroupNameNum1 = 0;
+                int GroupNameNum2 = 0;
+                if (i >=2 && Int32.TryParse(GroupNameList[i-1], out GroupNameNum1) && Int32.TryParse(GroupNameList[i], out GroupNameNum2))
+                {
+                    if ((GroupNameNum1 + 1) != GroupNameNum2) 
+                    {
+                        model.Errmsg += "D欄規則 = T + 數字（小至大自動排序）+ B。\n";
+                        break;
+                    }
+                }
+                else
+                {
+                    model.Errmsg += "D欄規則 = T + 數字（小至大自動排序）+ B。\n";
+                    break;
+                }
+            }
+
+            if (EndCheck)
+                model.Errmsg += "最後一筆起始疊構(Stack up)必需為Solder Mask。\n";
+
             model.ExcelSheetDts.Add(ExcelDt);
+            model.ThicknessTotal = decimal.Round(ThicknessTotal, 2);
+        }
+
+        /// <summary> 把StackupDetail資料轉為DataTable
+        /// 
+        /// </summary>
+        /// <param name="xSSFSheet">Excel Sheet</param>
+        /// <param name="IsStackup">是否為Stackup</param>
+        /// <returns></returns>
+        public DataTable GetDataTableFromStackupDetail(List<StackupDetalModel> StackupDetalList)
+        {
+            DataTable dtExcelRecords = new DataTable();
+            //取得有幾筆資料
+            int TotalCount = stackupDetals.Select(x => x.IndexNo).Max();
+
+            foreach (StackupColumnModel StackupColumn in StackupColumnList.OrderBy(x => x.OrderNo))
+            {
+                dtExcelRecords.Columns.Add(StackupColumn.ColumnName);
+            }
+            for (int i = 0; i <= TotalCount; i++)
+            {
+                DataRow dr = dtExcelRecords.NewRow();
+
+                for (int j = 0; j < StackupColumnList.Count - 1; j++) //對工作表每一列 
+                {
+                    Int64 StackupColumnID = StackupColumnList.Where(x => x.OrderNo == j).Select(x => x.StackupColumnID).First();
+
+                    if (stackupDetals.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID).Any())
+                    {
+                        string stackupData = stackupDetals.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID)
+                                                          .Select(x => x.ColumnValue)
+                                                          .FirstOrDefault();
+                        dr[j] = stackupData;
+                    }
+                }
+                dtExcelRecords.Rows.Add(dr);
+            }
+
+            return dtExcelRecords;
         }
 
         /// <summary> 匯出Excel範例

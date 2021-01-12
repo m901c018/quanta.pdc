@@ -1,41 +1,109 @@
 ﻿@model m_ExcelPartial
 
-    <div class="table-responsive">
-        <table id="grid" class="table table-hover display  nowrap table-striped" width="100%" cellspacing="0">
-            <thead>
-                <tr>
-                    @foreach (var item in Model.StackupColumnList)
-                    {
-                        <th>@item.ColumnName</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                @for (int i = 0; i <= Model.ExcelSheetDts[0].Rows.Count - 1; i++)
-                {
-                    <tr>
-                        @for (int j = 0; j <= Model.StackupColumnList.Count - 1; j++)
-                        {
-                            <td>
-                                <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
-                            </td>
-
-                            @*<td>
-                                    <div class="switch d-inline m-r-10">
-                                        <input type="checkbox" @(item.isSuperAdmin ? "checked" : "")>
-                                        <label class="cr"></label>
-                                    </div>
-                                </td>*@
-
-                        }
-                    </tr>
-                }
-            </tbody>
-        </table>
+<div class="table-responsive">
+    <div class="col-12" style="text-align:right">
+        <label id="ThicknessTotal" style="font-family: Open sans-serif;font-size: 16px;">總版厚:@Model.ThicknessTotal</label>
     </div>
+    <table id="grid" class="table table-hover display  nowrap table-striped" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                @foreach (var item in Model.StackupColumnList)
+                    {
+                <th>@item.ColumnName</th>
+                    }
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i <= Model.ExcelSheetDts[0].Rows.Count - 1; i++)
+                {
+            <tr>
+                @for (int j = 0; j <= Model.StackupColumnList.Count - 1; j++)
+                    {
+                    if (j == (Model.StackupColumnList.Count - 1))
+                        {
+                <td>
+                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" onchange="GetTotal()" />
+                </td>
+                        }
+                else if (j == (Model.StackupColumnList.Count - 2))
+                        {
+                <td>
+                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
+                </td>
+                        }
+                        else if (i == 0)
+                        {
+                <td>
+                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
+                </td>
+                        }
+                        else if (i == 1)
+                        {
+                            if (j == 4 || j == 5)
+                            {
+                <td>
+                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
+                </td>
+                            }
+                            else
+                            {
+                <td>
+                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
+                </td>
+                            }
+                        }
+                        else if (i == (Model.ExcelSheetDts[0].Rows.Count - 2))
+                        {
+                            if (j == 0 || j == 4 || j == 5)
+                            {
+                <td>
+                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
+                </td>
+                            }
+                            else
+                            {
+                <td>
+                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
+                </td>
+                            }
+                        }
+                        else if (i == (Model.ExcelSheetDts[0].Rows.Count - 1))
+                        {
+                <td>
+                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
+                </td>
+                        }
+                        else
+                        {
+                <td>
+                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
+                </td>
+                        }
 
-<div class="input-append">
-    <textarea rows="5" style="width:100%">
-        @Model.Errmsg
-    </textarea>
+
+                @*<td>
+            <div class="switch d-inline m-r-10">
+                <input type="checkbox" @(item.isSuperAdmin ? "checked" : "")>
+                <label class="cr"></label>
+            </div>
+        </td>*@
+
+                    }
+            </tr>
+                }
+        </tbody>
+    </table>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <textarea rows="5" style="width:100%" id="ErrorMsg">
+                @Model.Errmsg
+            </textarea>
+        </div>
+        <div class="col-3">
+            <input type="button" onclick="SaveCheckFile()" id="uploadExcel" value="儲存驗證" class="btn-primary" />
+        </div>
+    </div>
 </div>
