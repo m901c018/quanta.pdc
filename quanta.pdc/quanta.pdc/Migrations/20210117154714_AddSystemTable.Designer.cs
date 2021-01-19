@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using cns.Data;
 
 namespace cns.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210117154714_AddSystemTable")]
+    partial class AddSystemTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -253,7 +255,7 @@ namespace cns.Migrations
                     b.Property<string>("Modifyer")
                         .HasMaxLength(128);
 
-                    b.Property<DateTime?>("ModifyerDate");
+                    b.Property<DateTime>("ModifyerDate");
 
                     b.Property<string>("ModifyerName")
                         .HasMaxLength(128);
@@ -322,7 +324,7 @@ namespace cns.Migrations
                     b.Property<string>("Modifyer")
                         .HasMaxLength(128);
 
-                    b.Property<DateTime?>("ModifyerDate");
+                    b.Property<DateTime>("ModifyerDate");
 
                     b.Property<string>("ModifyerName")
                         .HasMaxLength(128);
@@ -368,7 +370,7 @@ namespace cns.Migrations
                     b.Property<string>("Modifyer")
                         .HasMaxLength(128);
 
-                    b.Property<DateTime?>("ModifyerDate");
+                    b.Property<DateTime>("ModifyerDate");
 
                     b.Property<string>("ModifyerName")
                         .HasMaxLength(128);

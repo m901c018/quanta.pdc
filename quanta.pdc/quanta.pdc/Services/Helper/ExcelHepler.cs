@@ -10,8 +10,8 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using LinqToExcel;
 using cns.ViewModels;
+using cns.Models;
 
 namespace cns.Services.Helper
 {
@@ -22,90 +22,15 @@ namespace cns.Services.Helper
         public static ICellStyle StackupHeaderStyle;
         public static ICellStyle StackupHeaderStyle2;
         //紀錄Stackup的Header欄位
-        public static List<StackupColumnModel> StackupColumnList;
-        public static List<StackupDetalModel> stackupDetals;
+        public static List<PDC_StackupColumn> StackupColumnList;
+        public static List<PDC_StackupDetail> stackupDetals;
         public static List<string> StackupType;
 
         public static string SamplePath;
         public static string ExportPath;
         public static string rootPath;
 
-        public class StackupColumnModel
-        {
-            /// <summary>
-            /// 主鍵
-            /// </summary>
-            public Int64 StackupColumnID { get; set; }
-            /// <summary>
-            /// 欄位代碼
-            /// </summary>
-            public string ColumnCode { get; set; }
-            /// <summary>
-            /// 欄位名稱
-            /// </summary>
-            public string ColumnName { get; set; }
-            /// <summary>
-            /// 欄位類別
-            /// </summary>
-            public string ColumnType { get; set; }
-            /// <summary>
-            /// 欄位型態
-            /// </summary>
-            public string DataType { get; set; }
-            /// <summary>
-            /// 欄位長度
-            /// </summary>
-            public int MaxLength { get; set; }
-            /// <summary>
-            /// 欄位順序(0開始)
-            /// </summary>
-            public int OrderNo { get; set; }
-            /// <summary>
-            /// 小數點幾位數
-            /// </summary>
-            public int DecimalPlaces { get; set; }
-            /// <summary>
-            /// 上層節點
-            /// </summary>
-            public Int64 ParentColumnID { get; set; }
-            /// <summary>
-            /// 資料內容(View傳送用)
-            /// </summary>
-            public string ColumnValue { get; set; }
-        }
-
-        public class StackupDetalModel
-        {
-            /// <summary>
-            /// 主鍵
-            /// </summary>
-            public Int64 StackupDetailID { get; set; }
-            /// <summary>
-            /// StackupColumn主鍵
-            /// </summary>
-            public Int64 StackupColumnID { get; set; }
-            /// <summary>
-            /// 欄位類別
-            /// </summary>
-            public string DataType { get; set; }
-            /// <summary>
-            /// 欄位型態
-            /// </summary>
-            public string ColumnType { get; set; }
-            /// <summary>
-            /// 第幾筆資料
-            /// </summary>
-            public int IndexNo { get; set; }
-            /// <summary>
-            /// 欄位內容
-            /// </summary>
-            public string ColumnValue { get; set; }
-            /// <summary>
-            /// 該欄位是否唯讀
-            /// </summary>
-            public string IsDisabled { get; set; }
-        }
-
+        
         public class StackupStyle
         {
             public BorderStyle BorderBottom { get; set; }
@@ -128,30 +53,30 @@ namespace cns.Services.Helper
             StackupType.Add("Dielectric");
             StackupType.Add("Plane");
 
-            StackupColumnList = new List<StackupColumnModel>();
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 1, ColumnCode = "Col_01A", ColumnName = "層別\n(LAYER)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 0, ParentColumnID = 0 });
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 2, ColumnCode = "Col_02A", ColumnName = "疊構類別\n(Stack up Type)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 1, ParentColumnID = 0 });
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 3, ColumnCode = "Col_03A", ColumnName = "NAME\n(TOP, GND, GND1, IN1, ..,\nVCC, VCC1, BOTTOM)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 2, ParentColumnID = 0 });
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 4, ColumnCode = "Col_04A", ColumnName = "HIGH SPEED\nGROUP NAME\n(T, 1, 2, 3…)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 3, ParentColumnID = 0 });
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 5, ColumnCode = "Col_05A", ColumnName = "線寬\n(LINE WIDTH)", ColumnType = "文字", DataType = "int", DecimalPlaces = 0, MaxLength = 256, OrderNo = 4, ParentColumnID = 0 });
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 6, ColumnCode = "Col_06A", ColumnName = "間距\n(SPACING)", ColumnType = "文字", DataType = "int", DecimalPlaces = 0, MaxLength = 256, OrderNo = 5, ParentColumnID = 0 });
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 7, ColumnCode = "Col_07B", ColumnName = "疊構\n(Stack up)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 6, ParentColumnID = 0 });
-            StackupColumnList.Add(new StackupColumnModel() { StackupColumnID = 8, ColumnCode = "Col_08B", ColumnName = "板厚\n(Thickness)", ColumnType = "文字", DataType = "int", DecimalPlaces = 0, MaxLength = 256, OrderNo = 7, ParentColumnID = 0 });
+            StackupColumnList = new List<PDC_StackupColumn>();
+            StackupColumnList.Add(new PDC_StackupColumn() { StackupColumnID = 1, ColumnCode = "Col_01A", ColumnName = "層別\n(LAYER)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 0, ParentColumnID = 0 });
+            StackupColumnList.Add(new PDC_StackupColumn() { StackupColumnID = 2, ColumnCode = "Col_02A", ColumnName = "疊構類別\n(Stack up Type)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 1, ParentColumnID = 0 });
+            StackupColumnList.Add(new PDC_StackupColumn() { StackupColumnID = 3, ColumnCode = "Col_03A", ColumnName = "NAME\n(TOP, GND, GND1, IN1, ..,\nVCC, VCC1, BOTTOM)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 2, ParentColumnID = 0 });
+            StackupColumnList.Add(new PDC_StackupColumn() { StackupColumnID = 4, ColumnCode = "Col_04A", ColumnName = "HIGH SPEED\nGROUP NAME\n(T, 1, 2, 3…)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 3, ParentColumnID = 0 });
+            StackupColumnList.Add(new PDC_StackupColumn() { StackupColumnID = 5, ColumnCode = "Col_05A", ColumnName = "線寬\n(LINE WIDTH)", ColumnType = "文字", DataType = "int", DecimalPlaces = 0, MaxLength = 256, OrderNo = 4, ParentColumnID = 0 });
+            StackupColumnList.Add(new PDC_StackupColumn() { StackupColumnID = 6, ColumnCode = "Col_06A", ColumnName = "間距\n(SPACING)", ColumnType = "文字", DataType = "int", DecimalPlaces = 0, MaxLength = 256, OrderNo = 5, ParentColumnID = 0 });
+            StackupColumnList.Add(new PDC_StackupColumn() { StackupColumnID = 7, ColumnCode = "Col_07B", ColumnName = "疊構\n(Stack up)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 6, ParentColumnID = 0 });
+            StackupColumnList.Add(new PDC_StackupColumn() { StackupColumnID = 8, ColumnCode = "Col_08B", ColumnName = "板厚\n(Thickness)", ColumnType = "文字", DataType = "int", DecimalPlaces = 0, MaxLength = 256, OrderNo = 7, ParentColumnID = 0 });
 
-            stackupDetals = new List<StackupDetalModel>();
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 7, IndexNo = 0, ColumnValue = "Solder Mask", DataType = "string" });
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 1, IndexNo = 1, ColumnValue = "L1", DataType = "string" });
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 2, IndexNo = 1, ColumnValue = "Conductor", DataType = "string" });
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 3, IndexNo = 1, ColumnValue = "TOP", DataType = "string" });
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 4, IndexNo = 1, ColumnValue = "T", DataType = "string" });
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 7, IndexNo = 1, ColumnValue = "Cu + Plating", DataType = "int" });
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 2, IndexNo = 2, ColumnValue = "Dielectric", DataType = "string" });
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 1, IndexNo = 3, ColumnValue = "L2", DataType = "string" });
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 2, IndexNo = 3, ColumnValue = "Conductor", DataType = "string" });
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 3, IndexNo = 3, ColumnValue = "BOT", DataType = "string" });
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 4, IndexNo = 3, ColumnValue = "B", DataType = "string" });
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 7, IndexNo = 3, ColumnValue = "Cu + Plating", DataType = "int" });
-            stackupDetals.Add(new StackupDetalModel() { StackupColumnID = 7, IndexNo = 4, ColumnValue = "Solder Mask", DataType = "string" });
+            stackupDetals = new List<PDC_StackupDetail>();
+            stackupDetals.Add(new PDC_StackupDetail() { StackupColumnID = 7, IndexNo = 0, ColumnValue = "Solder Mask", DataType = "string" });
+            stackupDetals.Add(new PDC_StackupDetail() { StackupColumnID = 1, IndexNo = 1, ColumnValue = "L1", DataType = "string" });
+            stackupDetals.Add(new PDC_StackupDetail() { StackupColumnID = 2, IndexNo = 1, ColumnValue = "Conductor", DataType = "string" });
+            stackupDetals.Add(new PDC_StackupDetail() { StackupColumnID = 3, IndexNo = 1, ColumnValue = "TOP", DataType = "string" });
+            stackupDetals.Add(new PDC_StackupDetail() { StackupColumnID = 4, IndexNo = 1, ColumnValue = "T", DataType = "string" });
+            stackupDetals.Add(new PDC_StackupDetail() { StackupColumnID = 7, IndexNo = 1, ColumnValue = "Cu + Plating", DataType = "int" });
+            stackupDetals.Add(new PDC_StackupDetail() { StackupColumnID = 2, IndexNo = 2, ColumnValue = "Dielectric", DataType = "string" });
+            stackupDetals.Add(new PDC_StackupDetail() { StackupColumnID = 1, IndexNo = 3, ColumnValue = "L2", DataType = "string" });
+            stackupDetals.Add(new PDC_StackupDetail() { StackupColumnID = 2, IndexNo = 3, ColumnValue = "Conductor", DataType = "string" });
+            stackupDetals.Add(new PDC_StackupDetail() { StackupColumnID = 3, IndexNo = 3, ColumnValue = "BOT", DataType = "string" });
+            stackupDetals.Add(new PDC_StackupDetail() { StackupColumnID = 4, IndexNo = 3, ColumnValue = "B", DataType = "string" });
+            stackupDetals.Add(new PDC_StackupDetail() { StackupColumnID = 7, IndexNo = 3, ColumnValue = "Cu + Plating", DataType = "int" });
+            stackupDetals.Add(new PDC_StackupDetail() { StackupColumnID = 7, IndexNo = 4, ColumnValue = "Solder Mask", DataType = "string" });
         }
 
         /// <summary> 讀取檔案轉為NPOI
@@ -180,9 +105,17 @@ namespace cns.Services.Helper
             //隨機產生檔案名
             var FilePath = rootPath + "\\FileUpload\\" + Guid.NewGuid().ToString("N") + ".xlsx";
 
-            using (Stream fileStream = new FileStream(FilePath, FileMode.CreateNew))
+            try
             {
-                file.CopyToAsync(fileStream);
+                using (Stream fileStream = new FileStream(FilePath, FileMode.CreateNew))
+                {
+                    file.CopyToAsync(fileStream);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return "Error";
             }
 
             return FilePath;
@@ -199,7 +132,7 @@ namespace cns.Services.Helper
             DataTable dtExcelRecords = new DataTable();
             if (IsStackup)
             {
-                foreach (StackupColumnModel StackupColumn in StackupColumnList.OrderBy(x => x.OrderNo))
+                foreach (PDC_StackupColumn StackupColumn in StackupColumnList.OrderBy(x => x.OrderNo))
                 {
                     dtExcelRecords.Columns.Add(StackupColumn.ColumnName);
                 }
@@ -472,19 +405,38 @@ namespace cns.Services.Helper
             model.ThicknessTotal = decimal.Round(ThicknessTotal, 2);
         }
 
+
+        public bool ExcelSampleCheck(XSSFWorkbook Sample)
+        {
+            bool IsCheck = true;
+
+            List<string> sheetCheck = new List<string>();
+            sheetCheck.Add("Stackup");
+            sheetCheck.Add("MA");
+
+            for (int i = 0; i <= workbook.NumberOfSheets - 1; i++)
+            {
+                //驗證Excel工作表
+                if (!sheetCheck.Contains(Sample.GetSheetAt(i).SheetName))
+                    IsCheck = false;
+            }
+
+            return IsCheck;
+        }
+
         /// <summary> 把StackupDetail資料轉為DataTable
         /// 
         /// </summary>
         /// <param name="xSSFSheet">Excel Sheet</param>
         /// <param name="IsStackup">是否為Stackup</param>
         /// <returns></returns>
-        public DataTable GetDataTableFromStackupDetail(List<StackupDetalModel> StackupDetalList)
+        public DataTable GetDataTableFromStackupDetail(List<PDC_StackupDetail> StackupDetalList)
         {
             DataTable dtExcelRecords = new DataTable();
             //取得有幾筆資料
             int TotalCount = stackupDetals.Select(x => x.IndexNo).Max();
 
-            foreach (StackupColumnModel StackupColumn in StackupColumnList.OrderBy(x => x.OrderNo))
+            foreach (PDC_StackupColumn StackupColumn in StackupColumnList.OrderBy(x => x.OrderNo))
             {
                 dtExcelRecords.Columns.Add(StackupColumn.ColumnName);
             }

@@ -8,9 +8,13 @@
     <RootNamespace>cns</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Migrations\20210117152000_add Table.cs" />
+    <Compile Remove="Migrations\20210117152000_add Table.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
-    <PackageReference Include="LinqToExcel_x64" Version="1.10.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />

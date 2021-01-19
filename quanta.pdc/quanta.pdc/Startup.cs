@@ -17,6 +17,7 @@ using cns.Services.Security;
 using cns.Models;
 using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Newtonsoft.Json.Serialization;
 
 namespace cns
 {
@@ -78,6 +79,13 @@ namespace cns
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            //return Data 維持大小寫
+            services.AddMvc()
+                    .AddJsonOptions(options =>
+                    {
+                        options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                    })
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // cookie settings
             services.ConfigureApplicationCookie(options =>

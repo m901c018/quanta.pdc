@@ -18,5 +18,13 @@ namespace cns.Data
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         //custom entity, for simple todo app
         public DbSet<Todo> Todo { get; set; }
+        //檔案表
+        public DbSet<PDC_File> PDC_File { get; set; }
+        //系統參數表
+        public DbSet<PDC_Parameter> PDC_Parameter { get; set; }
+        //Stackup欄位表
+        public DbSet<PDC_StackupColumn> PDC_StackupColumn { get; set; }
+        //Stackup欄位設定
+        public DbSet<PDC_StackupDetail> PDC_StackupDetail { get; set; }
     }
 }
