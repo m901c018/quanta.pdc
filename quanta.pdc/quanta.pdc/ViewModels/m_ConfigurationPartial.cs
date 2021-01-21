@@ -92,6 +92,52 @@ namespace cns.ViewModels
         /// </summary>
         public List<SelectListItem> PCBParameterList { get; set; }
 
+        /// <summary> 其他-首頁公告訊息
+        /// 
+        /// </summary>
+        public PDC_Parameter Announcement { get; set; }
+
+        /// <summary> 其他-使用說明
+        /// 
+        /// </summary>
+        public PDC_Parameter Description { get; set; }
+
+        /// <summary> 其他-申請者抽單
+        /// 
+        /// </summary>
+        public PDC_Parameter ApplyDraw { get; set; }
+
+        /// <summary> 其他-派單退件
+        /// 
+        /// </summary>
+        public PDC_Parameter SendReturn { get; set; }
+
+        /// <summary> 其他-處理-Release
+        /// 
+        /// </summary>
+        public PDC_Parameter Release { get; set; }
+
+        /// <summary> 其他-處理-Reject
+        /// 
+        /// </summary>
+        public PDC_Parameter Reject { get; set; }
+
+        /// <summary> 其他-驗證/表單申請
+        /// 
+        /// </summary>
+        public PDC_Parameter FormApply { get; set; }
+
+        /// <summary> 其他-工作明細
+        /// 
+        /// </summary>
+        public PDC_Parameter WorkDetail { get; set; }
+
+        /// <summary> 其他-工作明細檔案資料
+        /// 
+        /// </summary>
+        public List<PDC_File> WorkDetail_FileList { get; set; }
+
+
         public m_ConfigurationPartial()
         {
             CNS_Sample = new PDC_File();
