@@ -7,6 +7,7 @@ using cns.Data;
 using cns.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -30,7 +31,7 @@ namespace cns.Services
         /// <summary> 儲存檔案並返回檔案路徑
         /// 
         /// </summary>
-        /// <param name="excel">NetCore檔案類別</param>
+        /// <param name="file">NetCore檔案類別</param>
         /// <returns></returns>
         public string SaveAndGetExcelPath(IFormFile file)
         {
@@ -53,7 +54,73 @@ namespace cns.Services
             return FilePath;
         }
 
-        public Boolean FileAdd(IFormFile file, string FunctionName,out PDC_File item,Int64 SourceID = 0, string FileDescription = "")
+        public MemoryStream DownloadFile(string FileName)
+        {
+            //檔案名
+            var FilePath = rootPath + "\\FileUpload\\" + FileName;
+            MemoryStream fileStream = new MemoryStream();
+
+            using (FileStream file = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
+                file.CopyTo(fileStream);
+
+            return fileStream;
+        }
+
+        /// <summary> 儲存檔案並返回檔案路徑
+        /// 
+        /// </summary>
+        /// <param name="file">NetCore檔案類別</param>
+        /// <returns></returns>
+        public string SaveAndGetExcelPath(MemoryStream file)
+        {
+            //隨機產生檔案名
+            var FilePath = rootPath + "\\FileUpload\\" + Guid.NewGuid().ToString("N") + ".xlsx";
+            
+            try
+            {
+                using (Stream fileStream = new FileStream(FilePath, FileMode.CreateNew))
+                {
+                    //file.CopyToAsync(fileStream);
+                    fileStream.Write(file.ToArray(), 0, file.ToArray().Length);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return "Error";
+            }
+
+            return FilePath;
+        }
+
+        public PDC_File GetFileOne(Int64 FileID)
+        {
+            PDC_File PDC_File = new PDC_File();
+
+            PDC_File = _context.PDC_File.Where(x => x.FileID == FileID).SingleOrDefault();
+
+            return PDC_File;
+        }
+
+        public List<PDC_File> GetFileList(string FunctionName,Int64 SourceID)
+        {
+            List<PDC_File> FileList = new List<PDC_File>();
+
+            FileList = _context.PDC_File.Where(x => x.FunctionName == FunctionName && x.SourceID == SourceID).ToList();
+
+            return FileList;
+        }
+
+        public List<PDC_File> GetFileList(string FunctionName)
+        {
+            List<PDC_File> FileList = new List<PDC_File>();
+
+            FileList = _context.PDC_File.Where(x => x.FunctionName == FunctionName).ToList();
+
+            return FileList;
+        }
+
+        public Boolean FileAdd(IFormFile file, string FunctionName, string userId, string userName, out PDC_File item, Int64 SourceID = 0, string FileDescription = "")
         {
             item = new PDC_File();
             try
@@ -70,9 +137,9 @@ namespace cns.Services
                     item.FunctionName = FunctionName;
                     item.FileDescription = FileDescription;
                     item.SourceID = SourceID;
-                    item.Creator = "c5805dbf-dac5-41e6-bb72-5eb0b449134d";
+                    item.Creator = userId;
                     item.CreatorDate = DateTime.Now;
-                    item.CreatorName = "super@admin.com";
+                    item.CreatorName = userName;
                     _context.PDC_File.Add(item);
                     _context.SaveChanges();
                 }
@@ -82,6 +149,39 @@ namespace cns.Services
                 return false;
             }
 
+            return true;
+        }
+
+        public Boolean FileAdd(ref PDC_File item)
+        {
+            try
+            {
+                _context.PDC_File.Add(item);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public Boolean FileRemove(Int64 FileID)
+        {
+            try
+            {
+                if (_context.PDC_File.Where(x => x.FileID == FileID).Any())
+                {
+                    PDC_File item = _context.PDC_File.Where(x => x.FileID == FileID).SingleOrDefault();
+                    _context.PDC_File.Remove(item);
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
             return true;
         }
     }

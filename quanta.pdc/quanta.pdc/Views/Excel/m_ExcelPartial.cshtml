@@ -1,6 +1,6 @@
 ﻿@model m_ExcelPartial
 
-<div class="table-responsive">
+@*<div class="table-responsive">
     <div class="col-12" style="text-align:right">
         <label id="ThicknessTotal" style="font-family: Open sans-serif;font-size: 16px;">總版厚:@Model.ThicknessTotal</label>
     </div>
@@ -13,7 +13,7 @@
                     }
             </tr>
         </thead>
-        <tbody>
+        <tbody>*@
             @for (int i = 0; i <= Model.ExcelSheetDts[0].Rows.Count - 1; i++)
                 {
             <tr>
@@ -22,19 +22,19 @@
                     if (j == (Model.StackupColumnList.Count - 1))
                         {
                 <td>
-                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" onchange="GetTotal()" />
+                    <input type="email"class="form-control" value="@Model.ExcelSheetDts[0].Rows[i][j]" onchange="GetTotal()" />
                 </td>
                         }
                 else if (j == (Model.StackupColumnList.Count - 2))
                         {
                 <td>
-                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
+                    <input type="email"class="form-control" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
                 </td>
                         }
                         else if (i == 0)
                         {
                 <td>
-                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
+                    <input type="email"class="form-control" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
                 </td>
                         }
                         else if (i == 1)
@@ -42,13 +42,13 @@
                             if (j == 4 || j == 5)
                             {
                 <td>
-                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
+                    <input type="email"class="form-control" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
                 </td>
                             }
                             else
                             {
                 <td>
-                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
+                    <input type="email"class="form-control" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
                 </td>
                             }
                         }
@@ -57,26 +57,26 @@
                             if (j == 0 || j == 4 || j == 5)
                             {
                 <td>
-                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
+                    <input type="email"class="form-control" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
                 </td>
                             }
                             else
                             {
                 <td>
-                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
+                    <input type="email"class="form-control" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
                 </td>
                             }
                         }
                         else if (i == (Model.ExcelSheetDts[0].Rows.Count - 1))
                         {
                 <td>
-                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
+                    <input type="email"class="form-control" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
                 </td>
                         }
                         else
                         {
                 <td>
-                    <input type="text" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
+                    <input type="email"class="form-control" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
                 </td>
                         }
 
@@ -91,11 +91,11 @@
                     }
             </tr>
                 }
-        </tbody>
+        @*</tbody>
     </table>
-</div>
+</div>*@
 
-<div class="container">
+@*<div class="container">
     <div class="row">
         <div class="col-md-9">
             <textarea rows="5" style="width:100%" id="ErrorMsg">
@@ -106,4 +106,4 @@
             <input type="button" onclick="SaveCheckFile()" id="uploadExcel" value="儲存驗證" class="btn-primary" />
         </div>
     </div>
-</div>
+</div>*@

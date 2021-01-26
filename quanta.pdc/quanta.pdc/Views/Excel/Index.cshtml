@@ -1,6 +1,6 @@
-﻿@model List<Todo>
+﻿@model m_ExcelPartial
 @{
-    ViewData["Title"] = "Excel";
+    ViewData["Title"] = "Check驗證";
 }
 
 <!-- [ Main Content ] start -->
@@ -9,19 +9,225 @@
         <div class="pcoded-content">
             <div class="pcoded-inner-content">
                 <!-- [ breadcrumb ] start -->
-                <div class="page-header">
-                    <div class="page-block">
-                        <div class="row align-items-center">
-                            <div class="col-md-12">
-                                <div class="page-header-title">
-                                    <h3 class="m-b-10">@ViewData["Title"]</h3>
+                @*<div class="page-header">
+                        <div class="page-block">
+                            <div class="row align-items-center">
+                                <div class="col-md-12">
+                                    <div class="page-header-title">
+                                        <h3 class="m-b-10">@ViewData["Title"]</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+                <!-- [ breadcrumb ] end -->
+                <div class="page-content">
+                    <div class="page-info container">
+                        <div class="row">
+                            <div class="col">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="#">PDC - CNS平台</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">@ViewData["Title"]</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main-wrapper container">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="card-body" style="padding-bottom: 0px;">
+                                        <p class="card-title">快速連結</p>
+                                        <ul class="inbox-list list-unstyled">
+                                            @foreach (var item in Model.FastLinkList)
+                                            {
+                                                PDC_File File = Model.FastLinkFileList.Where(x => x.SourceID == item.ParameterID).FirstOrDefault();
+                                                if (File.FileCategory == 1)
+                                                {
+                                                    string Path = Url.RouteUrl(new { Controller = "Excel", Action = "Download" }) + "/?fileName=" + File.FileFullName;
+                                                    <li>
+                                                        <div class="info-list">
+                                                            <div style="flex: 15; text-align: left; display: inline-block; ">
+                                                                <span>@item.ParameterText</span>
+                                                            </div>
+
+                                                            <div style=" text-align: right; display: inline-block; ">
+                                                                <a href="javascript:return false;" onclick="window.location.href='@Path'" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                                            </div>
+                                                        </div>
+
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    <li>
+                                                        <div class="info-list">
+                                                            <div style="flex: 15; text-align: left; display: inline-block; ">
+                                                                <span>@item.ParameterText</span>
+                                                            </div>
+
+                                                            <div style=" text-align: right; display: inline-block; ">
+                                                                <a href="javascript:window.open('@File.FileName')"  class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                                            </div>
+                                                        </div>
+
+                                                    </li>
+                                                }
+                                            }
+                                            @if (Model.FastLinkFileList.Where(x => x.FunctionName == "ConfigurationSample").Any())
+                                            {
+                                                PDC_File File = Model.FastLinkFileList.Where(x => x.FunctionName == "ConfigurationSample").FirstOrDefault();
+                                                <li>
+                                                    <div class="info-list">
+                                                        <div style="flex: 15; text-align: left; display: inline-block; ">
+                                                            <span>Constraint 範本 (@File.CreatorDate.ToString("yyyy/MM/dd"))</span>
+                                                        </div>
+
+                                                        <div style=" text-align: right; display: inline-block; ">
+                                                            <a href="javascript:return false;" class="btn btn-primary" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                                        </div>
+                                                    </div>
+
+                                                </li>
+                                            }
+                                            <li>
+                                                <div class="info-list">
+                                                    <div style="flex: 15; text-align: left; display: inline-block; ">
+                                                        <span style="color: #ffc107;">*請務必使用最新版範本</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p class="card-title">使用說明</p>
+                                        <div class="form-group">
+
+                                            <ul>
+                                                <li>此為線上驗證，完成後仍須提出申請套用 CNS(Constraint)。</li>
+                                                <li>線上驗證系統不保留上傳檔案，請自行備份留存。</li>
+                                                <li>正在廣達內部 Layout 的專案，於檢測無誤後，請將 CNS Excel、cns.exp 下載後寄給所負責的 Layout 工程師處理。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-title">上傳檔案</p>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <span>1. pstxnet.dat</span>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="custom-file mb-3">
+                                                        <input type="file" class="custom-file-input" id="datFile" name="filename">
+                                                        <label class="custom-file-label" for="datFile"id="datshowCover" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <span>2. Constraint</span>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="custom-file mb-3">
+                                                        <input type="file" class="custom-file-input" id="lefile" name="filename">
+                                                        <label class="custom-file-label" for="lefile" id="showCover" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <a href="javascript:return false;" class="btn btn-success" style=" padding: 4px 25px;" id="mail-compose" onclick="uploadFile()">開啟線上編輯</a>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="card-body" style="padding-bottom: 0px;">
+                                        <p class="card-title">Stackup</p>
+                                        <div class="row">
+                                            <div class="col-md-10"></div>
+                                            <div class="col-md-1" style="text-align: center;">
+                                                <br>unit: mil
+                                            </div>
+                                            <div class="col-md-1" style="text-align: center;">
+                                                總板厚<br><label id="ThicknessTotal">0.00</label>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="grid">
+                                                <thead class="thead-dark">
+                                                    <tr>
+                                                        <th scope="col" style="width: 8%;">Layer</th>
+                                                        <th scope="col" style="width: 15%;">疊構類別</th>
+                                                        <th scope="col" style="width: 10%;">Name</th>
+                                                        <th scope="col" style="width: 20%;">HIGH SPEED GROUP NAME</th>
+                                                        <th scope="col" style="width: 10%;">線寬</th>
+                                                        <th scope="col" style="width: 10%;">間距</th>
+                                                        <th scope="col" style="width: 15%;">疊構</th>
+                                                        <th scope="col" style="width: 7%;">板厚</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-title">Stackup 檢測</p>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <textarea class="form-control" id="ErrorMsg" rows="3"></textarea>
+                                                    <br>
+                                                    <span>※離開此畫面後，無法在次下載檔案！</span>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @*<a href="#" class="btn btn-success" style=" padding: 4px 25px;" id="mail-compose">線上修改</a>*@
+                                                    @*<input type="button" onclick="AddRow()" id="uploadExcel" value="新增欄位" class="btn-success" />
+        <input type="button" onclick="DeleteRow()" id="uploadExcel" value="刪除欄位" class="btn-success" />*@
+                                                    <a href="javascript:return false;" class="btn btn-success" style=" padding: 4px 25px;" id="mail-compose" onclick="AddRow()">新增欄位</a>
+                                                    <a href="javascript:return false;" class="btn btn-success" style=" padding: 4px 25px;" id="mail-compose" onclick="DeleteRow()">刪除欄位</a>
+                                                    <a href="javascript:return false;" class="btn btn-warning" style=" padding: 4px 25px;" id="mail-compose" onclick="SaveCheckFile()">執行檢測</a>
+                                                    <br />
+                                                    <br />
+                                                    <a href="javascript:return false;" class="btn btn-light" style=" padding: 4px 25px;" id="mail-compose">下載錯誤明細</a>
+                                                    <a href="javascript:return false;" class="btn btn-info" style=" padding: 4px 25px;" id="mail-compose"onclick="DownloadCheckFile()">下載 CNS Excel</a>
+                                                    <a href="javascript:return false;" class="btn btn-info" style=" padding: 4px 25px;" id="mail-compose">下載 cns.exp</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*<div class="card-body">
+                                            <p class="card-title">檢核結果</p>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <textarea class="form-control" id="ErrorMsg" rows="3">Failed，錯誤訊息(xxxxx)</textarea>
+                                                    
+                                                </div>
+                                                <div class="col-md-6">
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- End of Main -->
                 </div>
-                <!-- [ breadcrumb ] end -->
-                <div class="main-body">
+                @*<div class="main-body">
                     <div class="page-wrapper">
                         <!-- [ Main Content ] start -->
                         <div class="row">
@@ -64,7 +270,7 @@
                         </div>
                         <!-- [ Main Content ] end -->
                     </div>
-                </div>
+                </div>*@
             </div>
         </div>
     </div>
@@ -83,17 +289,26 @@
     <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-
-
+            $('#grid').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: false,
+                scrollX: false,
+                bPaginate: false, // 顯示換頁
+                ordering: false,  // 是否顯示header排序
+            });
         });
 
         $('input[id=lefile]').change(function () {
-            $('#showCover').val($(this).val());
+            $('#showCover').text($(this).val());
+        });
+
+        $('input[id=datFile]').change(function () {
+            $('#datshowCover').text($(this).val());
         });
 
         function GetTotal() {
-            var table = $('#grid').DataTable();
-            var dd = table.rows().data().toArray();
+            //var table = $('#grid').DataTable();
             var Sum = 0.00;
             $.each($('#grid > tbody > tr'), function (index, row) {
                 var value = $(this).find('td').last().find('input').val();
@@ -107,8 +322,8 @@
 
         function uploadFile() {
             var formData = new FormData();
-            formData.append('pId', $('#hidPId').val());
             formData.append('file', $('#lefile')[0].files[0]); // myFile is the input type="file" control
+            formData.append('datFile', $('#datFile')[0].files[0]); // myFile is the input type="file" control
 
             var _url = '@Url.Action("UploadFile", "Excel")';
 
@@ -119,15 +334,10 @@
                 processData: false,  // tell jQuery not to process the data
                 contentType: false,  // tell jQuery not to set contentType
                 success: function (result) {
-                    $('#ExcelDataTable').html(result);
+                    $('#grid tbody').html(result);
 
-                    $('#grid').DataTable({
-                        lengthChange: false,
-                        info: false,
-                        searching: false,
-                        scrollX: true,
-                        bPaginate: false, // 顯示換頁
-                    });
+                    GetTotal();
+                    
                 },
                 error: function (jqXHR) {
                 },
@@ -137,19 +347,18 @@
         }
 
         function SaveCheckFile() {
-            var table = $('#grid').DataTable();
-            var dd = table.rows().data().toArray();
             var data = new Array();
 
-            $.each(dd, function (index,row) {
-                $.each(row, function (colIndex,value) {
+            $.each($('#grid tbody tr'), function (index,row) {
+                $.each($(row).find('td'), function (colIndex,col) {
                     var StackupDetalList = {};
                     StackupDetalList.IndexNo = index;
-                    StackupDetalList.Description = value;
-                    StackupDetalList.StackupColumnID = colIndex;
+                    StackupDetalList.ColumnValue = $(col).find('input:eq(0)').val();
+                    StackupDetalList.StackupColumnID = (colIndex + 1);
                     data.push(StackupDetalList);
                 });
             });
+           
             var ViewModel = { StackupDetalList: data };
 
             var _url = '@Url.Action("SaveCheckFile", "Excel")';
@@ -157,12 +366,46 @@
             $.ajax({
                 url: _url,
                 type: 'POST',
-                data: JSON.stringify(ViewModel),
+                data: JSON.stringify(ViewModel),  //JSON.stringify(model)
                 dataType: 'json',
                 contentType: "application/json; charset=utf-8",
                 success: function (result) {
                     //顯示訊息
                     $('#ErrorMsg').text(result);
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                }
+            });
+        }
+
+        function DownloadCheckFile() {
+            var data = new Array();
+
+            $.each($('#grid tbody tr'), function (index,row) {
+                $.each($(row).find('td'), function (colIndex,col) {
+                    var StackupDetalList = {};
+                    StackupDetalList.IndexNo = index;
+                    StackupDetalList.ColumnValue = $(col).find('input:eq(0)').val();
+                    StackupDetalList.StackupColumnID = (colIndex + 1);
+                    data.push(StackupDetalList);
+                });
+            });
+           
+            var ViewModel = { StackupDetalList: data };
+
+            var _url = '@Url.Action("DownloadCheckFile", "Excel")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: JSON.stringify(ViewModel),  //JSON.stringify(model)
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    //顯示訊息
+                    window.location.href = "@Url.RouteUrl(new { Controller = "Excel", Action = "Download" })/?fileName=" + result;
                 },
                 error: function (jqXHR) {
                 },

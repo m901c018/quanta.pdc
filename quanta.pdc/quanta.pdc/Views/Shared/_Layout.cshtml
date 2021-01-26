@@ -25,10 +25,10 @@
     <!-- vendor css -->
     <link rel="stylesheet" href="~/assets/css/style.css">
 
-    @*<link rel="stylesheet" href="~/assets/css/connect.min.css" >
+    <link rel="stylesheet" href="~/assets/css/connect.min.css" >
     <link rel="stylesheet" href="~/assets/css/admin2.css">
     <link rel="stylesheet" href="~/assets/css/dark_theme.css">
-    <link rel="stylesheet" href="~/assets/css/custom.css">*@
+    <link rel="stylesheet" href="~/assets/css/custom.css">
 
     @RenderSection("Styles", false)
 
@@ -40,6 +40,10 @@
     @await Html.PartialAsync("_Preloader")
     <!-- [ Pre-loader ] End -->
     <!-- [ navigation menu ] start -->
+    @*@await Html.PartialAsync("_Header")
+
+    @await Html.PartialAsync("_Navigation")*@
+
     <nav class="pcoded-navbar">
         @await Html.PartialAsync("_Navigation")
     </nav>

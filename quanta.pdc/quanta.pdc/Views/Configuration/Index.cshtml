@@ -9,17 +9,7 @@
         <div class="pcoded-content">
             <div class="pcoded-inner-content">
                 <!-- [ breadcrumb ] start -->
-                <div class="page-header">
-                    <div class="page-block">
-                        <div class="row align-items-center">
-                            <div class="col-md-12">
-                                <div class="page-header-title">
-                                    <h3 class="m-b-10">@ViewData["Title"]</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
                 <!-- [ breadcrumb ] end -->
                 <div class="page-content">
                     <div class="page-info container">
@@ -41,7 +31,7 @@
                             <div class="col-lg-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <p class="card-title">Configuration 組態設定</p>
+                                        <p class="card-title">@ViewData["Title"]</p>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
@@ -393,13 +383,13 @@
                                                                     <div class="col-md-6">
                                                                         <div class="form-group">
                                                                             <label>首頁公告訊息</label>
-                                                                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                                                            <textarea class="form-control" id="Announcement" rows="3">@Model.Announcement.ParameterText</textarea>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-2">
                                                                         <label></label>
                                                                         <div class="input-group" style="padding-top: 10px;">
-                                                                            <a href="#" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose">儲存</a>
+                                                                            <a href="javascript:return false;" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="AnnouncementUpdate()">儲存</a>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-2"></div>
@@ -412,13 +402,13 @@
                                                                     <div class="col-md-6">
                                                                         <div class="form-group">
                                                                             <label>使用說明</label>
-                                                                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">此為線上驗證，完成後仍需提出申請CNS(Constraint)。線上驗證系統不保留上傳檔案，請自行備份留存。</textarea>
+                                                                            <textarea class="form-control" id="Description" rows="3">@Model.Description.ParameterText</textarea>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-2">
                                                                         <label></label>
                                                                         <div class="input-group" style="padding-top: 10px;">
-                                                                            <a href="#" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose">儲存</a>
+                                                                            <a href="javascript:return false;" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="DescriptionUpdate()">儲存</a>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-2"></div>
@@ -431,31 +421,31 @@
                                                                     <div class="col-md-2">
                                                                         <div class="form-group">
                                                                             <label>申請者抽單</label>
-                                                                            <input type="email" class="form-control" placeholder="0.5" disabled="disabled">
+                                                                            <input type="email" class="form-control" placeholder="0.5" id="ApplyDraw" value="@Model.ApplyDraw.ParameterText">
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-2">
                                                                         <div class="form-group">
                                                                             <label>派單退件</label>
-                                                                            <input type="email" class="form-control" placeholder="0.5" disabled="disabled">
+                                                                            <input type="email" class="form-control" placeholder="0.5" id="SendReturn"value="@Model.SendReturn.ParameterText">
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-2">
                                                                         <div class="form-group">
                                                                             <label>處理-Release</label>
-                                                                            <input type="email" class="form-control" placeholder="0.5" disabled="disabled">
+                                                                            <input type="email" class="form-control" placeholder="0.5" id="Release"value="@Model.Release.ParameterText">
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-2">
                                                                         <div class="form-group">
                                                                             <label>處理-Reject</label>
-                                                                            <input type="email" class="form-control" placeholder="0.5" disabled="disabled">
+                                                                            <input type="email" class="form-control" placeholder="0.5" id="Reject"value="@Model.Reject.ParameterText">
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-2">
                                                                         <label></label>
                                                                         <div class="input-group" style="padding-top: 10px;">
-                                                                            <a href="#" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose">儲存</a>
+                                                                            <a href="javascript:return false;" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="ProjectTimeUpdate()">儲存</a>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -469,8 +459,9 @@
                                                                             <label>堆疊檢核提醒</label>
                                                                             疊構線寬和間距
                                                                             <div class="input-group" style="text-align: center; align-items: center;">
-                                                                                <input type="email" class="form-control" placeholder="≦/=/≧" disabled="disabled" style="width: 20px;">
-                                                                                <input type="email" class="form-control" placeholder="3.00" disabled="disabled" style="width: 20px;">
+                                                                                @*<input type="email" class="form-control" placeholder="≦/=/≧" disabled="disabled" style="width: 20px;">*@
+                                                                                @Html.DropDownList("SystemCategorySelect", new SelectList(Model.SystemCategoryList.Where(x => x.Value != "2" && x.Value != "4").ToList(), "Value", "Text",Model.FormApply.ParameterText), new { @class = "form-control selectpicker",@style = "width: 20px" })
+                                                                                <input type="email" class="form-control" placeholder="3.00" id="FormApplyValue" style="width: 20px;" value="@Model.FormApply.ParameterValue">
                                                                                 時，以下面訊息「提醒」使用者
                                                                             </div>
                                                                         </div>
@@ -481,12 +472,12 @@
                                                                     <div class="col-md-2"></div>
                                                                     <div class="col-md-6">
                                                                         <label>使用說明</label>
-                                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">1. trace width、spacing 設定值 ≦ 3.00 會增加 PCB cost，請注意。</textarea>
+                                                                        <textarea class="form-control" id="FormApplyDescription" rows="3">@Model.FormApply.ParameterDesc</textarea>
                                                                     </div>
                                                                     <div class="col-md-2">
                                                                         <label></label>
                                                                         <div class="input-group" style="padding-top: 10px;">
-                                                                            <a href="#" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose">儲存</a>
+                                                                            <a href="javascript:return false;" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="FormApplyUpdate()">儲存</a>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-2"></div>
@@ -501,8 +492,9 @@
                                                                             <label>疊構檢核注意事項</label>
                                                                             疊構線寬和間距
                                                                             <div class="input-group" style="text-align: center; align-items: center;">
-                                                                                <input type="email" class="form-control" placeholder="<" disabled="disabled" style="width: 20px;">
-                                                                                <input type="email" class="form-control" placeholder="2.00" disabled="disabled" style="width: 20px;">
+                                                                                @Html.DropDownList("WorkDetailCategorySelect", new SelectList(Model.SystemCategoryList, "Value", "Text",Model.WorkDetail.ParameterText), new { @class = "form-control selectpicker", @style = "width: 20px" })
+                                                                                @*<input type="email" class="form-control" placeholder="<" disabled="disabled" style="width: 20px;">*@
+                                                                                <input type="email" class="form-control" placeholder="2.00" id="WorkDetailValue" style="width: 20px;" value="@Model.WorkDetail.ParameterValue">
                                                                                 時，顯示以下注意事項檔案
                                                                             </div>
                                                                         </div>
@@ -517,8 +509,8 @@
                                                                         <label>注意事項(限定PNG/JPG/BMP)</label>
                                                                         <div class="input-group">
                                                                             <div class="custom-file mb-3">
-                                                                                <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                                                                <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                                                <input type="file" class="custom-file-input" id="WorkDetailFile" name="filename">
+                                                                                <label class="custom-file-label" for="WorkDetailFile" id="WorkDetailFileLabel" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -526,7 +518,7 @@
                                                                 <div class="col-md-2">
                                                                     <label></label>
                                                                     <div class="input-group" style="padding-top: 10px;">
-                                                                        <a href="#" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose">儲存</a>
+                                                                        <a href="#" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="WorkDetailUpdate()">儲存</a>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-2"></div>
@@ -536,15 +528,16 @@
                                                                 <div class="col-md-4">
                                                                     <div class="form-group">
                                                                         <label>檔案</label>
-                                                                        <div class="input-group">
-                                                                            a.jpg
+                                                                        <div class="input-group" id="WorkDetailFileName">
+                                                                            @(Model.WorkDetail_File != null ? Model.WorkDetail_File.FileName : "")
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-2">
                                                                     <label></label>
-                                                                    <div class="input-group" style="padding-top: 10px;">
-                                                                        <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                                                    <div class="input-group" style="padding-top: 10px;@(Model.WorkDetail_File != null ? "" : "display: none;")" id="WorkDetailFileList" >
+                                                                        <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose" onclick="WorkDetailFileDelete(this)">刪除</a>
+                                                                        <input type="hidden" id="WorkDetailFileID" value="@(Model.WorkDetail_File != null ? Model.WorkDetail_File.FileID.ToString() : "")" />
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-2"></div>
@@ -629,6 +622,10 @@
 
         $('input[id=PCBFile]').change(function () {
             $('#PCBFileLabel').text($(this).val());
+        });
+
+        $('input[id=WorkDetailFile]').change(function () {
+            $('#WorkDetailFileLabel').text($(this).val());
         });
 
         function PCBchangeItem(item) {
@@ -968,8 +965,8 @@
             data2.order += -order;
             data2[0] = data2.order + 1;
 
-            var ParameterID1 = $('#' + tableName + ' tbody').find('tr:eq(' + data1.order + ')').find('input[type=hidden]:eq(0)').val();
-            var ParameterID2 = $('#' + tableName + ' tbody').find('tr:eq(' + data2.order + ')').find('input[type=hidden]:eq(0)').val();
+            var ParameterID1 = $('#' + tableName + ' tbody').find('tr:eq(' + index + ')').find('input[type=hidden]:eq(0)').val();
+            var ParameterID2 = $('#' + tableName + ' tbody').find('tr:eq(' + (index + order) + ')').find('input[type=hidden]:eq(0)').val();
             var formData = new FormData();
             formData.append('ParameterID1', ParameterID1);
             formData.append('OrderNo1', data1[0]);
@@ -1129,12 +1126,156 @@
             $('#customFileTitle').text($(this).val());
         });
 
+        function AnnouncementUpdate() {
+            var formData = new FormData();
+            formData.append('ParameterText', $('#Announcement').val());
+
+            var _url = '@Url.Action("UploadAnnouncement", "Configuration")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (result) {
+                    alert(result);
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                }
+            });
+        }
+
+        function DescriptionUpdate() {
+            var formData = new FormData();
+            formData.append('ParameterText', $('#Description').val());
+
+            var _url = '@Url.Action("UploadDescription", "Configuration")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (result) {
+                    alert(result);
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                }
+            });
+        }
+
+        function ProjectTimeUpdate() {
+            var formData = new FormData();
+            formData.append('ApplyDrawText', $('#ApplyDraw').val());
+            formData.append('SendReturnText', $('#SendReturn').val());
+            formData.append('ReleaseText', $('#Release').val());
+            formData.append('RejectText', $('#Reject').val());
+
+            var _url = '@Url.Action("UploadProjectTime", "Configuration")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (result) {
+                    alert(result);
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                }
+            });
+        }
+
+        function FormApplyUpdate() {
+            var formData = new FormData();
+            formData.append('ParameterText', $('#SystemCategorySelect').val());
+            formData.append('ParameterValue', $('#FormApplyValue').val());
+            formData.append('ParameterDesc', $('#FormApplyDescription').val());
+
+            var _url = '@Url.Action("UploadFormApply", "Configuration")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (result) {
+                    alert(result);
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                }
+            });
+        }
+
+        function WorkDetailUpdate() {
+            var formData = new FormData();
+            formData.append('ParameterText', $('#WorkDetailCategorySelect').val());
+            formData.append('ParameterValue', $('#WorkDetailValue').val());
+            formData.append('file', $('#WorkDetailFile')[0].files[0]); // myFile is the input type="file" control
+
+            var _url = '@Url.Action("UploadWorkDetail", "Configuration")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (result) {
+                    alert(result.ErrorMsg);
+                    if (result.File.FileID > 0) {
+                        $('#WorkDetailFileName').text(result.File.FileName);
+                        $('#WorkDetailFileID').text(result.File.FileID);
+                        $('#WorkDetailFileList').show();
+                    }
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                }
+            });
+        }
+
+        function WorkDetailFileDelete() {
+            var formData = new FormData();
+            formData.append('FileID', $('#WorkDetailFileID').val());
+
+            var _url = '@Url.Action("DeleteWorkDetailFile", "Configuration")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (result) {
+                    alert(result);
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                }
+            });
+        }
+
         function uploadFile() {
             var formData = new FormData();
             formData.append('pId', $('#hidPId').val());
             formData.append('file', $('#customFile')[0].files[0]); // myFile is the input type="file" control
 
-            var _url = '@Url.Action("UploadFile", "Configuration")';
+            var _url = '@Url.Action("UploadParameter", "Configuration")';
 
             $.ajax({
                 url: _url,
@@ -1158,10 +1299,8 @@
                 complete: function (jqXHR, status) {
                 }
             });
+
         }
-
-
-
 
 
     </script>

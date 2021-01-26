@@ -23,11 +23,69 @@
             <li class="nav-item pcoded-menu-caption">
                 <label>Hello @email</label>
             </li>
-            <li class="nav-item  @Html.IsSelected(controller: Pages.Todo.ControllerName)"><a href="@Pages.Todo.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-calendar"></i></span><span class="pcoded-mtext">@Pages.Todo.NavigationName</span></a></li>
-            <li class="nav-item  @Html.IsSelected(controller: Pages.Membership.ControllerName)"><a href="@Pages.Membership.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-user-plus"></i></span><span class="pcoded-mtext">@Pages.Membership.NavigationName</span></a></li>
-            <li class="nav-item  @Html.IsSelected(controller: Pages.Role.ControllerName)"><a href="@Pages.Role.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-award"></i></span><span class="pcoded-mtext">@Pages.Role.NavigationName</span></a></li>
-            <li class="nav-item  @Html.IsSelected(controller: Pages.Excel.ControllerName)"><a href="@Pages.Excel.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-award"></i></span><span class="pcoded-mtext">@Pages.Excel.NavigationName</span></a></li>
-            <li class="nav-item  @Html.IsSelected(controller: Pages.Configuration.ControllerName)"><a href="@Pages.Configuration.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-award"></i></span><span class="pcoded-mtext">@Pages.Configuration.NavigationName</span></a></li>
+            @*<li class="nav-item  @Html.IsSelected(controller: Pages.Todo.ControllerName)"><a href="@Pages.Todo.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-calendar"></i></span><span class="pcoded-mtext">@Pages.Todo.NavigationName</span></a></li>
+        <li class="nav-item  @Html.IsSelected(controller: Pages.Membership.ControllerName)"><a href="@Pages.Membership.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-user-plus"></i></span><span class="pcoded-mtext">@Pages.Membership.NavigationName</span></a></li>
+        <li class="nav-item  @Html.IsSelected(controller: Pages.Role.ControllerName)"><a href="@Pages.Role.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-award"></i></span><span class="pcoded-mtext">@Pages.Role.NavigationName</span></a></li>*@
+<li class="nav-item  @Html.IsSelected(controller: Pages.Excel.ControllerName)"><a href="@Pages.Excel.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-award"></i></span><span class="pcoded-mtext">@Pages.Excel.NavigationName</span></a></li>
+<li class="nav-item  @Html.IsSelected(controller: Pages.Configuration.ControllerName)"><a href="@Pages.Configuration.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-award"></i></span><span class="pcoded-mtext">@Pages.Configuration.NavigationName</span></a></li>
+<li class="nav-item  @Html.IsSelected(controller: Pages.Form.ControllerName)"><a href="@Pages.Form.UrlDefault" class="nav-link"><span class="pcoded-micon"><i class="feather icon-award"></i></span><span class="pcoded-mtext">@Pages.Form.NavigationName</span></a></li>
         </ul>
     </div>
 </div>
+
+@*<div class="horizontal-bar">
+    <div class="logo-box"><a href="#" class="logo-text">Connect</a></div>
+    <a href="#" class="hide-horizontal-bar"><i class="material-icons">close</i></a>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="horizontal-bar-menu">
+                    <ul>
+                        <li class="open">
+                            <a href="#">PCB Layout Constraint<i class="material-icons">keyboard_arrow_down</i></a>
+                            <ul style="">
+                                <li>
+                                    <a href="check.html">Check/驗證</a>
+                                </li>
+                                <li>
+                                    <a href="search.html">Query/查詢</a>
+                                </li>
+                                <li>
+                                    <a href="apply.html">Apply/表單申請</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#">PDC Work Area<i class="material-icons">keyboard_arrow_down</i></a>
+                            <ul style="display: none;">
+                                <li>
+                                    <a href="assign.html">Assign/派單</a>
+                                </li>
+                                <li>
+                                    <a href="workspace.html">Work/工作區</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#">System Administration<i class="material-icons">keyboard_arrow_down</i></a>
+                            <ul style="display: none;">
+                                <li>
+                                    <a href="report.html">Download/資料下載</a>
+                                </li>
+                                <li>
+                                    <a href="permission.html">Privilege/權限設定</a>
+                                </li>
+                                <li>
+                                    <a href="#">Check Rules/規則設定</a>
+                                </li>
+                                <li>
+                                    <a href="configuration.html">Configuration/組態設定</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@

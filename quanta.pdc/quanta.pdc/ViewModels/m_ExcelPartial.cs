@@ -40,6 +40,16 @@ namespace cns.ViewModels
         /// </summary>
         public decimal ThicknessTotal { get; set; }
 
+        /// <summary> 快速連結資料
+        /// 
+        /// </summary>
+        public List<PDC_Parameter> FastLinkList { get; set; }
+
+        /// <summary> 快速連結檔案資料
+        /// 
+        /// </summary>
+        public List<PDC_File> FastLinkFileList { get; set; }
+
         public m_ExcelPartial()
         {
             StackupColumnList = new List<PDC_StackupColumn>();

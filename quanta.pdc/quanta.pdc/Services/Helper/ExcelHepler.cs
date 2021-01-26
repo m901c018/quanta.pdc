@@ -434,7 +434,7 @@ namespace cns.Services.Helper
         {
             DataTable dtExcelRecords = new DataTable();
             //取得有幾筆資料
-            int TotalCount = stackupDetals.Select(x => x.IndexNo).Max();
+            int TotalCount = StackupDetalList.Select(x => x.IndexNo).Max();
 
             foreach (PDC_StackupColumn StackupColumn in StackupColumnList.OrderBy(x => x.OrderNo))
             {
@@ -448,9 +448,9 @@ namespace cns.Services.Helper
                 {
                     Int64 StackupColumnID = StackupColumnList.Where(x => x.OrderNo == j).Select(x => x.StackupColumnID).First();
 
-                    if (stackupDetals.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID).Any())
+                    if (StackupDetalList.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID).Any())
                     {
-                        string stackupData = stackupDetals.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID)
+                        string stackupData = StackupDetalList.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID)
                                                           .Select(x => x.ColumnValue)
                                                           .FirstOrDefault();
                         dr[j] = stackupData;
@@ -469,12 +469,17 @@ namespace cns.Services.Helper
         /// <param name="headerCtyle"></param>
         /// <param name="DataCtyle"></param>
         /// <returns></returns>
-        public MemoryStream ExportExcelSample()
+        public MemoryStream ExportExcelSample(List<PDC_StackupDetail> stackupDetalsList = null)
         {
 
             XSSFWorkbook workbookExport = new XSSFWorkbook(ExportPath);
             MemoryStream ms = new MemoryStream();
 
+            List<PDC_StackupDetail> PDC_StackupDetails = new List<PDC_StackupDetail>();
+            if (stackupDetalsList != null)
+                PDC_StackupDetails = stackupDetalsList;
+            else
+                PDC_StackupDetails = stackupDetals;
 
             #region == 取得範例樣式style ==
             //轉NPOI類型
@@ -514,7 +519,7 @@ namespace cns.Services.Helper
             IRow ThicknessRow2 = sheet.CreateRow(3);
             Thicknesscell2[ThicknessNum] = ThicknessRow2.CreateCell(ThicknessNum);
             Thicknesscell2[ThicknessNum].CellStyle = ThicknessHeaderTotalStyle;
-            Thicknesscell2[ThicknessNum].CellFormula = $"ROUND(SUM({ThicknessCol}6:{ThicknessCol}{6 + stackupDetals.Select(x => x.IndexNo).Max()}),2)";
+            Thicknesscell2[ThicknessNum].CellFormula = $"ROUND(SUM({ThicknessCol}6:{ThicknessCol}{6 + PDC_StackupDetails.Select(x => x.IndexNo).Max()}),2)";
 
             IRow headerRow = sheet.CreateRow(4);
 
@@ -531,7 +536,7 @@ namespace cns.Services.Helper
             //更新有公式的欄位
             sheet.ForceFormulaRecalculation = true;
             //取得有幾筆資料
-            int TotalCount = stackupDetals.Select(x => x.IndexNo).Max();
+            int TotalCount = PDC_StackupDetails.Select(x => x.IndexNo).Max();
 
             for (int i = 0; i <= TotalCount; i++)
             {
@@ -549,11 +554,11 @@ namespace cns.Services.Helper
 
                     Int64 StackupColumnID = StackupColumnList.Where(x => x.OrderNo == j).Select(x => x.StackupColumnID).First();
 
-                    if (stackupDetals.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID).Any())
+                    if (PDC_StackupDetails.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID).Any())
                     {
-                        string stackupData = stackupDetals.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID)
-                                                          .Select(x => x.ColumnValue)
-                                                          .FirstOrDefault();
+                        string stackupData = PDC_StackupDetails.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID)
+                                                               .Select(x => x.ColumnValue)
+                                                               .FirstOrDefault();
                         Datacell[j].SetCellValue(stackupData);
                     }
                 }

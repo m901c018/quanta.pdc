@@ -135,8 +135,12 @@ namespace cns.ViewModels
         /// <summary> 其他-工作明細檔案資料
         /// 
         /// </summary>
-        public List<PDC_File> WorkDetail_FileList { get; set; }
+        public PDC_File WorkDetail_File { get; set; }
 
+        /// <summary> Category資料
+        /// 
+        /// </summary>
+        public List<SelectListItem> SystemCategoryList { get; set; }
 
         public m_ConfigurationPartial()
         {

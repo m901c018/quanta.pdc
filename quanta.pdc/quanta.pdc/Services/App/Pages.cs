@@ -47,5 +47,13 @@ namespace cns.Services.App
             public const string UrlDefault = "/Configuration/Index";
             public const string NavigationName = "Configuration";
         }
+
+        public static class Form
+        {
+            public const string ControllerName = "Form";
+            public const string RoleName = "Form";
+            public const string UrlDefault = "/Form/FormApply";
+            public const string NavigationName = "Form";
+        }
     }
 }

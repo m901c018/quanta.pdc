@@ -26,5 +26,9 @@ namespace cns.Data
         public DbSet<PDC_StackupColumn> PDC_StackupColumn { get; set; }
         //Stackup欄位設定
         public DbSet<PDC_StackupDetail> PDC_StackupDetail { get; set; }
+        //表單資料表
+        public DbSet<PDC_Form> PDC_Form { get; set; }
+        //表單紀錄表
+        public DbSet<PDC_Form_StageLog> PDC_Form_StageLog { get; set; }
     }
 }
