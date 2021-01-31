@@ -4,7 +4,8 @@
 }
 
 <!-- [ Main Content ] start -->
-<section class="pcoded-main-container">
+<section >
+    <!--class="pcoded-main-container"-->
     <div class="pcoded-wrapper">
         <div class="pcoded-content">
             <div class="pcoded-inner-content">
@@ -69,7 +70,7 @@
                                                             </div>
 
                                                             <div style=" text-align: right; display: inline-block; ">
-                                                                <a href="javascript:window.open('@File.FileName')"  class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                                                <a href="javascript:window.open('@File.FileName')" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
                                                             </div>
                                                         </div>
 
@@ -128,7 +129,7 @@
                                                 <div class="col-md-4">
                                                     <div class="custom-file mb-3">
                                                         <input type="file" class="custom-file-input" id="datFile" name="filename">
-                                                        <label class="custom-file-label" for="datFile"id="datshowCover" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                        <label class="custom-file-label" for="datFile" id="datshowCover" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -181,7 +182,6 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    
                                                 </tbody>
                                             </table>
                                         </div>
@@ -196,30 +196,30 @@
                                                 <div class="col-md-6">
                                                     @*<a href="#" class="btn btn-success" style=" padding: 4px 25px;" id="mail-compose">線上修改</a>*@
                                                     @*<input type="button" onclick="AddRow()" id="uploadExcel" value="新增欄位" class="btn-success" />
-        <input type="button" onclick="DeleteRow()" id="uploadExcel" value="刪除欄位" class="btn-success" />*@
+                                                        <input type="button" onclick="DeleteRow()" id="uploadExcel" value="刪除欄位" class="btn-success" />*@
                                                     <a href="javascript:return false;" class="btn btn-success" style=" padding: 4px 25px;" id="mail-compose" onclick="AddRow()">新增欄位</a>
                                                     <a href="javascript:return false;" class="btn btn-success" style=" padding: 4px 25px;" id="mail-compose" onclick="DeleteRow()">刪除欄位</a>
                                                     <a href="javascript:return false;" class="btn btn-warning" style=" padding: 4px 25px;" id="mail-compose" onclick="SaveCheckFile()">執行檢測</a>
                                                     <br />
                                                     <br />
                                                     <a href="javascript:return false;" class="btn btn-light" style=" padding: 4px 25px;" id="mail-compose">下載錯誤明細</a>
-                                                    <a href="javascript:return false;" class="btn btn-info" style=" padding: 4px 25px;" id="mail-compose"onclick="DownloadCheckFile()">下載 CNS Excel</a>
+                                                    <a href="javascript:return false;" class="btn btn-info" style=" padding: 4px 25px;" id="mail-compose" onclick="DownloadCheckFile()">下載 CNS Excel</a>
                                                     <a href="javascript:return false;" class="btn btn-info" style=" padding: 4px 25px;" id="mail-compose">下載 cns.exp</a>
                                                 </div>
                                             </div>
                                         </div>
                                         @*<div class="card-body">
-                                            <p class="card-title">檢核結果</p>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <textarea class="form-control" id="ErrorMsg" rows="3">Failed，錯誤訊息(xxxxx)</textarea>
-                                                    
+                                                <p class="card-title">檢核結果</p>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <textarea class="form-control" id="ErrorMsg" rows="3">Failed，錯誤訊息(xxxxx)</textarea>
+
+                                                    </div>
+                                                    <div class="col-md-6">
+
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    
-                                                </div>
-                                            </div>
-                                        </div>*@
+                                            </div>*@
                                     </div>
                                 </div>
                             </div>
@@ -228,49 +228,49 @@
                     <!-- End of Main -->
                 </div>
                 @*<div class="main-body">
-                    <div class="page-wrapper">
-                        <!-- [ Main Content ] start -->
-                        <div class="row">
-                            <div class="col-sm-12">
-                                @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
-                            </div>
-                            <!-- [ Form Validation ] start -->
-                            <div class="col-sm-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5>List of Excel</h5>
-                                    </div>
-                                    <br />
-                                    <div class="input-append">
-                                        <label>範例檔案下載：</label>
-                                        <input type="button" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" value="範例下載" class="btn-primary" />
-                                    </div>
-                                    <div class="input-append">
-                                        <label>驗證檔案上傳：</label>
-                                        <input type="file" id="lefile" name="excel" multiple accept=".xls,.xlsx" style="display:none" />
-                                        <input id="showCover" class="input-large" type="text" style="height:30px;" disabled="disabled">
-                                        <a class="btn" onclick="$('input[id=lefile]').click();">搜尋</a>
-                                        <input type="button" onclick="uploadFile()" id="uploadExcel" value="上傳" class="btn-primary" />
-                                    </div>
-                                    <br />
-                                    <div class="input-append">
-                                        <input type="button" onclick="AddRow()" id="uploadExcel" value="新增欄位" class="btn-success" />
-                                        <input type="button" onclick="DeleteRow()" id="uploadExcel" value="刪除欄位" class="btn-success" />
-                                    </div>
-
-
-                                    <div class="card-block" id="ExcelDataTable">
-
-                                    </div>
+                        <div class="page-wrapper">
+                            <!-- [ Main Content ] start -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
                                 </div>
+                                <!-- [ Form Validation ] start -->
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>List of Excel</h5>
+                                        </div>
+                                        <br />
+                                        <div class="input-append">
+                                            <label>範例檔案下載：</label>
+                                            <input type="button" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" value="範例下載" class="btn-primary" />
+                                        </div>
+                                        <div class="input-append">
+                                            <label>驗證檔案上傳：</label>
+                                            <input type="file" id="lefile" name="excel" multiple accept=".xls,.xlsx" style="display:none" />
+                                            <input id="showCover" class="input-large" type="text" style="height:30px;" disabled="disabled">
+                                            <a class="btn" onclick="$('input[id=lefile]').click();">搜尋</a>
+                                            <input type="button" onclick="uploadFile()" id="uploadExcel" value="上傳" class="btn-primary" />
+                                        </div>
+                                        <br />
+                                        <div class="input-append">
+                                            <input type="button" onclick="AddRow()" id="uploadExcel" value="新增欄位" class="btn-success" />
+                                            <input type="button" onclick="DeleteRow()" id="uploadExcel" value="刪除欄位" class="btn-success" />
+                                        </div>
 
 
+                                        <div class="card-block" id="ExcelDataTable">
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <!-- [ Form Validation ] end -->
                             </div>
-                            <!-- [ Form Validation ] end -->
+                            <!-- [ Main Content ] end -->
                         </div>
-                        <!-- [ Main Content ] end -->
-                    </div>
-                </div>*@
+                    </div>*@
             </div>
         </div>
     </div>
@@ -337,7 +337,7 @@
                     $('#grid tbody').html(result);
 
                     GetTotal();
-                    
+
                 },
                 error: function (jqXHR) {
                 },
@@ -358,7 +358,7 @@
                     data.push(StackupDetalList);
                 });
             });
-           
+
             var ViewModel = { StackupDetalList: data };
 
             var _url = '@Url.Action("SaveCheckFile", "Excel")';
@@ -392,7 +392,7 @@
                     data.push(StackupDetalList);
                 });
             });
-           
+
             var ViewModel = { StackupDetalList: data };
 
             var _url = '@Url.Action("DownloadCheckFile", "Excel")';
@@ -423,17 +423,19 @@
             var copyrow1 = $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 4).clone();
             copyrow1.find('td').each(function( index ){
                 $(this).find('input').val('');
+                $(this).find('input').prop("disabled", false);
             });
             var copyrow2 = $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 3).clone();
             copyrow2.find('td').each(function( index ){
                 $(this).find('input').val('');
+                $(this).find('input').prop("disabled", false);
             });
             var copyrow3 = $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 2).clone();
             var copyrow4 = $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 1).clone();
 
 
-            $('#grid > tbody > tr')[$('#grid > tbody > tr').length - 2].remove();
-            $('#grid > tbody > tr')[$('#grid > tbody > tr').length - 1].remove();
+            $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 2).remove();
+            $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 1).remove();
 
             $('#grid > tbody').append(copyrow1);
             $('#grid > tbody').append(copyrow2);
@@ -447,7 +449,7 @@
                 return;
             }
 
-            if ($('#grid > tbody > tr').length <= 4) {
+            if ($('#grid > tbody > tr').length <= 5) {
                 alert("已沒可刪除資料");
                 return;
             }

@@ -58,6 +58,17 @@ namespace cns.Controllers
         {
             m_ExcelPartial model = new m_ExcelPartial();
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment); 
+
+            if(file == null)
+            {
+                ISheet sheet = Helper.GetSheetSample();
+                //資料轉為Datatable
+                DataTable sheetDt = Helper.GetDataTableFromExcel(sheet, true);
+                //驗證資料
+                Helper.ExcelStackupCheck(sheetDt, model);
+
+                return PartialView("m_ExcelPartial", model);
+            }
             //存檔並返回檔案路徑
             //string FilePath = Helper.SaveAndGetExcelPath(file);
             Stream stream = file.OpenReadStream();

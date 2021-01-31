@@ -462,6 +462,99 @@ namespace cns.Services.Helper
             return dtExcelRecords;
         }
 
+
+        public ISheet GetSheetSample()
+        {
+            XSSFWorkbook workbookExport = new XSSFWorkbook(ExportPath);
+            MemoryStream ms = new MemoryStream();
+
+            List<PDC_StackupDetail> PDC_StackupDetails = stackupDetals;
+
+            #region == 取得範例樣式style ==
+            //轉NPOI類型
+            XSSFWorkbook Sample = new XSSFWorkbook(SamplePath);
+
+            var StackupSheet = Sample.GetSheet("Stackup");
+            //紀錄範例檔案style
+            ICellStyle StackupHeaderStyle = workbookExport.CreateCellStyle();
+            StackupHeaderStyle.CloneStyleFrom(StackupSheet.GetRow(4).GetCell(1).CellStyle);
+            ICellStyle ThicknessHeaderStyle = workbookExport.CreateCellStyle();
+            ThicknessHeaderStyle.CloneStyleFrom(StackupSheet.GetRow(4).GetCell(7).CellStyle);
+            ICellStyle ThicknessHeaderTotalStyle = workbookExport.CreateCellStyle();
+            ThicknessHeaderTotalStyle.CloneStyleFrom(StackupSheet.GetRow(2).GetCell(8).CellStyle);
+            //一般欄位樣式
+            ICellStyle DataStyle = workbookExport.CreateCellStyle();
+            DataStyle.CloneStyleFrom(StackupSheet.GetRow(6).GetCell(1).CellStyle);
+            //數字欄位樣式
+            ICellStyle NumberStyle = workbookExport.CreateCellStyle();
+            NumberStyle.CloneStyleFrom(StackupSheet.GetRow(6).GetCell(1).CellStyle);
+            NumberStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("0.00");
+            //取得版厚欄位排序
+            Int32 ThicknessNum = StackupColumnList.Where(x => x.ColumnCode == "Col_08B").FirstOrDefault().OrderNo;
+            //取得Excel版厚欄位
+            string ThicknessCol = Char.ConvertFromUtf32(ThicknessNum + 64 + 1);
+            #endregion
+
+            // 新增試算表。
+            ISheet sheet = workbookExport.GetSheet("Stackup");
+            ICell[] Thicknesscell = new ICell[StackupColumnList.Count];
+            ICell[] Thicknesscell2 = new ICell[StackupColumnList.Count];
+
+            IRow ThicknessRow1 = sheet.CreateRow(2);
+            Thicknesscell[ThicknessNum] = ThicknessRow1.CreateCell(ThicknessNum);
+            Thicknesscell[ThicknessNum].CellStyle = ThicknessHeaderTotalStyle;
+            Thicknesscell[ThicknessNum].SetCellValue("總板厚");
+
+            IRow ThicknessRow2 = sheet.CreateRow(3);
+            Thicknesscell2[ThicknessNum] = ThicknessRow2.CreateCell(ThicknessNum);
+            Thicknesscell2[ThicknessNum].CellStyle = ThicknessHeaderTotalStyle;
+            Thicknesscell2[ThicknessNum].CellFormula = $"ROUND(SUM({ThicknessCol}6:{ThicknessCol}{6 + PDC_StackupDetails.Select(x => x.IndexNo).Max()}),2)";
+
+            IRow headerRow = sheet.CreateRow(4);
+
+            ICell[] headercell = new ICell[StackupColumnList.Count];
+            for (int i = 0; i <= StackupColumnList.Count - 1; i++)
+            {
+                headercell[i] = headerRow.CreateCell(i);
+                headercell[i].CellStyle = StackupColumnList[i].ColumnCode.Contains("B") ? ThicknessHeaderStyle : StackupHeaderStyle;  //  設定標題樣式
+                headercell[i].SetCellValue(StackupColumnList[i].ColumnName);
+                //設定欄位寬度
+                sheet.SetColumnWidth(i, StackupSheet.GetColumnWidth(4));
+            }
+            sheet.HorizontallyCenter = true;
+            //更新有公式的欄位
+            sheet.ForceFormulaRecalculation = true;
+            //取得有幾筆資料
+            int TotalCount = PDC_StackupDetails.Select(x => x.IndexNo).Max();
+
+            for (int i = 0; i <= TotalCount; i++)
+            {
+                IRow dataRow = sheet.CreateRow(i + 5);
+                ICell[] Datacell = new ICell[StackupColumnList.Count];
+
+                for (int j = 0; j <= StackupColumnList.Count - 1; j++)
+                {
+                    Datacell[j] = dataRow.CreateCell(j);
+                    //設定資料樣式
+                    if (StackupColumnList[j].DataType == "int")
+                        Datacell[j].CellStyle = NumberStyle;
+                    else
+                        Datacell[j].CellStyle = DataStyle;
+
+                    Int64 StackupColumnID = StackupColumnList.Where(x => x.OrderNo == j).Select(x => x.StackupColumnID).First();
+
+                    if (PDC_StackupDetails.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID).Any())
+                    {
+                        string stackupData = PDC_StackupDetails.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID)
+                                                               .Select(x => x.ColumnValue)
+                                                               .FirstOrDefault();
+                        Datacell[j].SetCellValue(stackupData);
+                    }
+                }
+            }
+
+            return sheet;
+        }
         /// <summary> 匯出Excel範例
         /// 
         /// </summary>
