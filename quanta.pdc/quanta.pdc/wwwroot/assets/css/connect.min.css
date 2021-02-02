@@ -10,7 +10,7 @@ html {
 }
 
 body {
-    background-color: #54616f;
+    background-color: #f8faf9;
     font-weight: 400;
     color: #7d7d83;
     line-height: 1.6;
@@ -1698,7 +1698,19 @@ h1,h2,h3,h4,h5,h6 {
     padding: 8px 15px;
     font-size: 13px;
     border-color: #e8e8e8;
-    background-color: transparent
+    /* background-color: transparent */
+
+    /* Test Code: 0126 */
+    background-color: #272b33;
+
+}
+
+.list-group-item:hover {
+
+    /* Test Code: 0126 */
+    background-color: #272b33;
+    color: #fff;
+
 }
 
 .list-group-item:first-child {
@@ -1715,8 +1727,19 @@ h1,h2,h3,h4,h5,h6 {
 .list-group-item.active {
     color: #fff;
     font-weight: 700;
-    background: linear-gradient(90deg,#55c3b7 0,#5fd0a5 48%,#66da90 100%);
+    /* background: linear-gradient(90deg,#55c3b7 0,#5fd0a5 48%,#66da90 100%); */
     border-color: #ddf0f1
+
+    /* Test Code: 0126 */
+    background-color: #272b33;
+}
+
+.list-group-item.active {
+
+    /* background: linear-gradient(90deg, rgba(31,51,212,1) 0%, rgba(51,69,223,1) 48%, rgba(72,88,241,1) 100%); */
+
+    /* User Suggestion */
+    background: #272b33;
 }
 
 .list-group-horizontal .list-group-item:first-child {
@@ -1936,6 +1959,11 @@ body.modal-open {
     background: #fafafa
 }
 
+/* Test Code: 0127; */
+.nav-link:hover {
+    color: rgb(244, 158, 49);
+}
+
 .nav-tabs {
     margin-bottom: -15px
 }
@@ -2046,7 +2074,9 @@ body.modal-open {
 }
 
 .table .thead-dark th {
-    background: #4a4a4a
+
+    background: #4a4a4a;
+
 }
 
 .table.table-hover tbody tr {

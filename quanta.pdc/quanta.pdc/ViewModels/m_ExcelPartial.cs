@@ -15,6 +15,11 @@ namespace cns.ViewModels
         /// </summary>
         public string Errmsg { get; set; }
 
+        /// <summary> 檔案名稱
+        /// 
+        /// </summary>
+        public string FileName { get; set; }
+
         /// <summary> 所有ExcelSheet
         /// 
         /// </summary>
@@ -49,6 +54,11 @@ namespace cns.ViewModels
         /// 
         /// </summary>
         public List<PDC_File> FastLinkFileList { get; set; }
+
+        /// <summary> 範本檔案
+        /// 
+        /// </summary>
+        public PDC_File m_CNSSampleFile { get; set; }
 
         public m_ExcelPartial()
         {

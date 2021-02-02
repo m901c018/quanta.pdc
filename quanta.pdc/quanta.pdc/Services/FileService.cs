@@ -71,11 +71,15 @@ namespace cns.Services
         /// </summary>
         /// <param name="file">NetCore檔案類別</param>
         /// <returns></returns>
-        public string SaveAndGetExcelPath(MemoryStream file)
+        public string SaveAndGetExcelPath(MemoryStream file,bool IsCsv = false)
         {
+            string FilePath = string.Empty;
             //隨機產生檔案名
-            var FilePath = rootPath + "\\FileUpload\\" + Guid.NewGuid().ToString("N") + ".xlsx";
-            
+            if (IsCsv)
+                FilePath = rootPath + "\\FileUpload\\" + Guid.NewGuid().ToString("N") + ".csv";
+            else
+                FilePath = rootPath + "\\FileUpload\\" + Guid.NewGuid().ToString("N") + ".xlsx";
+
             try
             {
                 using (Stream fileStream = new FileStream(FilePath, FileMode.CreateNew))

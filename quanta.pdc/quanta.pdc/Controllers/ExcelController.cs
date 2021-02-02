@@ -38,11 +38,7 @@ namespace cns.Controllers
             //取得要同步驗證的連結
             model.FastLinkFileList = FileService.GetFileList("Configuration_HomeLink").Where(x => model.FastLinkList.Select(pa => pa.ParameterID).Contains(x.SourceID)).ToList();
             //取得Excel範本
-            PDC_File sample = FileService.GetFileList("ConfigurationSample").FirstOrDefault();
-
-            //加入Excel範本
-            if (sample != null)
-                model.FastLinkFileList.Add(sample);
+            model.m_CNSSampleFile = FileService.GetFileList("ConfigurationSample").FirstOrDefault();
 
             return View(model);
         }
@@ -90,7 +86,7 @@ namespace cns.Controllers
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             var jsonString = JsonConvert.SerializeObject(model);
             m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
-            //存檔並返回檔案路徑
+            //轉DataTable
             DataTable StackupDetalDt = Helper.GetDataTableFromStackupDetail(ViewModel.StackupDetalList);
             ////驗證資料
             Helper.ExcelStackupCheck(StackupDetalDt, ViewModel);
@@ -138,6 +134,39 @@ namespace cns.Controllers
             return Json(FileName);
         }
 
+        [HttpPost]
+        public IActionResult ExcelEdit([FromBody]object model)
+        {
+            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
+            FileService FileService = new FileService(_hostingEnvironment, _context);
+
+            var jsonString = JsonConvert.SerializeObject(model);
+            m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
+            //轉DataTable
+            DataTable StackupDetalDt = Helper.GetDataTableFromStackupDetail(ViewModel.StackupDetalList);
+
+            ViewModel.ExcelSheetDts.Add(StackupDetalDt);
+
+            return View(ViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult ExcelReturnData([FromBody]object model)
+        {
+            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
+            FileService FileService = new FileService(_hostingEnvironment, _context);
+
+            var jsonString = JsonConvert.SerializeObject(model);
+            m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
+            //轉DataTable
+            DataTable StackupDetalDt = Helper.GetDataTableFromStackupDetail(ViewModel.StackupDetalList);
+
+            ViewModel.ExcelSheetDts.Add(StackupDetalDt);
+
+            return PartialView("m_ExcelPartial", ViewModel);
+        }
+        
+
         [HttpGet]
         public IActionResult Download(string fileName)
         {
@@ -152,6 +181,54 @@ namespace cns.Controllers
 
 
             return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);
+        }
+
+        [HttpPost]
+        public IActionResult DownloadError([FromBody]object model)
+        {
+            FileService FileService = new FileService(_hostingEnvironment, _context);
+            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
+            var jsonString = JsonConvert.SerializeObject(model);
+            m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
+            //資料轉為DataTable
+            DataTable StackupDetalDt = Helper.GetDataTableFromStackupDetail(ViewModel.StackupDetalList);
+            ////驗證資料
+            Helper.ExcelStackupCheck(StackupDetalDt, ViewModel);
+
+            var contentBytes = new System.Text.UTF8Encoding().GetBytes(ViewModel.Errmsg);
+            var outputBytes = new byte[contentBytes.Length + 3];
+            outputBytes[0] = (byte)0xEF;
+            outputBytes[1] = (byte)0xBB;
+            outputBytes[2] = (byte)0xBF;
+            Array.Copy(contentBytes, 0, outputBytes, 3, contentBytes.Length);
+
+            MemoryStream fileStream = new MemoryStream(outputBytes);
+
+            string FilePath = FileService.SaveAndGetExcelPath(fileStream, true);
+
+            string FileName = Path.GetFileName(FilePath);
+
+            return Json(FileName);
+        }
+
+        [HttpGet]
+        public IActionResult DownloadErrorFile(string FileName,string RealFileName)
+        {
+            FileService FileService = new FileService(_hostingEnvironment, _context);
+            string OutFileName = string.Empty;
+            if (string.IsNullOrWhiteSpace(RealFileName))
+            {
+                OutFileName = "Error" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".csv";
+            }
+            else
+            {
+                OutFileName = Path.GetFileNameWithoutExtension(RealFileName) + "Error" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".csv";
+            }
+
+            //取得範例
+            MemoryStream stream = FileService.DownloadFile(FileName);
+
+            return File(stream.ToArray(), "text/csv", OutFileName);
         }
     }
 }

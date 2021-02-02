@@ -55,7 +55,7 @@
                                                             </div>
 
                                                             <div style=" text-align: right; display: inline-block; ">
-                                                                <a href="javascript:return false;" onclick="window.location.href='@Path'" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                                                <a href="javascript:return false;" onclick="window.location.href='@Path'" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
                                                             </div>
                                                         </div>
 
@@ -70,29 +70,27 @@
                                                             </div>
 
                                                             <div style=" text-align: right; display: inline-block; ">
-                                                                <a href="javascript:window.open('@File.FileName')" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                                                <a href="javascript:window.open('@File.FileName')" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
                                                             </div>
                                                         </div>
 
                                                     </li>
                                                 }
                                             }
-                                            @if (Model.FastLinkFileList.Where(x => x.FunctionName == "ConfigurationSample").Any())
-                                            {
-                                                PDC_File File = Model.FastLinkFileList.Where(x => x.FunctionName == "ConfigurationSample").FirstOrDefault();
-                                                <li>
-                                                    <div class="info-list">
-                                                        <div style="flex: 15; text-align: left; display: inline-block; ">
-                                                            <span>Constraint 範本 (@File.CreatorDate.ToString("yyyy/MM/dd"))</span>
-                                                        </div>
-
-                                                        <div style=" text-align: right; display: inline-block; ">
-                                                            <a href="javascript:return false;" class="btn btn-primary" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
-                                                        </div>
+                                          
+                                            <li>
+                                                <div class="info-list">
+                                                    <div style="flex: 15; text-align: left; display: inline-block; ">
+                                                        <span>Constraint 範本 (@(Model.m_CNSSampleFile != null ? Model.m_CNSSampleFile.CreatorDate.ToString("yyyy/MM/dd") : "2021/01/01"))</span>
                                                     </div>
 
-                                                </li>
-                                            }
+                                                    <div style=" text-align: right; display: inline-block; ">
+                                                        <a href="javascript:return false;" class="btn btn-outline-info" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                                    </div>
+                                                </div>
+
+                                            </li>
+                                            
                                             <li>
                                                 <div class="info-list">
                                                     <div style="flex: 15; text-align: left; display: inline-block; ">
@@ -144,7 +142,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <a href="javascript:return false;" class="btn btn-success" style=" padding: 4px 25px;" id="mail-compose" onclick="uploadFile()">開啟線上編輯</a>
+                                                    <a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="uploadFile()">開啟線上編輯</a>
+                                                    <input type="hidden" id="FileID" />
                                                 </div>
 
                                             </div>
@@ -159,7 +158,11 @@
                                     <div class="card-body" style="padding-bottom: 0px;">
                                         <p class="card-title">Stackup</p>
                                         <div class="row">
-                                            <div class="col-md-10"></div>
+                                            <div class="col-md-3">
+                                                <a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="AddRow()">新增欄位</a>
+                                                <a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="DeleteRow()">刪除欄位</a>
+                                            </div>
+                                            <div class="col-md-7"></div>
                                             <div class="col-md-1" style="text-align: center;">
                                                 <br>unit: mil
                                             </div>
@@ -189,22 +192,22 @@
                                             <p class="card-title">Stackup 檢測</p>
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <textarea class="form-control" id="ErrorMsg" rows="3"></textarea>
+                                                    <textarea class="form-control" id="ErrorMsg" rows="3" disabled="disabled"></textarea>
                                                     <br>
                                                     <span>※離開此畫面後，無法在次下載檔案！</span>
                                                 </div>
                                                 <div class="col-md-6">
                                                     @*<a href="#" class="btn btn-success" style=" padding: 4px 25px;" id="mail-compose">線上修改</a>*@
                                                     @*<input type="button" onclick="AddRow()" id="uploadExcel" value="新增欄位" class="btn-success" />
-                                                        <input type="button" onclick="DeleteRow()" id="uploadExcel" value="刪除欄位" class="btn-success" />*@
-                                                    <a href="javascript:return false;" class="btn btn-success" style=" padding: 4px 25px;" id="mail-compose" onclick="AddRow()">新增欄位</a>
-                                                    <a href="javascript:return false;" class="btn btn-success" style=" padding: 4px 25px;" id="mail-compose" onclick="DeleteRow()">刪除欄位</a>
-                                                    <a href="javascript:return false;" class="btn btn-warning" style=" padding: 4px 25px;" id="mail-compose" onclick="SaveCheckFile()">執行檢測</a>
+        <input type="button" onclick="DeleteRow()" id="uploadExcel" value="刪除欄位" class="btn-success" />*@
+
+                                                    <a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="ExcelEdit()">線上修改</a>
+                                                    <a href="javascript:return false;" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose" onclick="SaveCheckFile()">執行檢測</a>
                                                     <br />
                                                     <br />
-                                                    <a href="javascript:return false;" class="btn btn-light" style=" padding: 4px 25px;" id="mail-compose">下載錯誤明細</a>
-                                                    <a href="javascript:return false;" class="btn btn-info" style=" padding: 4px 25px;" id="mail-compose" onclick="DownloadCheckFile()">下載 CNS Excel</a>
-                                                    <a href="javascript:return false;" class="btn btn-info" style=" padding: 4px 25px;" id="mail-compose">下載 cns.exp</a>
+                                                    <a href="javascript:return false;" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose" onclick="DownloadError()">下載錯誤明細</a>
+                                                    <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="DownloadCheckFile()">下載 CNS Excel</a>
+                                                    <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">下載 cns.exp</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -317,10 +320,14 @@
                     Sum += Number(value);
                 }
             });
-            $('#ThicknessTotal').text('總版厚:' + Sum.toFixed(2));
+            $('#ThicknessTotal').text(Sum.toFixed(2));
         }
 
         function uploadFile() {
+            if ($('#lefile')[0].files[0]) {
+                 $('#FileID').val($('#lefile')[0].files[0].name);
+            }
+
             var formData = new FormData();
             formData.append('file', $('#lefile')[0].files[0]); // myFile is the input type="file" control
             formData.append('datFile', $('#datFile')[0].files[0]); // myFile is the input type="file" control
@@ -335,7 +342,7 @@
                 contentType: false,  // tell jQuery not to set contentType
                 success: function (result) {
                     $('#grid tbody').html(result);
-
+                    //計算總版厚
                     GetTotal();
 
                 },
@@ -414,6 +421,108 @@
             });
         }
 
+        function DownloadError() {
+            var data = new Array();
+
+            $.each($('#grid tbody tr'), function (index,row) {
+                $.each($(row).find('td'), function (colIndex,col) {
+                    var StackupDetalList = {};
+                    StackupDetalList.IndexNo = index;
+                    StackupDetalList.ColumnValue = $(col).find('input:eq(0)').val();
+                    StackupDetalList.StackupColumnID = (colIndex + 1);
+                    data.push(StackupDetalList);
+                });
+            });
+
+            var ViewModel = { StackupDetalList: data };
+
+            var _url = '@Url.Action("DownloadError", "Excel")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: JSON.stringify(ViewModel),  //JSON.stringify(model)
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    //顯示訊息
+                    window.location.href = "@Url.RouteUrl(new { Controller = "Excel", Action = "DownloadErrorFile" })/?FileName=" + result + "&RealFileName=" + $('#FileID').val();
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                }
+            });
+        }
+
+        var windowObjectReference = null; // global variable
+
+        //開啟編輯
+        function ExcelEdit() {
+
+            if (windowObjectReference == null || windowObjectReference.closed) {
+                var data = new Array();
+
+                $.each($('#grid tbody tr'), function (index,row) {
+                    $.each($(row).find('td'), function (colIndex,col) {
+                        var StackupDetalList = {};
+                        StackupDetalList.IndexNo = index;
+                        StackupDetalList.ColumnValue = $(col).find('input:eq(0)').val();
+                        StackupDetalList.StackupColumnID = (colIndex + 1);
+                        data.push(StackupDetalList);
+                    });
+                });
+
+                var ViewModel = { StackupDetalList: data };
+
+                var _url = '@Url.Action("ExcelEdit", "Excel")';
+
+                $.ajax({
+                    url: _url,
+                    type: 'POST',
+                    data: JSON.stringify(ViewModel),  //JSON.stringify(model)
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    success: function (result) {
+                        windowObjectReference = window.open('about:blank');
+                        windowObjectReference.document.write(text);
+                    },
+                    error: function (jqXHR) {
+                    },
+                    complete: function (jqXHR, status) {
+                    }
+                });
+              
+            } else {
+              windowObjectReference.focus();
+            };
+            
+        }
+
+        //線上編輯用
+        function returnData(formData) {
+            
+
+            var _url = '@Url.Action("ExcelReturnData", "Excel")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: JSON.stringify(ViewModel),  //JSON.stringify(model)
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    $('#grid tbody').html(result);
+                    //計算總版厚
+                    GetTotal();
+
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                }
+            });
+        }
 
         function AddRow() {
             if ($('#grid').length == 0) {
