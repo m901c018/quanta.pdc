@@ -134,7 +134,7 @@ namespace cns.Services.Helper
             {
                 foreach (PDC_StackupColumn StackupColumn in StackupColumnList.OrderBy(x => x.OrderNo))
                 {
-                    dtExcelRecords.Columns.Add(StackupColumn.ColumnName);
+                    dtExcelRecords.Columns.Add(StackupColumnList.IndexOf(StackupColumn).ToString());
                 }
                 for (int i = 5; i <= xSSFSheet.LastRowNum - 1; i++)
                 {
@@ -143,7 +143,7 @@ namespace cns.Services.Helper
                     //每筆有兩列
                     XSSFRow Row = (XSSFRow)xSSFSheet.GetRow(i);
                     DataRow dr = dtExcelRecords.NewRow();
-                    for (int j = 0; j < StackupColumnList.Count - 1; j++) //對工作表每一列 
+                    for (int j = 0; j <= StackupColumnList.Count - 1; j++) //對工作表每一列 
                     {
                         string cellValue = GetCellValue(Row, j); //獲取i行j列數據 
                         dr[j] = cellValue;
@@ -208,6 +208,8 @@ namespace cns.Services.Helper
             bool INxNumCheck = false;
             //End檢查結果
             bool EndCheck = false;
+            //GroupName檢查結果
+            bool GroupNameCheck = false;
 
             decimal ThicknessTotal = 0;
 
@@ -368,35 +370,38 @@ namespace cns.Services.Helper
             if (NameList.Where(x => x.StartsWith("IN")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any())
                 model.Errmsg += "IN1=1, IN2=2, …最多到 9。\n";
 
-            for (int i = 0; i <= GroupNameList.Count - 1; i++) 
+            if (GroupNameList[0] != "T")
             {
-                if (i == 0 && GroupNameList[i] != "T") 
-                {
-                    model.Errmsg += "D欄規則 = T + 數字（小至大自動排序）+ B。\n";
-                    break;
-                }
+                GroupNameCheck = true;
+            }
 
-                if (i == (GroupNameList.Count - 1) && GroupNameList[i] != "B")
+            if (GroupNameList[GroupNameList.Count - 1] != "B")
+            {
+                GroupNameCheck = true;
+            }
+            //取出數字部分
+            var GroupNameNumList = GroupNameList.Where(x => x != "T" && x != "B").ToList();
+
+            int GroupNameNum1 = 0;
+            for (int i = 0; i <= GroupNameNumList.Count - 1; i++) 
+            {
+                if (Int32.TryParse(GroupNameNumList[i], out GroupNameNum1)) 
                 {
-                    model.Errmsg += "D欄規則 = T + 數字（小至大自動排序）+ B。\n";
-                    break;
-                }
-                int GroupNameNum1 = 0;
-                int GroupNameNum2 = 0;
-                if (i >=2 && Int32.TryParse(GroupNameList[i-1], out GroupNameNum1) && Int32.TryParse(GroupNameList[i], out GroupNameNum2))
-                {
-                    if ((GroupNameNum1 + 1) != GroupNameNum2) 
+                    if((i + 1) != GroupNameNum1)
                     {
-                        model.Errmsg += "D欄規則 = T + 數字（小至大自動排序）+ B。\n";
-                        break;
+                        GroupNameCheck = true;
                     }
+                    break;
                 }
                 else
                 {
-                    model.Errmsg += "D欄規則 = T + 數字（小至大自動排序）+ B。\n";
+                    GroupNameCheck = true;
                     break;
                 }
             }
+
+            if (GroupNameCheck)
+                model.Errmsg += "D欄規則 = T + 數字（小至大自動排序）+ B。\n";
 
             if (EndCheck)
                 model.Errmsg += "最後一筆起始疊構(Stack up)必需為Solder Mask。\n";

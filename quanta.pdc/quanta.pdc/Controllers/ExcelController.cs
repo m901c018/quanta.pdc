@@ -62,11 +62,20 @@ namespace cns.Controllers
                 DataTable sheetDt = Helper.GetDataTableFromExcel(sheet, true);
                 //驗證資料
                 Helper.ExcelStackupCheck(sheetDt, model);
+                //Session紀錄
+                HttpContext.Session.SetObjectAsJson("SessionExcelData", sheetDt);
+                HttpContext.Session.SetString("SessionFileName", "");
+                //TempData["SessionExcelData"] = JsonConvert.SerializeObject(sheetDt);
 
-                return PartialView("m_ExcelPartial", model);
+                //return PartialView("m_ExcelPartial", model);
+                return Json(sheetDt);
             }
-            //存檔並返回檔案路徑
-            //string FilePath = Helper.SaveAndGetExcelPath(file);
+            //驗證是否上傳正確檔案
+            if(!Path.GetExtension(file.FileName).Contains("xlsx"))
+            {
+                return Json(new {status= 400, ErrorMessage = "請上傳xlsx檔案"});
+            }
+
             Stream stream = file.OpenReadStream();
             //轉NPOI類型
             XSSFWorkbook ExcelFile = new XSSFWorkbook(stream);
@@ -76,8 +85,14 @@ namespace cns.Controllers
             DataTable ExcelDt = Helper.GetDataTableFromExcel(xSSFSheet, true);
             //驗證資料
             Helper.ExcelStackupCheck(ExcelDt, model);
-          
-            return PartialView("m_ExcelPartial", model);
+
+            //Session紀錄
+            HttpContext.Session.SetObjectAsJson("SessionExcelData", ExcelDt);
+            HttpContext.Session.SetString("SessionFileName", Path.GetFileName(file.FileName));
+            //TempData["SessionExcelData"] = JsonConvert.SerializeObject(ExcelDt);
+
+            //return PartialView("m_ExcelPartial", model);
+            return Json(ExcelDt);
         }
 
         [HttpPost]
@@ -134,37 +149,42 @@ namespace cns.Controllers
             return Json(FileName);
         }
 
-        [HttpPost]
-        public IActionResult ExcelEdit([FromBody]object model)
+        [HttpGet]
+        public IActionResult ExcelEdit()
         {
+            
+
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             FileService FileService = new FileService(_hostingEnvironment, _context);
+            m_ExcelPartial ViewModel = new m_ExcelPartial();
 
-            var jsonString = JsonConvert.SerializeObject(model);
-            m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
+            //Session紀錄
+            DataTable ExcelDt = HttpContext.Session.GetObjectFromJson<DataTable>("SessionExcelData");
+            //移除Session
+            HttpContext.Session.Remove("SessionExcelData");
+            if (ExcelDt != null)
+            {
+                //DataTable ExcelDt = JsonConvert.DeserializeObject<DataTable>(TempData["SessionExcelData"].ToString());
+                ViewModel.ExcelSheetDts.Add(ExcelDt);
+            }
+            else
+            {
+                ISheet sheet = Helper.GetSheetSample();
+                //資料轉為Datatable
+                DataTable sheetDt = Helper.GetDataTableFromExcel(sheet, true);
+
+                ViewModel.ExcelSheetDts.Add(sheetDt);
+            }
+            //var jsonString = JsonConvert.SerializeObject(model);
+            //m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
             //轉DataTable
-            DataTable StackupDetalDt = Helper.GetDataTableFromStackupDetail(ViewModel.StackupDetalList);
+            //DataTable StackupDetalDt = Helper.GetDataTableFromStackupDetail(ViewModel.StackupDetalList);
 
-            ViewModel.ExcelSheetDts.Add(StackupDetalDt);
 
             return View(ViewModel);
         }
 
-        [HttpPost]
-        public IActionResult ExcelReturnData([FromBody]object model)
-        {
-            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
-            FileService FileService = new FileService(_hostingEnvironment, _context);
-
-            var jsonString = JsonConvert.SerializeObject(model);
-            m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
-            //轉DataTable
-            DataTable StackupDetalDt = Helper.GetDataTableFromStackupDetail(ViewModel.StackupDetalList);
-
-            ViewModel.ExcelSheetDts.Add(StackupDetalDt);
-
-            return PartialView("m_ExcelPartial", ViewModel);
-        }
+       
         
 
         [HttpGet]
@@ -173,11 +193,12 @@ namespace cns.Controllers
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             FileService FileService = new FileService(_hostingEnvironment, _context);
 
+            var RealFileName = HttpContext.Session.GetString("SessionFileName");
             //取得範例
             MemoryStream stream = FileService.DownloadFile(fileName);
 
 
-            string sFileName = HttpUtility.UrlEncode("CNS" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx");
+            string sFileName = HttpUtility.UrlEncode(Path.GetFileNameWithoutExtension(RealFileName) + DateTime.Now.ToString("_yyyyMMddHHmmss") + ".xlsx");
 
 
             return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);
@@ -212,10 +233,13 @@ namespace cns.Controllers
         }
 
         [HttpGet]
-        public IActionResult DownloadErrorFile(string FileName,string RealFileName)
+        public IActionResult DownloadErrorFile(string FileName)
         {
             FileService FileService = new FileService(_hostingEnvironment, _context);
             string OutFileName = string.Empty;
+
+            var RealFileName = HttpContext.Session.GetString("SessionFileName");
+
             if (string.IsNullOrWhiteSpace(RealFileName))
             {
                 OutFileName = "Error" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".csv";
@@ -229,6 +253,21 @@ namespace cns.Controllers
             MemoryStream stream = FileService.DownloadFile(FileName);
 
             return File(stream.ToArray(), "text/csv", OutFileName);
+        }
+    }
+
+    public static class SessionExtensions
+    {
+        public static void SetObjectAsJson(this ISession session, string key, object value)
+        {
+            session.SetString(key, JsonConvert.SerializeObject(value));
+        }
+
+        public static T GetObjectFromJson<T>(this ISession session, string key)
+        {
+            var value = session.GetString(key);
+
+            return value == null ? default(T) : JsonConvert.DeserializeObject<T>(value);
         }
     }
 }

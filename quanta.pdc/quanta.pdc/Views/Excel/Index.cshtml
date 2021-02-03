@@ -142,7 +142,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="uploadFile()">開啟線上編輯</a>
+                                                    <a href="@Url.Action("ExcelEdit", "Excel")" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">開啟線上編輯</a>
                                                     <input type="hidden" id="FileID" />
                                                 </div>
 
@@ -159,8 +159,8 @@
                                         <p class="card-title">Stackup</p>
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="AddRow()">新增欄位</a>
-                                                <a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="DeleteRow()">刪除欄位</a>
+                                                @*<a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="AddRow()">新增欄位</a>
+                                                <a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="DeleteRow()">刪除欄位</a>*@
                                             </div>
                                             <div class="col-md-7"></div>
                                             <div class="col-md-1" style="text-align: center;">
@@ -201,13 +201,13 @@
                                                     @*<input type="button" onclick="AddRow()" id="uploadExcel" value="新增欄位" class="btn-success" />
         <input type="button" onclick="DeleteRow()" id="uploadExcel" value="刪除欄位" class="btn-success" />*@
 
-                                                    <a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="ExcelEdit()">線上修改</a>
-                                                    <a href="javascript:return false;" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose" onclick="SaveCheckFile()">執行檢測</a>
+                                                    <a href="@Url.Action("ExcelEdit", "Excel")" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">線上修改</a>
+                                                    @*<a href="javascript:return false;" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose" onclick="SaveCheckFile()">執行檢測</a>
                                                     <br />
                                                     <br />
                                                     <a href="javascript:return false;" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose" onclick="DownloadError()">下載錯誤明細</a>
                                                     <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="DownloadCheckFile()">下載 CNS Excel</a>
-                                                    <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">下載 cns.exp</a>
+                                                    <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">下載 cns.exp</a>*@
                                                 </div>
                                             </div>
                                         </div>
@@ -304,6 +304,7 @@
 
         $('input[id=lefile]').change(function () {
             $('#showCover').text($(this).val());
+            uploadFile();
         });
 
         $('input[id=datFile]').change(function () {
@@ -311,10 +312,9 @@
         });
 
         function GetTotal() {
-            //var table = $('#grid').DataTable();
             var Sum = 0.00;
             $.each($('#grid > tbody > tr'), function (index, row) {
-                var value = $(this).find('td').last().find('input').val();
+                var value = $(this).find('td').last().text();
                 if ($.isNumeric(value))
                 {
                     Sum += Number(value);
@@ -341,12 +341,34 @@
                 processData: false,  // tell jQuery not to process the data
                 contentType: false,  // tell jQuery not to set contentType
                 success: function (result) {
-                    $('#grid tbody').html(result);
-                    //計算總版厚
-                    GetTotal();
+                    if (result.status == "400") {
+                        alert(result.ErrorMessage);
+                    }
+                    else {
+                        //$('#grid tbody').html(result);
+                        var dt = $('#grid').DataTable();
 
+                        $.each(result, function (index, row) {
+                            dt.row.add([
+                                row[0]
+                                , row[1]
+                                , row[2]
+                                , row[3]
+                                , row[4]
+                                , row[5]
+                                , row[6]
+                                , row[7]
+                            ]);
+                        });
+                        dt.draw(false);
+                        //計算總版厚
+                        GetTotal();
+                        //驗證
+                        SaveCheckFile();
+                    }
                 },
                 error: function (jqXHR) {
+                    alert(jqXHR);
                 },
                 complete: function (jqXHR, status) {
                 }
@@ -359,8 +381,9 @@
             $.each($('#grid tbody tr'), function (index,row) {
                 $.each($(row).find('td'), function (colIndex,col) {
                     var StackupDetalList = {};
+
                     StackupDetalList.IndexNo = index;
-                    StackupDetalList.ColumnValue = $(col).find('input:eq(0)').val();
+                    StackupDetalList.ColumnValue = $(col).text();
                     StackupDetalList.StackupColumnID = (colIndex + 1);
                     data.push(StackupDetalList);
                 });
@@ -461,7 +484,11 @@
         function ExcelEdit() {
 
             if (windowObjectReference == null || windowObjectReference.closed) {
-                var data = new Array();
+                var _url = '@Url.Action("ExcelEdit", "Excel")';
+
+                windowObjectReference = window.open(_url, "_blank");
+
+                @*var data = new Array();
 
                 $.each($('#grid tbody tr'), function (index,row) {
                     $.each($(row).find('td'), function (colIndex,col) {
@@ -485,23 +512,25 @@
                     contentType: "application/json; charset=utf-8",
                     success: function (result) {
                         windowObjectReference = window.open('about:blank');
-                        windowObjectReference.document.write(text);
+                        windowObjectReference.document.write(result);
                     },
                     error: function (jqXHR) {
+                        windowObjectReference = window.open('https://localhost:44390/');
+                        windowObjectReference.document.write(jqXHR.responseText);
                     },
                     complete: function (jqXHR, status) {
                     }
-                });
-              
+                });*@
+
             } else {
               windowObjectReference.focus();
             };
-            
+
         }
 
         //線上編輯用
         function returnData(formData) {
-            
+
 
             var _url = '@Url.Action("ExcelReturnData", "Excel")';
 

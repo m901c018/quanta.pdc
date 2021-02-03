@@ -1,20 +1,6 @@
 ﻿@model m_ExcelPartial
-@{
-    Layout = null;
-}
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>ExcelEdit</title>
-
-    <link rel="stylesheet" href="~/assets/plugins/data-tables/css/datatables.min.css">
-
-
-</head>
-<body>
+<section>
     <div class="pcoded-wrapper">
         <div class="pcoded-content">
             <div class="pcoded-inner-content">
@@ -172,12 +158,17 @@
         </div>
     </div>
 
+
+</section>
+
+@section Styles{
+    <!-- data tables css -->
+    <link rel="stylesheet" href="~/assets/plugins/data-tables/css/datatables.min.css">
+}
+
+@section Scripts {
     <script src="~/assets/plugins/data-tables/js/datatables.min.js"></script>
     <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
-    <script src="~/assets/js/vendor-all.min.js"></script>
-    <script src="~/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="~/assets/js/pcoded.min.js"></script>
-    <script src="~/assets/plugins/notification/js/bootstrap-growl.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('#grid').DataTable({
@@ -189,24 +180,8 @@
                 ordering: false,  // 是否顯示header排序
             });
 
-            $(window).bind("beforeunload", function () { 
-                var data = new Array();
+            GetTotal();
 
-                $.each($('#grid tbody tr'), function (index,row) {
-                    $.each($(row).find('td'), function (colIndex,col) {
-                        var StackupDetalList = {};
-                        StackupDetalList.IndexNo = index;
-                        StackupDetalList.ColumnValue = $(col).find('input:eq(0)').val();
-                        StackupDetalList.StackupColumnID = (colIndex + 1);
-                        data.push(StackupDetalList);
-                    });
-                });
-
-                var ViewModel = { StackupDetalList: data };
-
-                window.opener.returnData(ViewModel);
-                //return confirm("Do you really want to close?"); 
-            });
         });
 
         function GetTotal() {
@@ -315,7 +290,7 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (result) {
                     //顯示訊息
-                    window.location.href = "@Url.RouteUrl(new { Controller = "Excel", Action = "DownloadErrorFile" })/?FileName=" + result + "&RealFileName=" + $('#FileID').val();
+                    window.location.href = "@Url.RouteUrl(new { Controller = "Excel", Action = "DownloadErrorFile" })/?FileName=" + result;
                 },
                 error: function (jqXHR) {
                 },
@@ -367,5 +342,4 @@
             $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 3).remove();
         }
     </script>
-</body>
-</html>
+}

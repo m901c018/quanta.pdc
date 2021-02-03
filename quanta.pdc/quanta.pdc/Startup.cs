@@ -36,7 +36,7 @@ namespace cns
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
                 options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
                 services.AddHttpContextAccessor();
@@ -86,7 +86,9 @@ namespace cns
                         options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                     })
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
+            //使用TempData需引用
+            services.AddMemoryCache();
+            services.AddSession();
             // cookie settings
             services.ConfigureApplicationCookie(options =>
             {
@@ -146,7 +148,7 @@ namespace cns
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseSession();
 
             //啟用 cookie 原則功能
             app.UseCookiePolicy();

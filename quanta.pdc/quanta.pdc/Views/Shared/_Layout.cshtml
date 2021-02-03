@@ -40,53 +40,54 @@
     @await Html.PartialAsync("_Preloader")
     <!-- [ Pre-loader ] End -->
     <!-- [ navigation menu ] start -->
-    
-
-
     @*<nav class="pcoded-navbar">
-        @await Html.PartialAsync("_Navigation")
-    </nav>*@
+            @await Html.PartialAsync("_Navigation")
+        </nav>*@
     <!-- [ navigation menu ] end -->
-    <!-- [ Header ] start -->
-    <header class="navbar pcoded-header navbar-expand-lg navbar-light">
-        @await Html.PartialAsync("_Header")
-    </header>
-    <!-- [ Header ] end -->
+    <div class="connect-container align-content-stretch d-flex flex-wrap">
+        <div class="page-container">
+            <!-- [ Header ] start -->
+            @await Html.PartialAsync("_Header")
+            <!-- [ Header ] end -->
 
-    @await Html.PartialAsync("_Chat")
+            @await Html.PartialAsync("_Chat")
 
-    <!-- [ Main Content ] start -->
-    @RenderBody()
-    <!-- [ Main Content ] end -->
+            <!-- [ Main Content ] start -->
+            @RenderBody()
+            <!-- [ Main Content ] end -->
+        </div>
+    </div>
+
     <!-- Required Js -->
     <script src="~/assets/js/vendor-all.min.js"></script>
     <script src="~/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
     <script src="~/assets/js/pcoded.min.js"></script>
     <script src="~/assets/plugins/notification/js/bootstrap-growl.min.js"></script>
+    <script src="~/assets/js/connect.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             function notify(message, type) {
                 $.growl({
                     message: message
                 }, {
-                        type: type,
-                        allow_dismiss: false,
-                        label: 'Cancel',
-                        className: 'btn-xs btn-inverse',
-                        placement: {
-                            from: 'bottom',
-                            align: 'right'
-                        },
-                        delay: 5000,
-                        animate: {
-                            enter: 'animated fadeInRight',
-                            exit: 'animated fadeOutRight'
-                        },
-                        offset: {
-                            x: 30,
-                            y: 30
-                        }
-                    });
+                    type: type,
+                    allow_dismiss: false,
+                    label: 'Cancel',
+                    className: 'btn-xs btn-inverse',
+                    placement: {
+                        from: 'bottom',
+                        align: 'right'
+                    },
+                    delay: 5000,
+                    animate: {
+                        enter: 'animated fadeInRight',
+                        exit: 'animated fadeOutRight'
+                    },
+                    offset: {
+                        x: 30,
+                        y: 30
+                    }
+                });
             };
             var message = $("#StatusMessage").text();
             if (message) {
