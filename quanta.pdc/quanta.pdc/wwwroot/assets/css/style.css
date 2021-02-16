@@ -179,7 +179,7 @@ p.text-muted {
   font-size: 13px;
 }
 
-.card {
+/*.card {
   border-radius: 0;
   -webkit-box-shadow: 0 1px 20px 0 rgba(69, 90, 100, 0.08);
           box-shadow: 0 1px 20px 0 rgba(69, 90, 100, 0.08);
@@ -226,7 +226,7 @@ p.text-muted {
   float: right;
   padding: 0;
   position: absolute;
-}
+}*/
 @media only screen and (max-width: 575px) {
   .card .card-header .card-header-right {
     display: none;
@@ -6992,7 +6992,7 @@ pre[class*=language-]:after, pre[class*=language-]:before {
 
 /* input group start */
 .input-group {
-  background: #f4f7fa;
+  /*background: #f4f7fa;*/
 }
 .input-group .input-group-text {
   padding-left: 15px;
@@ -7026,7 +7026,7 @@ pre[class*=language-]:after, pre[class*=language-]:before {
 /* input group End */
 /**====== Form Componant css end ======**/
 select.form-control:not([size]):not([multiple]) {
-  height: calc(2.55rem + 2px);
+  /*height: calc(2.55rem + 2px);*/
 }
 
 .input-group-lg > .input-group-append > select.btn:not([size]):not([multiple]),
@@ -8628,13 +8628,13 @@ a.btn-theme.active {
 }
 
 /* =======================   Pills ================== */
-.nav-pills {
+/*.nav-pills {
   padding: 15px;
   background-color: #fff;
   -webkit-box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.05);
           box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.05);
-}
-.nav-pills .nav-link {
+}*/
+/*.nav-pills .nav-link {
   border-radius: 5px;
 }
 .nav-pills .nav-link.active,
@@ -8643,10 +8643,10 @@ a.btn-theme.active {
   background: #04a9f5;
   -webkit-box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.2);
           box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.2);
-}
+}*/
 
 /* ==================== Justified variants ===================*/
-.nav-fill .nav-item {
+/*.nav-fill .nav-item {
   -webkit-box-flex: 1;
       -ms-flex: 1 1 auto;
           flex: 1 1 auto;
@@ -8660,13 +8660,12 @@ a.btn-theme.active {
       -ms-flex-positive: 1;
           flex-grow: 1;
   text-align: center;
-}
+}*/
 
 /* Tabbable tabs */
 /* Hide tabbable panes to start, show them when `.active` */
 .tab-content {
   padding: 35px 30px;
-  background: #fff;
   -webkit-box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.05);
           box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.05);
 }
@@ -8851,7 +8850,7 @@ a.btn-theme.active {
   background: #e0f5fe;
 }
 .header-chat .h-list-footer .input-group {
-  background: #fff;
+  /*background: #fff;*/
   border: none;
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
@@ -8898,7 +8897,7 @@ a.btn-theme.active {
   margin-right: 0;
 }
 .header-chat .h-list-footer .input-group .btn-send .input-group-text {
-  color: #fff;
+  /*color: #fff;*/
 }
 .header-chat .h-list-footer .input-group .form-control {
   -webkit-transition: all 0.3s ease-in-out;
@@ -9472,7 +9471,7 @@ div.code-toolbar > .toolbar span:hover {
   display: none;
 }
 
-.nav-pills > li + li {
+/*.nav-pills > li + li {
   margin-left: 0;
 }
 .nav-pills > li > a {
@@ -9484,7 +9483,7 @@ div.code-toolbar > .toolbar span:hover {
   font-weight: 500;
   min-width: 100px;
   text-align: center;
-  color: #555555;
+  /*color: #555555;
   position: relative;
   display: block;
   padding: 11px 15px;
@@ -9502,7 +9501,7 @@ div.code-toolbar > .toolbar span:hover {
   display: block;
   font-size: 30px;
   padding: 15px 0;
-}
+}*/
 
 /* material wizard end */
 /* Smart wizard 4 start */

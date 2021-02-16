@@ -1,0 +1,158 @@
+﻿@*@model m_FormPartial*@
+@{
+    ViewData["Title"] = "首頁";
+}
+
+<div class="page-content">
+    <div class="page-info container">
+        <div class="row">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">PDC - CNS平台</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">首頁</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="main-wrapper container">
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-title">公告說明</p>
+                        <div class="form-group">
+                            <!--<label for="exampleFormControlTextarea1">公告說明</label>-->
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">PCB Layout Constraint 聯絡窗口：趙偉智(Roger Chao) #10370</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body" style="padding-bottom: 0px;">
+                        <p class="card-title">快速連結</p>
+                        <ul class="inbox-list list-unstyled">
+                            <li>
+                                <div class="info-list">
+                                    <div style="flex: 15; text-align: left; display: inline-block; ">
+                                        <span>[Tools]_[Layout]_Constraint_Table_Introduction (for Aleegro 17.2)</span>
+                                    </div>
+
+                                    <div style=" text-align: right; display: inline-block; ">
+                                        <a href="#" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                    </div>
+                                </div>
+
+                            </li>
+                            <li>
+                                <div class="info-list">
+                                    <div style="flex: 15; text-align: left; display: inline-block; ">
+                                        <span>[Tools]_[Layout]_New_Region_Introduce</span>
+                                    </div>
+
+                                    <div style=" text-align: right; display: inline-block; ">
+                                        <a href="#" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                    </div>
+                                </div>
+
+                            </li>
+                            <li>
+                                <div class="info-list">
+                                    <div style="flex: 15; text-align: left; display: inline-block; ">
+                                        <span>PCB Layout Constraint User Guide</span>
+                                    </div>
+
+                                    <div style=" text-align: right; display: inline-block; ">
+                                        <a href="#" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                    </div>
+                                </div>
+
+                            </li>
+                            <li>
+                                <div class="info-list">
+                                    <div style="flex: 15; text-align: left; display: inline-block; ">
+                                        <span>Constraint 範本 (2020/11/13)</span>
+                                    </div>
+
+                                    <div style=" text-align: right; display: inline-block; ">
+                                        <a href="#" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                    </div>
+                                </div>
+
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+    </div>
+
+</div>
+
+@section Styles{
+    <!-- data tables css -->
+    <link rel="stylesheet" href="~/assets/plugins/data-tables/css/datatables.min.css">
+}
+
+@section Scripts {
+    <!-- datatable Js -->
+    <script src="~/assets/plugins/data-tables/js/datatables.min.js"></script>
+    <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#HomeLink').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: false,
+                scrollX: false,
+                bPaginate: false, // 顯示換頁
+                ordering: false,  // 是否顯示header排序
+
+            });
+            $('#PCBFileList').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: false,
+                scrollX: false,
+                bPaginate: false, // 顯示換頁
+                ordering: false,  // 是否顯示header排序
+
+            });
+
+            $('#PCBParameterList').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: false,
+                scrollX: false,
+                bPaginate: false, // 顯示換頁
+                ordering: false,  // 是否顯示header排序
+
+            });
+
+
+            var table = $('#HomeLink').DataTable();
+            var dd = table.rows().data().toArray();
+
+            $.each(dd, function (index, row) {
+                row.order = index;
+            });
+
+
+        });
+
+        $('input[id=HomeLinkFile]').change(function () {
+            $('#HomeLinkFileLabel').text($(this).val());
+        });
+
+    </script>
+}

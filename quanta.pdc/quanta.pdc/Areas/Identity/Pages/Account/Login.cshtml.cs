@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using cns.Services.Security;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace cns.Areas.Identity.Pages.Account
 {
@@ -21,16 +22,19 @@ namespace cns.Areas.Identity.Pages.Account
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly IdentityDefaultOptions _identityDefaultOptions;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public LoginModel(
             SignInManager<IdentityUser> signInManager, 
             ILogger<LoginModel> logger,
-            IOptions<IdentityDefaultOptions> identityDefaultOptions
+            IOptions<IdentityDefaultOptions> identityDefaultOptions,
+            IHttpContextAccessor httpContextAccessor
             )
         {
             _signInManager = signInManager;
             _logger = logger;
             _identityDefaultOptions = identityDefaultOptions.Value;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [BindProperty]
@@ -59,6 +63,8 @@ namespace cns.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            
+
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);

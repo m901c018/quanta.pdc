@@ -292,7 +292,7 @@ namespace cns.Services.Helper
                     if (System.Text.RegularExpressions.Regex.Replace(ColFirst[2].ToString(), @"[^0-9]+", "").ToString() != ColFirst[3].ToString())
                         INxNumCheck = true;
 
-                    if (ColSecond[1].ToString() != "Conductor" || !string.IsNullOrWhiteSpace(ColFirst[3].ToString()) || string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
+                    if (ColFirst[1].ToString() != "Conductor" || string.IsNullOrWhiteSpace(ColFirst[3].ToString()) || string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
                         INxCheck = true;
                 }
                 //C欄=『VCCx』B欄對應『Conductor』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄必須有值。（VCC, VCC1 …最多到 9），不得重複。
@@ -329,43 +329,43 @@ namespace cns.Services.Helper
                 model.Errmsg += "Layer數字不可跳號\n";
 
             if (StackupTypeCheck)
-                model.Errmsg += "B欄：只有 Conductor、Dielectric、Plane三種項目。\n";
+                model.Errmsg += "疊構類別：只有 Conductor、Dielectric、Plane三種項目。\n";
 
             if (TopCheck)
-                model.Errmsg += "固定值『TOP』，F欄 & G欄必須有值。\n";
+                model.Errmsg += "固定值『TOP』，線寬 & 間距必須有值。\n";
 
             if (BotCheck)
-                model.Errmsg += "固定值『BOT』，F欄 & G欄必須有值。\n";
+                model.Errmsg += "固定值『BOT』，線寬 & 間距必須有值。\n";
 
             if (VCCCheck)
-                model.Errmsg += "C欄=『VCCx』B欄對應『Conductor』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄必須有值。\n";
+                model.Errmsg += "Name=『VCCx』疊構類別對應『Conductor』且欄位不可編輯，HIGH SPEED GROUP NAME對應『不填值』且欄位不可編輯， 線寬 & 間距必須有值。\n";
 
             if (NameList.Where(x => x.StartsWith("VCC")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any())
                 model.Errmsg += "VCC, VCC1 …最多到 9。\n";
 
             if (GNDCheck)
-                model.Errmsg += "C欄=『GNDx』B欄對應『Conductor』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄必須有值。\n";
+                model.Errmsg += "Name=『GNDx』疊構類別對應『Conductor』且欄位不可編輯，HIGH SPEED GROUP NAME對應『不填值』且欄位不可編輯， 線寬 & 間距必須有值。\n";
 
             if (NameList.Where(x => x.StartsWith("GND")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any())
                 model.Errmsg += "GND, GND1 …最多到 9。\n";
 
             if (SVCCCheck)
-                model.Errmsg += "C欄=『SVCCx』B欄對應『Plane』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄『不填值』且欄位不可編輯。\n";
+                model.Errmsg += "Name=『SVCCx』疊構類別對應『Plane』且欄位不可編輯，HIGH SPEED GROUP NAME對應『不填值』且欄位不可編輯， 線寬 & 間距『不填值』且欄位不可編輯。\n";
 
             if (NameList.Where(x => x.StartsWith("SVCC")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any()) 
                 model.Errmsg += "SVCC, SVCC1 …最多到 9。\n";
 
             if (SGNDCheck)
-                model.Errmsg += "C欄=『SGNDx』B欄對應『Plane』且欄位不可編輯，D欄對應『不填值』且欄位不可編輯， E欄 & F欄『不填值』且欄位不可編輯。\n";
+                model.Errmsg += "Name=『SGNDx』疊構類別對應『Plane』且欄位不可編輯，HIGH SPEED GROUP NAME對應『不填值』且欄位不可編輯， 線寬 & 間距『不填值』且欄位不可編輯。\n";
 
             if (NameList.Where(x => x.StartsWith("SGND")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any()) 
                 model.Errmsg += "SGND, SGND1, …最多到 9。\n";
 
             if (INxCheck)
-                model.Errmsg += "C欄=『INx』B欄對應『Conductor』且欄位不可編輯， E欄 & F欄必須有值。\n";
+                model.Errmsg += "Name=『INx』疊構類別對應『Conductor』且欄位不可編輯， 線寬 & 間距必須有值。\n";
 
             if (INxNumCheck)
-                model.Errmsg += "C欄=『INx』，D欄對應『數字』且欄位不可編輯。\n";
+                model.Errmsg += "Name=『INx』，HIGH SPEED GROUP NAME對應『數字』且欄位不可編輯。\n";
 
             if (NameList.Where(x => x.StartsWith("IN")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any())
                 model.Errmsg += "IN1=1, IN2=2, …最多到 9。\n";
@@ -401,7 +401,7 @@ namespace cns.Services.Helper
             }
 
             if (GroupNameCheck)
-                model.Errmsg += "D欄規則 = T + 數字（小至大自動排序）+ B。\n";
+                model.Errmsg += "HIGH SPEED GROUP NAME規則 = T + 數字（小至大自動排序）+ B。\n";
 
             if (EndCheck)
                 model.Errmsg += "最後一筆起始疊構(Stack up)必需為Solder Mask。\n";

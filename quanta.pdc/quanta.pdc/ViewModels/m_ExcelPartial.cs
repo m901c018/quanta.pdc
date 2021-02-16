@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using cns.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace cns.ViewModels
 {
@@ -60,6 +61,11 @@ namespace cns.ViewModels
         /// </summary>
         public PDC_File m_CNSSampleFile { get; set; }
 
+        /// <summary> StackupType資料
+        /// 
+        /// </summary>
+        public List<SelectListItem> StackupTypeList { get; set; }
+
         public m_ExcelPartial()
         {
             StackupColumnList = new List<PDC_StackupColumn>();
@@ -73,6 +79,11 @@ namespace cns.ViewModels
             StackupColumnList.Add(new PDC_StackupColumn() { StackupColumnID = 7, ColumnCode = "Col_07B", ColumnName = "疊構\n(Stack up)", ColumnType = "文字", DataType = "string", DecimalPlaces = 0, MaxLength = 256, OrderNo = 6, ParentColumnID = 0 });
             StackupColumnList.Add(new PDC_StackupColumn() { StackupColumnID = 8, ColumnCode = "Col_08B", ColumnName = "板厚\n(Thickness)", ColumnType = "文字", DataType = "int", DecimalPlaces = 2, MaxLength = 256, OrderNo = 7, ParentColumnID = 0 });
 
+
+            StackupTypeList = new List<SelectListItem>();
+            StackupTypeList.Add(new SelectListItem { Text = "Conductor", Value = "Conductor" });
+            StackupTypeList.Add(new SelectListItem { Text = "Dielectric", Value = "Dielectric" });
+            StackupTypeList.Add(new SelectListItem { Text = "Plane", Value = "Plane" });
         }
     }
 }

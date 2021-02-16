@@ -25,7 +25,9 @@
     <!-- vendor css -->
     <link rel="stylesheet" href="~/assets/css/style.css">
 
-    <link rel="stylesheet" href="~/assets/css/connect.min.css" >
+    @*<link href="~/assets/plugins/bootstrap/css/bootstrap.css" rel="stylesheet">*@
+
+    <link rel="stylesheet" href="~/assets/css/connect.min.css">
     <link rel="stylesheet" href="~/assets/css/admin2.css">
     <link rel="stylesheet" href="~/assets/css/dark_theme.css">
     <link rel="stylesheet" href="~/assets/css/custom.css">
@@ -64,30 +66,33 @@
     <script src="~/assets/js/pcoded.min.js"></script>
     <script src="~/assets/plugins/notification/js/bootstrap-growl.min.js"></script>
     <script src="~/assets/js/connect.min.js"></script>
+    <script src="~/assets/js/select2.min.js"></script>
+    <script src="~/assets/js/jquery.blockUI.js"></script>
+    
     <script type="text/javascript">
         $(document).ready(function () {
             function notify(message, type) {
                 $.growl({
                     message: message
                 }, {
-                    type: type,
-                    allow_dismiss: false,
-                    label: 'Cancel',
-                    className: 'btn-xs btn-inverse',
-                    placement: {
-                        from: 'bottom',
-                        align: 'right'
-                    },
-                    delay: 5000,
-                    animate: {
-                        enter: 'animated fadeInRight',
-                        exit: 'animated fadeOutRight'
-                    },
-                    offset: {
-                        x: 30,
-                        y: 30
-                    }
-                });
+                        type: type,
+                        allow_dismiss: false,
+                        label: 'Cancel',
+                        className: 'btn-xs btn-inverse',
+                        placement: {
+                            from: 'bottom',
+                            align: 'right'
+                        },
+                        delay: 5000,
+                        animate: {
+                            enter: 'animated fadeInRight',
+                            exit: 'animated fadeOutRight'
+                        },
+                        offset: {
+                            x: 30,
+                            y: 30
+                        }
+                    });
             };
             var message = $("#StatusMessage").text();
             if (message) {

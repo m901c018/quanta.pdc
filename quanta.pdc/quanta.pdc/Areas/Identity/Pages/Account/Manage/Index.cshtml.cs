@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using cns.Services.Security;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -20,13 +21,15 @@ namespace cns.Areas.Identity.Pages.Account.Manage
         private readonly IEmailSender _emailSender;
         private readonly IdentityDefaultOptions _identityDefaultOptions;
         private readonly SuperAdminDefaultOptions _superAdminDefaultOptions;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public IndexModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             IEmailSender emailSender,
             IOptions<IdentityDefaultOptions> identityDefaultOptions,
-            IOptions<SuperAdminDefaultOptions> superAdminDefaultOptions
+            IOptions<SuperAdminDefaultOptions> superAdminDefaultOptions,
+            IHttpContextAccessor httpContextAccessor
             )
         {
             _userManager = userManager;
@@ -34,6 +37,7 @@ namespace cns.Areas.Identity.Pages.Account.Manage
             _emailSender = emailSender;
             _identityDefaultOptions = identityDefaultOptions.Value;
             _superAdminDefaultOptions = superAdminDefaultOptions.Value;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public string Username { get; set; }
@@ -59,6 +63,11 @@ namespace cns.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
+            //string WindowsName = _httpContextAccessor.HttpContext.User.Identity.Name;
+            //if (!string.IsNullOrWhiteSpace(WindowsName))
+            //{
+            //    await _signInManager.SignOutAsync();
+            //}
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {

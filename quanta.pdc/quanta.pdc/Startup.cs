@@ -111,6 +111,8 @@ namespace cns
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddAuthentication(IISDefaults.AuthenticationScheme);
             services.AddAuthorization();
+            services.AddHttpContextAccessor();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -159,7 +161,7 @@ namespace cns
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Excel}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

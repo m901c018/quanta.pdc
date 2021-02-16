@@ -1,7 +1,7 @@
 ﻿
 <div class="page-header" style="max-height: 72px;">
     <nav class="navbar navbar-expand container">
-        <div class="logo-box"><a href="index.html" class="logo-text">PDC - CNS平台</a></div>
+        <div class="logo-box"><a href="@Url.Action("Index", "Home")" class="logo-text">PDC - CNS平台</a></div>
         <div class="container" style="width: 750px;">
             <div class="row">
                 <div class="col">
@@ -14,10 +14,10 @@
                                         <a href="@Url.Action("Index", "Excel")">Check/驗證</a>
                                     </li>
                                     <li>
-                                        <a href="#">Query/查詢</a>
+                                        <a href="@Url.Action("FormQuery", "Form")">Query/查詢</a>
                                     </li>
                                     <li>
-                                        <a href="#">Apply/表單申請</a>
+                                        <a href="@Url.Action("FormApply", "Form")">Apply/表單申請</a>
                                     </li>
                                 </ul>
                             </li>
@@ -25,10 +25,10 @@
                                 <a href="#">PDC Work Area<i class="material-icons">keyboard_arrow_down</i></a>
                                 <ul style="display: none;">
                                     <li>
-                                        <a href="#">Assign/派單</a>
+                                        <a href="@Url.Action("Assign", "Work")">Assign/派單</a>
                                     </li>
                                     <li>
-                                        <a href="#">Work/工作區</a>
+                                        <a href="@Url.Action("WorkArea", "Work")">Work/工作區</a>
                                     </li>
                                 </ul>
                             </li>
@@ -36,17 +36,28 @@
                                 <a href="#">System Administration<i class="material-icons">keyboard_arrow_down</i></a>
                                 <ul style="display: none;">
                                     <li>
-                                        <a href="#">Download/資料下載</a>
+                                        <a href="@Url.Action("DownloadCNS", "Configuration")">Download/資料下載</a>
                                     </li>
                                     <li>
-                                        <a href="#">Privilege/權限設定</a>
+                                        <a href="@Url.Action("Permission", "Configuration")">Privilege/權限設定</a>
                                     </li>
                                     <li>
                                         <a href="#">Check Rules/規則設定</a>
                                     </li>
                                     <li>
-                                        <a href="#">Configuration/組態設定</a>
+                                        <a href="@Url.Action("Index", "Configuration")">Configuration/組態設定</a>
                                     </li>
+                                    <li>
+                                        <div class="pro-head">
+                                            <form id="formSignout2" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Todo")">
+                                                <a href="javascript:void(0)" class="dud-logout" title="Logout" onclick="document.getElementById('formSignout2').submit();">
+                                                    <i class="feather icon-log-out"></i>
+                                                </a>
+                                            </form>
+
+                                        </div>
+                                    </li>
+                                    
                                 </ul>
                             </li>
                         </ul>

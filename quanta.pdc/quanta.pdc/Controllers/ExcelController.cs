@@ -150,7 +150,7 @@ namespace cns.Controllers
         }
 
         [HttpGet]
-        public IActionResult ExcelEdit()
+        public IActionResult ExcelEdit(Boolean IsOnlyOnline = false)
         {
             
 
@@ -161,10 +161,9 @@ namespace cns.Controllers
             //Session紀錄
             DataTable ExcelDt = HttpContext.Session.GetObjectFromJson<DataTable>("SessionExcelData");
             //移除Session
-            HttpContext.Session.Remove("SessionExcelData");
-            if (ExcelDt != null)
+            //HttpContext.Session.Remove("SessionExcelData");
+            if (ExcelDt != null && IsOnlyOnline == false)
             {
-                //DataTable ExcelDt = JsonConvert.DeserializeObject<DataTable>(TempData["SessionExcelData"].ToString());
                 ViewModel.ExcelSheetDts.Add(ExcelDt);
             }
             else
@@ -175,10 +174,6 @@ namespace cns.Controllers
 
                 ViewModel.ExcelSheetDts.Add(sheetDt);
             }
-            //var jsonString = JsonConvert.SerializeObject(model);
-            //m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
-            //轉DataTable
-            //DataTable StackupDetalDt = Helper.GetDataTableFromStackupDetail(ViewModel.StackupDetalList);
 
 
             return View(ViewModel);
@@ -193,7 +188,10 @@ namespace cns.Controllers
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             FileService FileService = new FileService(_hostingEnvironment, _context);
 
-            var RealFileName = HttpContext.Session.GetString("SessionFileName");
+            string RealFileName = HttpContext.Session.GetString("SessionFileName");
+
+            if (string.IsNullOrWhiteSpace(RealFileName))
+                RealFileName = "CNS";
             //取得範例
             MemoryStream stream = FileService.DownloadFile(fileName);
 

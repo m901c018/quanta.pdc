@@ -25,8 +25,17 @@ namespace cns.Controllers
         private readonly ApplicationDbContext _context;
 
         private readonly UserManager<IdentityUser> _userManager;
+        
 
+        public IActionResult Permission()
+        {
+            return View();
+        }
 
+        public IActionResult DownloadCNS()
+        {
+            return View();
+        }
         //consume custom security service to get all roles
         public IActionResult Index()
         {
@@ -35,7 +44,7 @@ namespace cns.Controllers
             FileService FileService = new FileService(_hostingEnvironment, _context);
 
             var user = _userManager.GetUserId(HttpContext.User);
-            
+
             //組態設定-CNS範本
             if (_context.PDC_File.Where(x => x.FunctionName == "ConfigurationSample").Any())
             {
@@ -50,7 +59,7 @@ namespace cns.Controllers
             model.PCBTypeList = parameterService.GetSelectList("PCBLayoutConstraint");
             if (model.PCBTypeList.Any())
                 model.PCBTypeItemList = parameterService.GetSelectList(Convert.ToInt64(model.PCBTypeList.First().Value));
-            
+
             //組態設定-清單與罐頭
             model.PCBParameterList = parameterService.GetSelectList("PCBTypeList");
             //組態設定-其他
@@ -74,7 +83,7 @@ namespace cns.Controllers
             _hostingEnvironment = hostingEnvironment;
             _context = context;
             _userManager = userManager;
-            
+
         }
 
         [HttpPost]
@@ -101,7 +110,7 @@ namespace cns.Controllers
                 NewParameter.CreatorDate = DateTime.Now;
 
 
-                if (parameterService.AddParameter(ref NewParameter,ref ErrorMsg))
+                if (parameterService.AddParameter(ref NewParameter, ref ErrorMsg))
                 {
                     PDC_File NewFile = new PDC_File();
                     NewFile.SourceID = NewParameter.ParameterID;
@@ -168,7 +177,7 @@ namespace cns.Controllers
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             string userId = _userManager.GetUserId(HttpContext.User);
             string userName = HttpContext.User.Identity.Name;
-            
+
             ParameterService parameterService = new ParameterService(_context);
             FileService FileService = new FileService(_hostingEnvironment, _context);
 
@@ -233,7 +242,7 @@ namespace cns.Controllers
         public IActionResult PCBChangeItem(Int64 ParameterID)
         {
             ParameterService parameterService = new ParameterService(_context);
-            
+
 
             List<SelectListItem> PCBItemList = parameterService.GetSelectList(ParameterID);
 
@@ -245,7 +254,7 @@ namespace cns.Controllers
         {
             m_ConfigurationPartial model = new m_ConfigurationPartial();
             ParameterService parameterService = new ParameterService(_context);
-            
+
 
             model.m_PCBParameter = parameterService.GetParameterOne(ParameterID);
             model.PCBFileList = _context.PDC_File.Where(x => x.SourceID == ParameterID && x.FunctionName == "Configuration_PCBFile").ToList();
@@ -295,7 +304,7 @@ namespace cns.Controllers
         public IActionResult SearchPCBParameter(Int64 ParameterID)
         {
             ParameterService parameterService = new ParameterService(_context);
-            
+
             List<PDC_Parameter> model = new List<PDC_Parameter>();
             model = parameterService.GetParameterList(ParameterID);
 
@@ -319,7 +328,7 @@ namespace cns.Controllers
 
 
         [HttpPost]
-        public IActionResult PCBParameterAdd(string ParameterText,Int64 ParameterID,int OrderNo)
+        public IActionResult PCBParameterAdd(string ParameterText, Int64 ParameterID, int OrderNo)
         {
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             PDC_Parameter item = new PDC_Parameter();
@@ -346,7 +355,7 @@ namespace cns.Controllers
             string userName = HttpContext.User.Identity.Name;
 
             string ErrorMsg = string.Empty;
-            
+
 
             PDC_Parameter item = parameterService.GetParameterOne("ConfigurationAnnouncement");
             item.ParameterText = ParameterText;
@@ -454,18 +463,18 @@ namespace cns.Controllers
 
             PDC_File newFile = new PDC_File();
             PDC_Parameter item = parameterService.GetParameterOne("ConfigurationWorkDetail");
-            if(file.Length > 0)
+            if (file.Length > 0)
             {
                 PDC_File WorkDetail_File = FileService.GetFileList("ConfigurationWorkDetail", item.ParameterID).FirstOrDefault();
 
-                if(WorkDetail_File != null)
+                if (WorkDetail_File != null)
                 {
                     FileService.FileRemove(WorkDetail_File.FileID);
                 }
 
                 FileService.FileAdd(file, "ConfigurationWorkDetail", userId, userName, out newFile, item.ParameterID);
             }
-            
+
             item.ParameterText = ParameterText;
             item.ParameterValue = ParameterValue;
             item.Modifyer = userId;
@@ -480,7 +489,7 @@ namespace cns.Controllers
         [HttpPost]
         public IActionResult DeleteWorkDetailFile(Int64 FileID)
         {
-            
+
             FileService FileService = new FileService(_hostingEnvironment, _context);
             string ErrorMsg = string.Empty;
 
@@ -495,7 +504,7 @@ namespace cns.Controllers
 
             return Json("刪除成功");
         }
-        
+
         [HttpPost]
         public IActionResult UploadFile(IFormFile file)
         {

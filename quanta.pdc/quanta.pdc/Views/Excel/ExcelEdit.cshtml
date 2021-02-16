@@ -26,8 +26,8 @@
                                         <p class="card-title">Stackup</p>
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="AddRow()">新增欄位</a>
-                                                <a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="DeleteRow()">刪除欄位</a>
+                                                @*<a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="AddRow()">新增欄位</a>
+                                                <a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="DeleteRow()">刪除欄位</a>*@
                                             </div>
                                             <div class="col-md-7"></div>
                                             <div class="col-md-1" style="text-align: center;">
@@ -41,84 +41,100 @@
                                             <table class="table table-hover" id="grid">
                                                 <thead class="thead-dark">
                                                     <tr>
-                                                        <th scope="col" style="width: 8%;">Layer</th>
+                                                        <th scope="col" style="width: 2%;"></th>
+                                                        <th scope="col" style="width: 7%;">Layer</th>
                                                         <th scope="col" style="width: 15%;">疊構類別</th>
                                                         <th scope="col" style="width: 10%;">Name</th>
-                                                        <th scope="col" style="width: 20%;">HIGH SPEED GROUP NAME</th>
+                                                        <th scope="col" style="width: 17%;">HIGH SPEED GROUP NAME</th>
                                                         <th scope="col" style="width: 10%;">線寬</th>
                                                         <th scope="col" style="width: 10%;">間距</th>
                                                         <th scope="col" style="width: 15%;">疊構</th>
                                                         <th scope="col" style="width: 7%;">板厚</th>
+                                                        <th scope="col" style="width: 2%;"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     @for (int i = 0; i <= Model.ExcelSheetDts[0].Rows.Count - 1; i++)
                                                     {
-                                                        <tr>
-                                                            @for (int j = 0; j <= Model.StackupColumnList.Count - 1; j++)
+                                                        bool IsDisabled = false;
+                                                        bool IsLayer = false;
+                                                        if (i == 0 || i == (Model.ExcelSheetDts[0].Rows.Count - 1))
+                                                        {
+                                                            IsDisabled = true;
+                                                        }
+                                                    <tr>
+                                                        <td style="vertical-align: middle">
+                                                            @if (i % 2 == 1 && i != (Model.ExcelSheetDts[0].Rows.Count - 2))
                                                             {
-                                                                if (j == (Model.StackupColumnList.Count - 1))
-                                                                {
-                                                                    <td>
-                                                                        <input type="email" class="form-control" style="padding:12px 15px;" value="@Model.ExcelSheetDts[0].Rows[i][j]" onchange="GetTotal()" />
-                                                                    </td>
-                                                                }
-                                                                else if (j == (Model.StackupColumnList.Count - 2))
-                                                                {
-                                                                    <td>
-                                                                        <input type="email" class="form-control" style="padding:12px 15px;" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
-                                                                    </td>
-                                                                }
-                                                                else if (i == 0)
-                                                                {
-                                                                    <td>
-                                                                        <input type="email" class="form-control" style="padding:12px 15px;" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
-                                                                    </td>
-                                                                }
-                                                                else if (i == 1)
-                                                                {
-                                                                    if (j == 4 || j == 5)
-                                                                    {
-                                                                        <td>
-                                                                            <input type="email" class="form-control" style="padding:12px 15px;" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
-                                                                        </td>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <td>
-                                                                            <input type="email" class="form-control" style="padding:12px 15px;" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
-                                                                        </td>
-                                                                    }
-                                                                }
-                                                                else if (i == (Model.ExcelSheetDts[0].Rows.Count - 2))
-                                                                {
-                                                                    if (j == 0 || j == 4 || j == 5)
-                                                                    {
-                                                                        <td>
-                                                                            <input type="email" class="form-control" style="padding:12px 15px;" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
-                                                                        </td>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <td>
-                                                                            <input type="email" class="form-control" style="padding:12px 15px;" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
-                                                                        </td>
-                                                                    }
-                                                                }
-                                                                else if (i == (Model.ExcelSheetDts[0].Rows.Count - 1))
-                                                                {
-                                                                    <td>
-                                                                        <input type="email" class="form-control" style="padding:12px 15px;" value="@Model.ExcelSheetDts[0].Rows[i][j]" disabled="disabled" />
-                                                                    </td>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <td>
-                                                                        <input type="email" class="form-control" style="padding:12px 15px;" value="@Model.ExcelSheetDts[0].Rows[i][j]" />
-                                                                    </td>
-                                                                }
+                                                                <a href="javascript:return false;"  onclick="AddRow(this)"><i class="fas fa-plus-circle fa-2x"></i></a>
                                                             }
-                                                        </tr>
+                                                        </td>
+                                                        <td>
+                                                            <input type="email" class="form-control data @(i % 2 == 1 ? "Layer" : "")" style="padding:12px 15px;@(IsDisabled ? "background-color: gray;" : "")" value="@Model.ExcelSheetDts[0].Rows[i][0]" @(IsDisabled ? "disabled=\"disabled\"" : "") />
+                                                        </td>
+
+                                                        <td>
+                                                            @if (IsDisabled)
+                                                            {
+                                                                <input type="email" class="form-control data" style="padding:12px 15px; background-color:gray" value="@Model.ExcelSheetDts[0].Rows[i][1]" disabled="disabled" />
+                                                            }
+                                                            else
+                                                            {
+                                                                @Html.DropDownList("Select", new SelectList(Model.StackupTypeList, "Value", "Text", Model.ExcelSheetDts[0].Rows[i][1]), new { @class = "form-control select2 data", @style = "height:45px" })
+                                                            }
+                                                        </td>
+
+                                                        <td>
+                                                            @if (i % 2 == 0)
+                                                            {
+                                                                <input type="email" class="form-control data" style="padding:12px 15px;background-color:gray" value="@Model.ExcelSheetDts[0].Rows[i][2]" disabled="disabled" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="email" class="form-control data" style="padding:12px 15px;" value="@Model.ExcelSheetDts[0].Rows[i][2]" onchange="SetGroupName(this)" />
+                                                            }
+                                                        </td>
+
+                                                        <td>
+                                                            <input type="email" class="form-control data" style="padding:12px 15px;@(i % 2 == 0 ? "background-color: gray;" : "")" value="@Model.ExcelSheetDts[0].Rows[i][3]" @(i % 2 == 0 ? "disabled=\"disabled\"" : "") />
+                                                        </td>
+
+                                                        <td>
+                                                            @if (i % 2 == 0)
+                                                            {
+                                                                <input type="email" class="form-control data" style="padding:12px 15px;background-color:gray" value="@Model.ExcelSheetDts[0].Rows[i][4]" disabled="disabled" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="email" class="form-control data" style="padding:12px 15px;" value="@Model.ExcelSheetDts[0].Rows[i][4]" />
+                                                            }
+                                                        </td>
+
+                                                        <td>
+                                                            @if (i % 2 == 0)
+                                                            {
+                                                                <input type="email" class="form-control data" style="padding:12px 15px;background-color:gray" value="@Model.ExcelSheetDts[0].Rows[i][5]" disabled="disabled" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="email" class="form-control data" style="padding:12px 15px;" value="@Model.ExcelSheetDts[0].Rows[i][5]" />
+                                                            }
+                                                        </td>
+
+                                                        <td>
+                                                            <input type="email" class="form-control data" style="padding:12px 15px;" value="@Model.ExcelSheetDts[0].Rows[i][6]" />
+                                                        </td>
+
+                                                        <td>
+                                                            <input type="email" class="form-control data Thickness" style="padding:12px 15px;" value="@Model.ExcelSheetDts[0].Rows[i][7]" onchange="GetTotal()" />
+                                                        </td>
+                                                        <td style="vertical-align: middle">
+                                                            @if (i % 2 == 1 && i != (Model.ExcelSheetDts[0].Rows.Count - 2) && i != 1)
+                                                            {
+                                                                <a href="javascript:return false;" Layer="@(i)" onclick="DeleteRow(this)"><i class="fas fa-trash-alt fa-2x"></i></a>
+                                                            }
+                                                        </td>
+                                                    </tr>
                                                     }
                                                 </tbody>
                                             </table>
@@ -139,9 +155,9 @@
                                                     <a href="javascript:return false;" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose" onclick="SaveCheckFile()">執行檢測</a>
                                                     <br />
                                                     <br />
-                                                    <a href="javascript:return false;" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose" onclick="DownloadError()">下載錯誤明細</a>
-                                                    <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="DownloadCheckFile()">下載 CNS Excel</a>
-                                                    <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">下載 cns.exp</a>
+                                                    <a href="javascript:return false;" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="downloadError" onclick="DownloadError()" >下載錯誤明細</a>
+                                                    <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="downloadCNS" onclick="DownloadCheckFile()">下載 CNS Excel</a>
+                                                    <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="downloadExp">下載 cns.exp</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -158,7 +174,44 @@
         </div>
     </div>
 
-
+    <div style="display:none" id="copyRow">
+        <tr>
+            <td style="vertical-align: middle">
+                <a href="javascript:return false;" Layer="" onclick="AddRow(this)"><i class="fas fa-plus-circle fa-2x"></i></a>
+            </td>
+            <td>
+                <input type="email" class="form-control data" style="padding:12px 15px;" value="" />
+            </td>
+            <td>
+                <select class="form-control select2" id="Select" name="Select" style="height:45px">
+                    <option selected="selected" value="Conductor">Conductor</option>
+                    <option value="Dielectric">Dielectric</option>
+                    <option value="Plane">Plane</option>
+                </select>
+            </td>
+            <td>
+                <input type="email" class="form-control data" style="padding:12px 15px;" value="" />
+            </td>
+            <td>
+                <input type="email" class="form-control data" style="padding:12px 15px;" value="" />
+            </td>
+            <td>
+                <input type="email" class="form-control data" style="padding:12px 15px;" value="" />
+            </td>
+            <td>
+                <input type="email" class="form-control data" style="padding:12px 15px;" value="" />
+            </td>
+            <td>
+                <input type="email" class="form-control data" style="padding:12px 15px;" value="" />
+            </td>
+            <td>
+                <input type="email" class="form-control data" style="padding:12px 15px;" value="" onchange="GetTotal()" />
+            </td>
+            <td style="vertical-align: middle">
+                <a href="javascript:return false;" data-Layer="" onclick="DeleteRow(this)"><i class="fas fa-trash-alt fa-2x"></i></a>
+            </td>
+        </tr>
+    </div>
 </section>
 
 @section Styles{
@@ -171,24 +224,25 @@
     <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#grid').DataTable({
-                lengthChange: false,
-                info: false,
-                searching: false,
-                scrollX: false,
-                bPaginate: false, // 顯示換頁
-                ordering: false,  // 是否顯示header排序
-            });
+            //$('#grid').DataTable({
+            //    lengthChange: false,
+            //    info: false,
+            //    searching: false,
+            //    scrollX: false,
+            //    bPaginate: false, // 顯示換頁
+            //    ordering: false,  // 是否顯示header排序
+            //});
+            //$('.select2').select2();
 
             GetTotal();
-
+            SaveCheckFile();
         });
-
+        //計算總版厚
         function GetTotal() {
             //var table = $('#grid').DataTable();
             var Sum = 0.00;
-            $.each($('#grid > tbody > tr'), function (index, row) {
-                var value = $(this).find('td').last().find('input').val();
+            $.each($('.Thickness'), function (index, row) {
+                var value = $(this).val();
                 if ($.isNumeric(value))
                 {
                     Sum += Number(value);
@@ -197,14 +251,29 @@
             $('#ThicknessTotal').text(Sum.toFixed(2));
         }
 
+        function SetGroupName(obj) {
+            var GetNum = $(obj).val().replace(/[^0-9]/ig, "");
+
+            if ($.isNumeric(GetNum)) {
+                $(obj).parent().next().find('input').eq(0).val(GetNum);
+            }
+        }
+
+        //執行檢測
         function SaveCheckFile() {
+
+            $('#OpenOnlineEdit').hide();
+            $('#downloadError').hide();
+            $('#downloadCNS').hide();
+            $('#downloadExp').hide();
+
             var data = new Array();
 
             $.each($('#grid tbody tr'), function (index,row) {
-                $.each($(row).find('td'), function (colIndex,col) {
+                $.each($(row).find('.data'), function (colIndex,col) {
                     var StackupDetalList = {};
                     StackupDetalList.IndexNo = index;
-                    StackupDetalList.ColumnValue = $(col).find('input:eq(0)').val();
+                    StackupDetalList.ColumnValue = $(col).val();
                     StackupDetalList.StackupColumnID = (colIndex + 1);
                     data.push(StackupDetalList);
                 });
@@ -221,12 +290,26 @@
                 dataType: 'json',
                 contentType: "application/json; charset=utf-8",
                 success: function (result) {
-                    //顯示訊息
-                    $('#ErrorMsg').text(result);
+                    if (result != "") {
+                        //顯示訊息
+                        $('#ErrorMsg').text(result);
+                        $('#downloadError').show();
+                    }
+                    else {
+                        $('#ErrorMsg').text('驗證通過!');
+                        $('#downloadExp').show();
+                        $('#downloadCNS').show();
+                    }
                 },
                 error: function (jqXHR) {
                 },
+                beforeSend: function () {
+                    //開啟遮罩
+                    $('body').removeClass('no-loader');
+                },
                 complete: function (jqXHR, status) {
+                    //關閉遮罩
+                    $('body').addClass('no-loader');
                 }
             });
         }
@@ -235,10 +318,10 @@
             var data = new Array();
 
             $.each($('#grid tbody tr'), function (index,row) {
-                $.each($(row).find('td'), function (colIndex,col) {
+                $.each($(row).find('.data'), function (colIndex,col) {
                     var StackupDetalList = {};
                     StackupDetalList.IndexNo = index;
-                    StackupDetalList.ColumnValue = $(col).find('input:eq(0)').val();
+                    StackupDetalList.ColumnValue = $(col).val();
                     StackupDetalList.StackupColumnID = (colIndex + 1);
                     data.push(StackupDetalList);
                 });
@@ -260,7 +343,13 @@
                 },
                 error: function (jqXHR) {
                 },
+                beforeSend: function () {
+                    //開啟遮罩
+                    $('body').removeClass('no-loader');
+                },
                 complete: function (jqXHR, status) {
+                    //關閉遮罩
+                    $('body').addClass('no-loader');
                 }
             });
         }
@@ -269,10 +358,10 @@
             var data = new Array();
 
             $.each($('#grid tbody tr'), function (index,row) {
-                $.each($(row).find('td'), function (colIndex,col) {
+                $.each($(row).find('.data'), function (colIndex,col) {
                     var StackupDetalList = {};
                     StackupDetalList.IndexNo = index;
-                    StackupDetalList.ColumnValue = $(col).find('input:eq(0)').val();
+                    StackupDetalList.ColumnValue = $(col).val();
                     StackupDetalList.StackupColumnID = (colIndex + 1);
                     data.push(StackupDetalList);
                 });
@@ -294,52 +383,114 @@
                 },
                 error: function (jqXHR) {
                 },
+                beforeSend: function () {
+                    //開啟遮罩
+                    $('body').removeClass('no-loader');
+                },
                 complete: function (jqXHR, status) {
+                    //關閉遮罩
+                    $('body').addClass('no-loader');
                 }
             });
         }
 
-        function AddRow() {
-            if ($('#grid').length == 0) {
-                alert("請先上傳驗證檔案");
-                return;
-            }
-            var copyrow1 = $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 4).clone();
-            copyrow1.find('td').each(function( index ){
-                $(this).find('input').val('');
-                $(this).find('input').prop("disabled", false);
-            });
-            var copyrow2 = $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 3).clone();
-            copyrow2.find('td').each(function( index ){
-                $(this).find('input').val('');
-                $(this).find('input').prop("disabled", false);
-            });
-            var copyrow3 = $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 2).clone();
-            var copyrow4 = $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 1).clone();
+        function AddRow(obj) {
+            
+            var NextRow = $(obj).parent().parent().next();
 
+            var html = '';
+            html += '<tr>';
+            html += ' <td style="vertical-align: middle">';
+            html += '<a href="javascript:return false;" Layer="" onclick="AddRow(this)"><i class="fas fa-plus-circle fa-2x"></i></a>';
+            html += '</td>';
+            html += '<td>';
+            html += '<input type="email" class="form-control data Layer" style="padding:12px 15px;" value="" />';
+            html += '</td>';
+            html += '<td>';
+            html += '<select class="form-control select2 data" id="Select" name="Select" style="height:45px">';
+            html += '<option selected="selected" value="Conductor">Conductor</option>';
+            html += '<option value="Dielectric">Dielectric</option>';
+            html += '<option value="Plane">Plane</option>';
+            html += '</select>';
+            html += '</td>';
+            html += '<td>';
+            html += '<input type="email" class="form-control data" style="padding:12px 15px;" value="" onchange="SetGroupName(this)" />';
+            html += '</td>';
+            html += '<td>';
+            html += '<input type="email" class="form-control data" style="padding:12px 15px;" value="" />';
+            html += '</td>';
+            html += '<td>';
+            html += ' <input type="email" class="form-control data" style="padding:12px 15px;" value="" />';
+            html += '</td>';
+            html += '<td>';
+            html += '<input type="email" class="form-control data" style="padding:12px 15px;" value="" />';
+            html += '</td>';
+            html += '<td>';
+            html += '<input type="email" class="form-control data" style="padding:12px 15px;" value="" />';
+            html += '</td>';
+            html += '<td>';
+            html += '<input type="email" class="form-control data Thickness" style="padding:12px 15px;" value="" onchange="GetTotal()" />';
+            html += '</td>';
+            html += '<td style="vertical-align: middle">';
+            html += '<a href="javascript:return false;" data-Layer="" onclick="DeleteRow(this)"><i class="fas fa-trash-alt fa-2x"></i></a>';
+            html += '</td>';
+            html += '</tr>';
 
-            $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 2).remove();
-            $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 1).remove();
+            html += '<tr>';
+            html += ' <td style="vertical-align: middle">';
+            html += '</td>';
+            html += '<td>';
+            html += '<input type="email" class="form-control data" style="padding:12px 15px;" value="" />';
+            html += '</td>';
+            html += '<td>';
+            html += '<select class="form-control select2 data" id="Select" name="Select" style="height:45px">';
+            html += '<option value="Conductor">Conductor</option>';
+            html += '<option selected="selected" value="Dielectric">Dielectric</option>';
+            html += '<option value="Plane">Plane</option>';
+            html += '</select>';
+            html += '</td>';
+            html += '<td>';
+            html += '<input type="email" class="form-control data" style="padding:12px 15px;background-color: gray;" value="" disabled="disabled" />';
+            html += '</td>';
+            html += '<td>';
+            html += '<input type="email" class="form-control data" style="padding:12px 15px;background-color: gray;" value="" disabled="disabled" />';
+            html += '</td>';
+            html += '<td>';
+            html += ' <input type="email" class="form-control data" style="padding:12px 15px;background-color: gray;" value="" disabled="disabled" />';
+            html += '</td>';
+            html += '<td>';
+            html += '<input type="email" class="form-control data" style="padding:12px 15px;background-color: gray;" value="" disabled="disabled" />';
+            html += '</td>';
+            html += '<td>';
+            html += '<input type="email" class="form-control data" style="padding:12px 15px;" value="" />';
+            html += '</td>';
+            html += '<td>';
+            html += '<input type="email" class="form-control data Thickness" style="padding:12px 15px;" value="" onchange="GetTotal()" />';
+            html += '</td>';
+            html += '<td style="vertical-align: middle">';
+            html += '</td>';
+            html += '</tr>';
 
-            $('#grid > tbody').append(copyrow1);
-            $('#grid > tbody').append(copyrow2);
-            $('#grid > tbody').append(copyrow3);
-            $('#grid > tbody').append(copyrow4);
+            NextRow.after(html);
+
+            ReSetData();
         }
 
-        function DeleteRow() {
-            if ($('#grid').length == 0) {
-                alert("請先上傳驗證檔案");
-                return;
-            }
+        function DeleteRow(obj) {
+            
+            var NextRow = $(obj).parent().parent().next();
 
-            if ($('#grid > tbody > tr').length <= 5) {
-                alert("已沒可刪除資料");
-                return;
-            }
+            NextRow.remove();
+            $(obj).parent().parent().remove();
 
-            $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 4).remove();
-            $('#grid > tbody > tr').eq($('#grid > tbody > tr').length - 3).remove();
+            ReSetData();
+        }
+
+        function ReSetData() {
+             
+            $.each($('#grid > tbody > tr').find('.Layer'), function (colIndex,col) {
+                $(col).val('L' + (colIndex + 1));   
+            });
         }
     </script>
 }

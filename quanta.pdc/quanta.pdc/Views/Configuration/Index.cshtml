@@ -4,560 +4,551 @@
 }
 
 <!-- [ Main Content ] start -->
-<section class="pcoded-main-container">
-    <div class="pcoded-wrapper">
-        <div class="pcoded-content">
-            <div class="pcoded-inner-content">
-                <!-- [ breadcrumb ] start -->
-                
-                <!-- [ breadcrumb ] end -->
-                <div class="page-content">
-                    <div class="page-info container">
-                        <div class="row">
-                            <div class="col">
-                                <nav aria-label="breadcrumb">
-                                    <ol class="breadcrumb">
-                                        <li class="breadcrumb-item"><a href="#">PDC - CNS平台</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">組態設定</li>
-                                    </ol>
-                                </nav>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="main-wrapper container">
-                        <!-- [ Main Content ] start -->
-                        <div class="row">
-                            <!-- [ Form Validation ] start -->
-                            <div class="col-lg-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <p class="card-title">@ViewData["Title"]</p>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <ul class="nav nav-pills card-header-tabs " role="tablist">
-                                                        <li class="nav-item">
-                                                            <a class="nav-link active" data-toggle="tab" href="#template" role="tab">CNS範本</a>
-                                                        </li>
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" data-toggle="tab" href="#home" role="tab">首頁連結區</a>
-                                                        </li>
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" data-toggle="tab" href="#column" role="tab">圖文說明</a>
-                                                        </li>
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" data-toggle="tab" href="#list" role="tab">清單與罐頭</a>
-                                                        </li>
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" data-toggle="tab" href="#other" role="tab">其他</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="tab-content" id="myTabContent">
-                                                        <div class="tab-pane fade show active" id="template" role="tabpanel" aria-labelledby="home-tab">
-                                                            <div class="row">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label>目前版本</label>
-                                                                        <input type="email" id="CNS_Version" class="form-control" placeholder="@Model.CNS_Sample.FileName" disabled="disabled">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label>上傳時間</label>
-                                                                        <input type="email" id="CNS_CreateDate" class="form-control" placeholder="@Model.CNS_Sample.CreatorDate" disabled="disabled">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label>上傳人員</label>
-                                                                        <input type="email" id="CNS_CreateName" class="form-control" placeholder="@Model.CNS_Sample.CreatorName" disabled="disabled">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row" style="padding: 20px 0px;">
-                                                                <div class="col-md-4"></div>
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label>更新範本</label>
-                                                                        <div class="input-group">
-                                                                            <div class="custom-file mb-3">
-                                                                                <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                                                                <label id="customFileTitle" class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4"></div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-4"></div>
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label>檢核結果</label>
-                                                                        <input type="email" id="CNS_ErrorMsg" class="form-control" placeholder="" disabled="disabled">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4"></div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-4"></div>
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label></label>
-                                                                        <div class="input-group">
-                                                                            <a href="#" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="uploadFile()">更新</a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4"></div>
+<section>
+    <div class="page-content">
+        <div class="page-info container">
+            <div class="row">
+                <div class="col">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">PDC - CNS平台</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">組態設定</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="main-wrapper container">
+            <!-- [ Main Content ] start -->
+            <div class="row">
+                <!-- [ Form Validation ] start -->
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-title">@ViewData["Title"]</p>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <ul class="nav nav-pills card-header-tabs " role="tablist">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" data-toggle="tab" href="#template" role="tab">CNS範本</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#home" role="tab">首頁連結區</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#column" role="tab">圖文說明</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#list" role="tab">清單與罐頭</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#other" role="tab">其他</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="tab-content" id="myTabContent">
+                                                <div class="tab-pane fade show active" id="template" role="tabpanel" aria-labelledby="home-tab">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>目前版本</label>
+                                                                <input type="email" id="CNS_Version" class="form-control" placeholder="@Model.CNS_Sample.FileName" disabled="disabled">
                                                             </div>
                                                         </div>
-                                                        <!-- 首頁連結區 -->
-                                                        <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="profile-tab">
-                                                            <div class="row">
-                                                                <div class="col-md-10">
-                                                                    <div class="form-group">
-                                                                        <label>顯示文字</label>
-                                                                        <input type="text" class="form-control" id="ParameterText" placeholder="New">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>上傳時間</label>
+                                                                <input type="email" id="CNS_CreateDate" class="form-control" placeholder="@Model.CNS_Sample.CreatorDate" disabled="disabled">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>上傳人員</label>
+                                                                <input type="email" id="CNS_CreateName" class="form-control" placeholder="@Model.CNS_Sample.CreatorName" disabled="disabled">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="padding: 20px 0px;">
+                                                        <div class="col-md-4"></div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>更新範本</label>
+                                                                <div class="input-group">
+                                                                    <div class="custom-file mb-3">
+                                                                        <input type="file" class="custom-file-input" id="customFile" name="filename">
+                                                                        <label id="customFileTitle" class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                                                     </div>
                                                                 </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4"></div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-4"></div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>檢核結果</label>
+                                                                <input type="email" id="CNS_ErrorMsg" class="form-control" placeholder="" disabled="disabled">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4"></div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-4"></div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label></label>
+                                                                <div class="input-group">
+                                                                    <a href="#" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="uploadFile()">更新</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4"></div>
+                                                    </div>
+                                                </div>
+                                                <!-- 首頁連結區 -->
+                                                <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="profile-tab">
+                                                    <div class="row">
+                                                        <div class="col-md-10">
+                                                            <div class="form-group">
+                                                                <label>顯示文字</label>
+                                                                <input type="text" class="form-control" id="ParameterText" placeholder="New">
+                                                            </div>
+                                                        </div>
 
-                                                                <div class="col-md-2">
-                                                                    <div class="form-group">
-                                                                        <label>同步於Check/驗證</label>
-                                                                        <select id="IsSync" class="form-control selectpicker">
-                                                                            <option value="1">是</option>
-                                                                            <option value="0">否</option>
-                                                                        </select>
-                                                                        @*<input type="text" class="form-control" placeholder="是/否">*@
+                                                        <div class="col-md-2">
+                                                            <div class="form-group">
+                                                                <label>同步於Check/驗證</label>
+                                                                <select id="IsSync" class="form-control selectpicker">
+                                                                    <option value="1">是</option>
+                                                                    <option value="0">否</option>
+                                                                </select>
+                                                                @*<input type="text" class="form-control" placeholder="是/否">*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <label>連結</label>
+                                                                <input type="email" id="Link" class="form-control" placeholder="http://sample.com/file">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <label>檔案</label>
+                                                                <div class="input-group">
+                                                                    <div class="custom-file mb-3">
+                                                                        <input type="file" class="custom-file-input" id="HomeLinkFile" name="filename">
+                                                                        <label class="custom-file-label" id="HomeLinkFileLabel" for="HomeLinkFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="row">
-                                                                <div class="col-md-5">
-                                                                    <div class="form-group">
-                                                                        <label>連結</label>
-                                                                        <input type="email" id="Link" class="form-control" placeholder="http://sample.com/file" >
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-5">
-                                                                    <div class="form-group">
-                                                                        <label>檔案</label>
-                                                                        <div class="input-group">
-                                                                            <div class="custom-file mb-3">
-                                                                                <input type="file" class="custom-file-input" id="HomeLinkFile" name="filename">
-                                                                                <label class="custom-file-label" id="HomeLinkFileLabel" for="HomeLinkFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <label></label>
-                                                                    <div class="input-group" style="padding-top: 10px;">
-                                                                        <a href="javascript:return false;" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="HomeLinkAdd()">新增</a>
-                                                                    </div>
-                                                                </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label></label>
+                                                            <div class="input-group" style="padding-top: 10px;">
+                                                                <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="HomeLinkAdd()">新增</a>
                                                             </div>
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <div class="table-responsive">
-                                                                        <table id="HomeLink" class="table table-striped" width="100%">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th scope="col" style="width: 5%;">#</th>
-                                                                                    <th scope="col" style="width: 30%;">顯示文字</th>
-                                                                                    <th scope="col" style="width: 10%;">類別</th>
-                                                                                    <th scope="col" style="width: 25%;">內容</th>
-                                                                                    <th scope="col" style="width: 10%;">同步 Check/驗證</th>
-                                                                                    <th scope="col" style="width: 20%;">功能</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                @foreach (PDC_Parameter item in Model.HomeLinkList)
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="table-responsive">
+                                                                <table id="HomeLink" class="table table-striped" width="100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th scope="col" style="width: 5%;">#</th>
+                                                                            <th scope="col" style="width: 30%;">顯示文字</th>
+                                                                            <th scope="col" style="width: 10%;">類別</th>
+                                                                            <th scope="col" style="width: 25%;">內容</th>
+                                                                            <th scope="col" style="width: 10%;">同步 Check/驗證</th>
+                                                                            <th scope="col" style="width: 20%;">功能</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach (PDC_Parameter item in Model.HomeLinkList)
                                                                                 {
                                                                                     PDC_File Fileitem = Model.HomeLinkFileList.Where(x => x.SourceID == item.ParameterID).FirstOrDefault();
-                                                                                    <tr>
-                                                                                        <td>@(Model.HomeLinkList.IndexOf(item) + 1)</td>
-                                                                                        <td>
-                                                                                            @item.ParameterText
-                                                                                        </td>
-                                                                                        <td>@(Fileitem.FileCategory == 2 ? "連結" : "檔案")</td>
-                                                                                        <td>@Fileitem.FileName</td>
-                                                                                        <td>@(item.IsSync ? "是" : "否")</td>
-                                                                                        <td>
-                                                                                            <a href="javascript:return false;" class="btn HomeLinkMoveUp @(Model.HomeLinkList.IndexOf(item) == 0 ? "btn-secondary" : "btn-info")" onclick="moveUp(this)" style=" padding: 4px 25px;">上移</a>
-                                                                                            <a href="javascript:return false;" class="btn HomeLinkMoveDown @(Model.HomeLinkList.IndexOf(item) == (Model.HomeLinkList.Count-1) ? "btn-secondary" : "btn-info")" onclick="moveDown(this)" style=" padding: 4px 25px;">下移</a>
-                                                                                            <a href="javascript:return false;" class="btn btn-danger" style=" padding: 4px 25px;" onclick="RowRemove(this)">刪除</a>
-                                                                                            <input type="hidden" value="@item.ParameterID" />
-                                                                                        </td>
-                                                                                    </tr>
+                                                                        <tr>
+                                                                            <td>@(Model.HomeLinkList.IndexOf(item) + 1)</td>
+                                                                            <td>
+                                                                                @item.ParameterText
+                                                                            </td>
+                                                                            <td>@(Fileitem.FileCategory == 2 ? "連結" : "檔案")</td>
+                                                                            <td>@Fileitem.FileName</td>
+                                                                            <td>@(item.IsSync ? "是" : "否")</td>
+                                                                            <td>
+                                                                                <a href="javascript:return false;" class="btn HomeLinkMoveUp @(Model.HomeLinkList.IndexOf(item) == 0 ? "btn-outline-secondary" : "btn-outline-info")" onclick="moveUp(this)" style=" padding: 4px 25px;">上移</a>
+                                                                                <a href="javascript:return false;" class="btn HomeLinkMoveDown @(Model.HomeLinkList.IndexOf(item) == (Model.HomeLinkList.Count-1) ? "btn-outline-secondary" : "btn-outline-info")" onclick="moveDown(this)" style=" padding: 4px 25px;">下移</a>
+                                                                                <a href="javascript:return false;" class="btn btn-outline-danger" style=" padding: 4px 25px;" onclick="RowRemove(this)">刪除</a>
+                                                                                <input type="hidden" value="@item.ParameterID" />
+                                                                            </td>
+                                                                        </tr>
                                                                                 }
-                                                                                
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
-                                                                    <div class="card-body">
-                                                                        <p class="card-title">Note</p>
-                                                                        <div class="form-group">
 
-                                                                            <ul>
-                                                                                <li>固定會增加一筆 Constraint 範本的檔案連結在最後，且該項目將同步於Check驗證。</li>
-                                                                            </ul>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                                    </tbody>
+                                                                </table>
                                                             </div>
-                                                        </div>
-                                                        <!-- 圖文說明 -->
-                                                        <div class="tab-pane fade" id="column" role="tabpanel" aria-labelledby="profile-tab">
-                                                            <div class="row">
-                                                                <div class="col-md-2"></div>
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label>路徑</label>
-                                                                        @*<input type="email" class="form-control" placeholder="PCB Layout Constraint/查詢">*@
-                                                                        @Html.DropDownList("PCB_Type", Model.PCBTypeList, new { @class = "form-control selectpicker" , onchange = "PCBchangeItem(this)" })
-                                                                    </div>
-                                                                </div>
+                                                            <div class="card-body">
+                                                                <p class="card-title">Note</p>
+                                                                <div class="form-group">
 
-                                                                <div class="col-md-2">
-                                                                    <div class="form-group">
-                                                                        <label>欄位</label>
-                                                                        @*<input type="email" class="form-control" placeholder="Project Name">*@
-                                                                        @Html.DropDownList("PCB_TypeItem", Model.PCBTypeItemList, new { @class = "form-control selectpicker" })
-                                                                    </div>
+                                                                    <ul>
+                                                                        <li>固定會增加一筆 Constraint 範本的檔案連結在最後，且該項目將同步於Check驗證。</li>
+                                                                    </ul>
                                                                 </div>
-                                                                <div class="col-md-2">
-                                                                    <label></label>
-                                                                    <div class="input-group" style="padding-top: 10px;">
-                                                                        <a href="javascript:return false;" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="SearchPCB()">查詢</a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-2"></div>
-                                                                <div class="col-md-8">
-                                                                    <div class="form-group">
-                                                                        <label>註解文字</label>
-                                                                        <textarea class="form-control" id="PCBControlTextarea1" rows="3"></textarea>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <label></label>
-                                                                    <div class="input-group" style="padding-top: 10px;">
-                                                                        <a href="javascript:return false;" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="SavePCB()">儲存</a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-2"></div>
-                                                                <div class="col-md-8">
-                                                                    <div class="card-body">
-                                                                        <p class="card-title">說明圖檔</p>
-                                                                        <div class="row">
-                                                                            <div class="col-md-5">
-                                                                                <div class="form-group">
-                                                                                    <label>圖檔顯示文字</label>
-                                                                                    <input type="email" id="PCBFileDesc" class="form-control" placeholder="註解圖3" >
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-md-5">
-                                                                                <div class="form-group">
-                                                                                    <label>檔案(限定PNG/JPG/BMP)</label>
-                                                                                    <div class="input-group">
-                                                                                        <div class="custom-file mb-3">
-                                                                                            <input type="file" class="custom-file-input" id="PCBFile" name="filename">
-                                                                                            <label class="custom-file-label" id="PCBFileLabel" for="PCBFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-md-2">
-                                                                                <label></label>
-                                                                                <div class="input-group" style="padding-top: 10px;">
-                                                                                    <a href="javascript:return false;" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick ="PCBFileAdd()">新增</a>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="table-responsive">
-                                                                            <table class="table table-striped" id="PCBFileList">
-                                                                                <thead>
-                                                                                    <tr>
-                                                                                        <th scope="col" style="width: 5%;">圖檔顯示文字</th>
-                                                                                        <th scope="col" style="width: 30%;">檔案</th>
-                                                                                        <th scope="col" style="width: 10%;">功能</th>
-                                                                                    </tr>
-                                                                                </thead>
-                                                                                <tbody>
-                                                                                    @*<tr>
-                                                                                        <td>註解圖1</td>
-                                                                                        <td>A1.jpg</td>
-                                                                                        <td>
-                                                                                            <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                    <tr>
-                                                                                        <td>註解圖2</td>
-                                                                                        <td>A2.jpg</td>
-                                                                                        <td>
-                                                                                            <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
-                                                                                        </td>
-                                                                                    </tr>*@
-                                                                                </tbody>
-                                                                            </table>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2"></div>
                                                             </div>
                                                         </div>
-                                                        <!-- 清單與罐頭 -->
-                                                        <div class="tab-pane fade" id="list" role="tabpanel" aria-labelledby="profile-tab">
-                                                            <div class="row">
-                                                                <div class="col-md-2"></div>
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label>類別</label>
-                                                                        @*<input type="email" class="form-control" placeholder="PCB Type 清單" disabled="disabled">*@
-                                                                        @Html.DropDownList("PCBParameterSelect", Model.PCBParameterList, new { @class = "form-control selectpicker" })
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <label></label>
-                                                                    <div class="input-group" style="padding-top: 10px;">
-                                                                        <a href="javascript:return false;" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="SearchPCBParameter()">查詢</a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2"></div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-2"></div>
-                                                                <div class="col-md-8">
-                                                                    <div class="card-body">
-                                                                        <p class="card-title">清單項目</p>
-                                                                        <div class="row">
-                                                                            <div class="col-md-2"></div>
-                                                                            <div class="col-md-6">
-                                                                                <div class="form-group">
-                                                                                    <label>項目名稱</label>
-                                                                                    <input type="email" id="PCBParameterText" class="form-control" placeholder="New Item" >
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-md-2">
-                                                                                <label></label>
-                                                                                <div class="input-group" style="padding-top: 10px;">
-                                                                                    <a href="javascript:return false;" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="PCBParameterAdd()">新增</a>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="col-md-2"></div>
-                                                                        </div>
-                                                                        <div class="table-responsive">
-                                                                            <table class="table table-striped" id="PCBParameterList">
-                                                                                <thead>
-                                                                                    <tr>
-                                                                                        <th scope="col" style="width: 20%;">#</th>
-                                                                                        <th scope="col" style="width: 40%;">項目名稱</th>
-                                                                                        <th scope="col" style="width: 40%;">功能</th>
-                                                                                    </tr>
-                                                                                </thead>
-                                                                                <tbody>
-                                                                                    
-                                                                                </tbody>
-                                                                            </table>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2"></div>
+                                                    </div>
+                                                </div>
+                                                <!-- 圖文說明 -->
+                                                <div class="tab-pane fade" id="column" role="tabpanel" aria-labelledby="profile-tab">
+                                                    <div class="row">
+                                                        <div class="col-md-2"></div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>路徑</label>
+                                                                @*<input type="email" class="form-control" placeholder="PCB Layout Constraint/查詢">*@
+                                                                @Html.DropDownList("PCB_Type", Model.PCBTypeList, new { @class = "form-control selectpicker" , onchange = "PCBchangeItem(this)" })
                                                             </div>
                                                         </div>
-                                                        <!-- 其他 -->
-                                                        <div class="tab-pane fade" id="other" role="tabpanel" aria-labelledby="profile-tab">
-                                                            <div class="card-body">
-                                                                <p class="card-title">適用範圍：Home</p>
-                                                                <div class="row">
-                                                                    <div class="col-md-2"></div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label>首頁公告訊息</label>
-                                                                            <textarea class="form-control" id="Announcement" rows="3">@Model.Announcement.ParameterText</textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <label></label>
-                                                                        <div class="input-group" style="padding-top: 10px;">
-                                                                            <a href="javascript:return false;" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="AnnouncementUpdate()">儲存</a>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2"></div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="card-body">
-                                                                <p class="card-title">適用範圍：Check/驗證</p>
-                                                                <div class="row">
-                                                                    <div class="col-md-2"></div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label>使用說明</label>
-                                                                            <textarea class="form-control" id="Description" rows="3">@Model.Description.ParameterText</textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <label></label>
-                                                                        <div class="input-group" style="padding-top: 10px;">
-                                                                            <a href="javascript:return false;" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="DescriptionUpdate()">儲存</a>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2"></div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="card-body">
-                                                                <p class="card-title">表單申請/派單/工作明細</p>
-                                                                <div class="row">
-                                                                    <div class="col-md-2"></div>
-                                                                    <div class="col-md-2">
-                                                                        <div class="form-group">
-                                                                            <label>申請者抽單</label>
-                                                                            <input type="email" class="form-control" placeholder="0.5" id="ApplyDraw" value="@Model.ApplyDraw.ParameterText">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <div class="form-group">
-                                                                            <label>派單退件</label>
-                                                                            <input type="email" class="form-control" placeholder="0.5" id="SendReturn"value="@Model.SendReturn.ParameterText">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <div class="form-group">
-                                                                            <label>處理-Release</label>
-                                                                            <input type="email" class="form-control" placeholder="0.5" id="Release"value="@Model.Release.ParameterText">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <div class="form-group">
-                                                                            <label>處理-Reject</label>
-                                                                            <input type="email" class="form-control" placeholder="0.5" id="Reject"value="@Model.Reject.ParameterText">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <label></label>
-                                                                        <div class="input-group" style="padding-top: 10px;">
-                                                                            <a href="javascript:return false;" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="ProjectTimeUpdate()">儲存</a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="card-body">
-                                                                <p class="card-title">適用範圍：驗證/表單申請</p>
-                                                                <div class="row">
-                                                                    <div class="col-md-2"></div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label>堆疊檢核提醒</label>
-                                                                            疊構線寬和間距
-                                                                            <div class="input-group" style="text-align: center; align-items: center;">
-                                                                                @*<input type="email" class="form-control" placeholder="≦/=/≧" disabled="disabled" style="width: 20px;">*@
-                                                                                @Html.DropDownList("SystemCategorySelect", new SelectList(Model.SystemCategoryList.Where(x => x.Value != "2" && x.Value != "4").ToList(), "Value", "Text",Model.FormApply.ParameterText), new { @class = "form-control selectpicker",@style = "width: 20px" })
-                                                                                <input type="email" class="form-control" placeholder="3.00" id="FormApplyValue" style="width: 20px;" value="@Model.FormApply.ParameterValue">
-                                                                                時，以下面訊息「提醒」使用者
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2"></div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-2"></div>
-                                                                    <div class="col-md-6">
-                                                                        <label>使用說明</label>
-                                                                        <textarea class="form-control" id="FormApplyDescription" rows="3">@Model.FormApply.ParameterDesc</textarea>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <label></label>
-                                                                        <div class="input-group" style="padding-top: 10px;">
-                                                                            <a href="javascript:return false;" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="FormApplyUpdate()">儲存</a>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2"></div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="card-body">
-                                                                <p class="card-title">適用範圍：工作明細</p>
-                                                                <div class="row">
-                                                                    <div class="col-md-2"></div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label>疊構檢核注意事項</label>
-                                                                            疊構線寬和間距
-                                                                            <div class="input-group" style="text-align: center; align-items: center;">
-                                                                                @Html.DropDownList("WorkDetailCategorySelect", new SelectList(Model.SystemCategoryList, "Value", "Text",Model.WorkDetail.ParameterText), new { @class = "form-control selectpicker", @style = "width: 20px" })
-                                                                                @*<input type="email" class="form-control" placeholder="<" disabled="disabled" style="width: 20px;">*@
-                                                                                <input type="email" class="form-control" placeholder="2.00" id="WorkDetailValue" style="width: 20px;" value="@Model.WorkDetail.ParameterValue">
-                                                                                時，顯示以下注意事項檔案
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2"></div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-2"></div>
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label>注意事項(限定PNG/JPG/BMP)</label>
-                                                                        <div class="input-group">
-                                                                            <div class="custom-file mb-3">
-                                                                                <input type="file" class="custom-file-input" id="WorkDetailFile" name="filename">
-                                                                                <label class="custom-file-label" for="WorkDetailFile" id="WorkDetailFileLabel" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <label></label>
-                                                                    <div class="input-group" style="padding-top: 10px;">
-                                                                        <a href="#" class="btn btn-primary" style=" padding: 4px 25px;" id="mail-compose" onclick="WorkDetailUpdate()">儲存</a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2"></div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-2"></div>
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label>檔案</label>
-                                                                        <div class="input-group" id="WorkDetailFileName">
-                                                                            @(Model.WorkDetail_File != null ? Model.WorkDetail_File.FileName : "")
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <label></label>
-                                                                    <div class="input-group" style="padding-top: 10px;@(Model.WorkDetail_File != null ? "" : "display: none;")" id="WorkDetailFileList" >
-                                                                        <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose" onclick="WorkDetailFileDelete(this)">刪除</a>
-                                                                        <input type="hidden" id="WorkDetailFileID" value="@(Model.WorkDetail_File != null ? Model.WorkDetail_File.FileID.ToString() : "")" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2"></div>
+
+                                                        <div class="col-md-2">
+                                                            <div class="form-group">
+                                                                <label>欄位</label>
+                                                                @*<input type="email" class="form-control" placeholder="Project Name">*@
+                                                                @Html.DropDownList("PCB_TypeItem", Model.PCBTypeItemList, new { @class = "form-control selectpicker" })
                                                             </div>
                                                         </div>
+                                                        <div class="col-md-2">
+                                                            <label></label>
+                                                            <div class="input-group" style="padding-top: 10px;">
+                                                                <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="SearchPCB()">查詢</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-2"></div>
+                                                        <div class="col-md-8">
+                                                            <div class="form-group">
+                                                                <label>註解文字</label>
+                                                                <textarea class="form-control" id="PCBControlTextarea1" rows="3"></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label></label>
+                                                            <div class="input-group" style="padding-top: 10px;">
+                                                                <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="SavePCB()">儲存</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-2"></div>
+                                                        <div class="col-md-8">
+                                                            <div class="card-body">
+                                                                <p class="card-title">說明圖檔</p>
+                                                                <div class="row">
+                                                                    <div class="col-md-5">
+                                                                        <div class="form-group">
+                                                                            <label>圖檔顯示文字</label>
+                                                                            <input type="email" id="PCBFileDesc" class="form-control" placeholder="註解圖3">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-5">
+                                                                        <div class="form-group">
+                                                                            <label>檔案(限定PNG/JPG/BMP)</label>
+                                                                            <div class="input-group">
+                                                                                <div class="custom-file mb-3">
+                                                                                    <input type="file" class="custom-file-input" id="PCBFile" name="filename">
+                                                                                    <label class="custom-file-label" id="PCBFileLabel" for="PCBFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <label></label>
+                                                                        <div class="input-group" style="padding-top: 10px;">
+                                                                            <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="PCBFileAdd()">新增</a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="table-responsive">
+                                                                    <table class="table table-striped" id="PCBFileList">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th scope="col" style="width: 5%;">圖檔顯示文字</th>
+                                                                                <th scope="col" style="width: 30%;">檔案</th>
+                                                                                <th scope="col" style="width: 10%;">功能</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @*<tr>
+                                                            <td>註解圖1</td>
+                                                            <td>A1.jpg</td>
+                                                            <td>
+                                                                <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>註解圖2</td>
+                                                            <td>A2.jpg</td>
+                                                            <td>
+                                                                <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                                            </td>
+                                                        </tr>*@
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2"></div>
+                                                    </div>
+                                                </div>
+                                                <!-- 清單與罐頭 -->
+                                                <div class="tab-pane fade" id="list" role="tabpanel" aria-labelledby="profile-tab">
+                                                    <div class="row">
+                                                        <div class="col-md-2"></div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>類別</label>
+                                                                @*<input type="email" class="form-control" placeholder="PCB Type 清單" disabled="disabled">*@
+                                                                @Html.DropDownList("PCBParameterSelect", Model.PCBParameterList, new { @class = "form-control selectpicker" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label></label>
+                                                            <div class="input-group" style="padding-top: 10px;">
+                                                                <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="SearchPCBParameter()">查詢</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2"></div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-2"></div>
+                                                        <div class="col-md-8">
+                                                            <div class="card-body">
+                                                                <p class="card-title">清單項目</p>
+                                                                <div class="row">
+                                                                    <div class="col-md-2"></div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label>項目名稱</label>
+                                                                            <input type="email" id="PCBParameterText" class="form-control" placeholder="New Item">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <label></label>
+                                                                        <div class="input-group" style="padding-top: 10px;">
+                                                                            <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="PCBParameterAdd()">新增</a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2"></div>
+                                                                </div>
+                                                                <div class="table-responsive">
+                                                                    <table class="table table-striped" id="PCBParameterList">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th scope="col" style="width: 20%;">#</th>
+                                                                                <th scope="col" style="width: 40%;">項目名稱</th>
+                                                                                <th scope="col" style="width: 40%;">功能</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2"></div>
+                                                    </div>
+                                                </div>
+                                                <!-- 其他 -->
+                                                <div class="tab-pane fade" id="other" role="tabpanel" aria-labelledby="profile-tab">
+                                                    <div class="card-body">
+                                                        <p class="card-title">適用範圍：Home</p>
+                                                        <div class="row">
+                                                            <div class="col-md-2"></div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label>首頁公告訊息</label>
+                                                                    <textarea class="form-control" id="Announcement" rows="3">@Model.Announcement.ParameterText</textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <label></label>
+                                                                <div class="input-group" style="padding-top: 10px;">
+                                                                    <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="AnnouncementUpdate()">儲存</a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <p class="card-title">適用範圍：Check/驗證</p>
+                                                        <div class="row">
+                                                            <div class="col-md-2"></div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label>使用說明</label>
+                                                                    <textarea class="form-control" id="Description" rows="3">@Model.Description.ParameterText</textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <label></label>
+                                                                <div class="input-group" style="padding-top: 10px;">
+                                                                    <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="DescriptionUpdate()">儲存</a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <p class="card-title">表單申請/派單/工作明細</p>
+                                                        <div class="row">
+                                                            <div class="col-md-2"></div>
+                                                            <div class="col-md-2">
+                                                                <div class="form-group">
+                                                                    <label>申請者抽單</label>
+                                                                    <input type="email" class="form-control" placeholder="0.5" id="ApplyDraw" value="@Model.ApplyDraw.ParameterText">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <div class="form-group">
+                                                                    <label>派單退件</label>
+                                                                    <input type="email" class="form-control" placeholder="0.5" id="SendReturn" value="@Model.SendReturn.ParameterText">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <div class="form-group">
+                                                                    <label>處理-Release</label>
+                                                                    <input type="email" class="form-control" placeholder="0.5" id="Release" value="@Model.Release.ParameterText">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <div class="form-group">
+                                                                    <label>處理-Reject</label>
+                                                                    <input type="email" class="form-control" placeholder="0.5" id="Reject" value="@Model.Reject.ParameterText">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <label></label>
+                                                                <div class="input-group" style="padding-top: 10px;">
+                                                                    <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="ProjectTimeUpdate()">儲存</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <p class="card-title">適用範圍：驗證/表單申請</p>
+                                                        <div class="row">
+                                                            <div class="col-md-2"></div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label>堆疊檢核提醒</label>
+                                                                    疊構線寬和間距
+                                                                    <div class="input-group" style="text-align: center; align-items: center;">
+                                                                        @*<input type="email" class="form-control" placeholder="≦/=/≧" disabled="disabled" style="width: 20px;">*@
+                                                                        @Html.DropDownList("SystemCategorySelect", new SelectList(Model.SystemCategoryList.Where(x => x.Value != "2" && x.Value != "4").ToList(), "Value", "Text",Model.FormApply.ParameterText), new { @class = "form-control selectpicker",@style = "width: 20px" })
+                                                                        <input type="email" class="form-control" placeholder="3.00" id="FormApplyValue" style="width: 20px;" value="@Model.FormApply.ParameterValue">
+                                                                        時，以下面訊息「提醒」使用者
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2"></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-2"></div>
+                                                            <div class="col-md-6">
+                                                                <label>使用說明</label>
+                                                                <textarea class="form-control" id="FormApplyDescription" rows="3">@Model.FormApply.ParameterDesc</textarea>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <label></label>
+                                                                <div class="input-group" style="padding-top: 10px;">
+                                                                    <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="FormApplyUpdate()">儲存</a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <p class="card-title">適用範圍：工作明細</p>
+                                                        <div class="row">
+                                                            <div class="col-md-2"></div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label>疊構檢核注意事項</label>
+                                                                    疊構線寬和間距
+                                                                    <div class="input-group" style="text-align: center; align-items: center;">
+                                                                        @Html.DropDownList("WorkDetailCategorySelect", new SelectList(Model.SystemCategoryList, "Value", "Text",Model.WorkDetail.ParameterText), new { @class = "form-control selectpicker", @style = "width: 20px" })
+                                                                        @*<input type="email" class="form-control" placeholder="<" disabled="disabled" style="width: 20px;">*@
+                                                                        <input type="email" class="form-control" placeholder="2.00" id="WorkDetailValue" style="width: 20px;" value="@Model.WorkDetail.ParameterValue">
+                                                                        時，顯示以下注意事項檔案
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-2"></div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>注意事項(限定PNG/JPG/BMP)</label>
+                                                                <div class="input-group">
+                                                                    <div class="custom-file mb-3">
+                                                                        <input type="file" class="custom-file-input" id="WorkDetailFile" name="filename">
+                                                                        <label class="custom-file-label" for="WorkDetailFile" id="WorkDetailFileLabel" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label></label>
+                                                            <div class="input-group" style="padding-top: 10px;">
+                                                                <a href="#" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="WorkDetailUpdate()">儲存</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2"></div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-2"></div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>檔案</label>
+                                                                <div class="input-group" id="WorkDetailFileName">
+                                                                    @(Model.WorkDetail_File != null ? Model.WorkDetail_File.FileName : "")
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <label></label>
+                                                            <div class="input-group" style="padding-top: 10px;@(Model.WorkDetail_File != null ? "" : "display: none;")" id="WorkDetailFileList">
+                                                                <a href="#" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose" onclick="WorkDetailFileDelete(this)">刪除</a>
+                                                                <input type="hidden" id="WorkDetailFileID" value="@(Model.WorkDetail_File != null ? Model.WorkDetail_File.FileID.ToString() : "")" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2"></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-
                             </div>
-                            <!-- [ Form Validation ] end -->
                         </div>
-                        <!-- [ Main Content ] end -->
                     </div>
+
+
                 </div>
+                <!-- [ Form Validation ] end -->
             </div>
+            <!-- [ Main Content ] end -->
         </div>
     </div>
 </section>
@@ -583,7 +574,7 @@
                 scrollX: false,
                 bPaginate: false, // 顯示換頁
                 ordering: false,  // 是否顯示header排序
-                
+
             });
             $('#PCBFileList').DataTable({
                 lengthChange: false,
@@ -592,7 +583,7 @@
                 scrollX: false,
                 bPaginate: false, // 顯示換頁
                 ordering: false,  // 是否顯示header排序
-                
+
             });
 
             $('#PCBParameterList').DataTable({
@@ -602,10 +593,10 @@
                 scrollX: false,
                 bPaginate: false, // 顯示換頁
                 ordering: false,  // 是否顯示header排序
-                
+
             });
-            
-            
+
+
             var table = $('#HomeLink').DataTable();
             var dd = table.rows().data().toArray();
 
@@ -613,7 +604,7 @@
                 row.order = index;
             });
 
-      
+
         });
 
         $('input[id=HomeLinkFile]').change(function () {
@@ -721,7 +712,7 @@
                     ]).draw(false);
 
                     var td = $('#PCBFileList tbody tr:last td:last');
-                    td.append("<a href=\"javascript:return false;\" class=\"btn btn-danger\" onclick=\"PCBFileRemove(this)\" style=\" padding: 4px 25px;\">刪除</a>");
+                    td.append("<a href=\"javascript:return false;\" class=\"btn btn-outline-danger\" onclick=\"PCBFileRemove(this)\" style=\" padding: 4px 25px;\">刪除</a>");
                     td.append('<input type="hidden" value="' + result.FileID + '" />');
 
                     $('#PCBFileDesc').val('');
@@ -761,7 +752,7 @@
                             ]).draw(false);
 
                         var td = $('#PCBFileList tbody tr:last td:last');
-                        td.append("<a href=\"javascript:return false;\" class=\"btn btn-danger\" onclick=\"PCBFileRemove(this)\" style=\" padding: 4px 25px;\">刪除</a>");
+                        td.append("<a href=\"javascript:return false;\" class=\"btn btn-outline-danger\" onclick=\"PCBFileRemove(this)\" style=\" padding: 4px 25px;\">刪除</a>");
                         td.append('<input type="hidden" value="' + row.FileID + '" />');
                     });
                 },
@@ -840,9 +831,9 @@
                     else
                         IsSync = "否";
 
-                    var td = "<a href=\"javascript:return false;\" class=\"btn HomeLinkMoveUp btn-info\" onclick=\"moveUp(this)\" style=\" padding: 4px 25px;\">上移</a>";
-                    td += "<a href=\"javascript:return false;\" class=\"btn HomeLinkMoveDown btn-info\" onclick=\"moveDown(this)\" style=\" padding: 4px 25px;\">下移</a>";
-                    td += "<a href=\"javascript:return false;\" class=\"btn btn-danger\" onclick=\"RowRemove(this)\" style=\" padding: 4px 25px;\">刪除</a>";
+                    var td = "<a href=\"javascript:return false;\" class=\"btn HomeLinkMoveUp btn-outline-info\" onclick=\"moveUp(this)\" style=\" padding: 4px 25px;\">上移</a>";
+                    td += "<a href=\"javascript:return false;\" class=\"btn HomeLinkMoveDown btn-outline-info\" onclick=\"moveDown(this)\" style=\" padding: 4px 25px;\">下移</a>";
+                    td += "<a href=\"javascript:return false;\" class=\"btn btn-outline-danger\" onclick=\"RowRemove(this)\" style=\" padding: 4px 25px;\">刪除</a>";
                     td += '<input type="hidden" value="' + result.m_HomeLinkFile.FileID + '" />';
 
                     $('#HomeLink').DataTable().row.add(
@@ -861,7 +852,7 @@
                     $.each(dd, function (index,row) {
                         row.order = index;
                     });
-                    
+
 
                     //var td = $('#HomeLink tbody tr:last td:last');
                     //td.append("<a href=\"javascript:return false;\" class=\"btn HomeLinkMoveUp btn-info\" onclick=\"moveUp(this)\" style=\" padding: 4px 25px;\">上移</a>");
@@ -883,11 +874,11 @@
         }
 
         function ResetCss(tableName) {
-            $('#' + tableName + ' .' + tableName + 'MoveUp').removeClass("btn-info").removeClass("btn-secondary").addClass("btn-info");
-            $('#' + tableName + ' .' + tableName + 'MoveDown').removeClass("btn-info").removeClass("btn-secondary").addClass("btn-info");
+            $('#' + tableName + ' .' + tableName + 'MoveUp').removeClass("btn-outline-info").removeClass("btn-outline-secondary").addClass("btn-outline-info");
+            $('#' + tableName + ' .' + tableName + 'MoveDown').removeClass("btn-outline-info").removeClass("btn-outline-secondary").addClass("btn-outline-info");
 
-            $('#' + tableName + ' tbody tr:first .' + tableName + 'MoveUp').removeClass("btn-info").addClass("btn-secondary");
-            $('#' + tableName + ' tbody tr:last .' + tableName + 'MoveDown').removeClass("btn-info").addClass("btn-secondary");
+            $('#' + tableName + ' tbody tr:first .' + tableName + 'MoveUp').removeClass("btn-outline-info").addClass("btn-outline-secondary");
+            $('#' + tableName + ' tbody tr:last .' + tableName + 'MoveDown').removeClass("btn-outline-info").addClass("btn-outline-secondary");
 
             $('#' + tableName).DataTable().column(0).nodes().each( function (cell, i) {
                 cell.innerHTML = i+1;
@@ -898,7 +889,7 @@
 
         // Move the row up
         function moveUp(which) {
-            if ($(which).hasClass('btn-secondary'))
+            if ($(which).hasClass('btn-outline-secondary'))
                 return;
 
             var tr = $(which).parents('tr');
@@ -908,7 +899,7 @@
 
 	    // Move the row down
         function moveDown(which) {
-            if ($(which).hasClass('btn-secondary'))
+            if ($(which).hasClass('btn-outline-secondary'))
                 return;
 
 	    	var tr = $(which).parents('tr');
@@ -991,7 +982,7 @@
                 complete: function (jqXHR, status) {
                 }
             });
-            
+
         }
 
         function SearchPCBParameter() {
@@ -1012,9 +1003,9 @@
                     $('#PCBParameterList').DataTable().clear().draw();
 
                     $.each(result, function (index, row) {
-                        var td = "<a href=\"javascript:return false;\" class=\"btn PCBParameterListMoveUp btn-info\" onclick=\"moveUp(this)\" style=\" padding: 4px 25px;\">上移</a>";
-                        td += "<a href=\"javascript:return false;\" class=\"btn PCBParameterListMoveDown btn-info\" onclick=\"moveDown(this)\" style=\" padding: 4px 25px;\">下移</a>";
-                        td += "<a href=\"javascript:return false;\" class=\"btn btn-danger\" onclick=\"PCBParameterRemove(this)\" style=\" padding: 4px 25px;\">刪除</a>";
+                        var td = "<a href=\"javascript:return false;\" class=\"btn PCBParameterListMoveUp btn-outline-info\" onclick=\"moveUp(this)\" style=\" padding: 4px 25px;\">上移</a>";
+                        td += "<a href=\"javascript:return false;\" class=\"btn PCBParameterListMoveDown btn-outline-info\" onclick=\"moveDown(this)\" style=\" padding: 4px 25px;\">下移</a>";
+                        td += "<a href=\"javascript:return false;\" class=\"btn btn-outline-danger\" onclick=\"PCBParameterRemove(this)\" style=\" padding: 4px 25px;\">刪除</a>";
                         td += '<input type="hidden" value="' + row.ParameterID + '" />';
 
                         $('#PCBParameterList').DataTable().row.add(
@@ -1083,7 +1074,7 @@
             formData.append('ParameterText', $('#PCBParameterText').val());
             formData.append('ParameterID', $('#PCBParameterSelect').val());
             formData.append('OrderNo', $('#PCBParameterList tbody tr').length + 1);
-            
+
 
             var _url = '@Url.Action("PCBParameterAdd", "Configuration")';
 
@@ -1094,9 +1085,9 @@
                 processData: false,  // tell jQuery not to process the data
                 contentType: false,  // tell jQuery not to set contentType
                 success: function (result) {
-                    var td = "<a href=\"javascript:return false;\" class=\"btn PCBParameterListMoveUp btn-info\" onclick=\"moveUp(this)\" style=\" padding: 4px 25px;\">上移</a>";
-                    td += "<a href=\"javascript:return false;\" class=\"btn PCBParameterListMoveDown btn-info\" onclick=\"moveDown(this)\" style=\" padding: 4px 25px;\">下移</a>";
-                    td += "<a href=\"javascript:return false;\" class=\"btn btn-danger\" onclick=\"PCBParameterRemove(this)\" style=\" padding: 4px 25px;\">刪除</a>";
+                    var td = "<a href=\"javascript:return false;\" class=\"btn PCBParameterListMoveUp btn-outline-info\" onclick=\"moveUp(this)\" style=\" padding: 4px 25px;\">上移</a>";
+                    td += "<a href=\"javascript:return false;\" class=\"btn PCBParameterListMoveDown btn-outline-info\" onclick=\"moveDown(this)\" style=\" padding: 4px 25px;\">下移</a>";
+                    td += "<a href=\"javascript:return false;\" class=\"btn btn-outline-danger\" onclick=\"PCBParameterRemove(this)\" style=\" padding: 4px 25px;\">刪除</a>";
                     td += '<input type="hidden" value="' + result.ParameterID + '" />';
 
                     $('#PCBParameterList').DataTable().row.add(
@@ -1112,7 +1103,7 @@
                     $.each(dd, function (index,row) {
                         row.order = index;
                     });
-                    
+
                     ResetCss("PCBParameterList");
                     $('#PCBParameterText').val('');
                 },

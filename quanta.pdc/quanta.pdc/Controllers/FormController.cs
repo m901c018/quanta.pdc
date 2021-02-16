@@ -29,5 +29,10 @@ namespace cns.Controllers
         {
             return View();
         }
+
+        public IActionResult FormQuery()
+        {
+            return View();
+        }
     }
 }

@@ -1,0 +1,286 @@
+﻿@*@model m_FormPartial*@
+@{
+    ViewData["Title"] = "表單資訊";
+}
+
+<div class="page-content">
+    <div class="page-info container">
+        <div class="row">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">PDC - CNS平台</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Query 查詢</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="main-wrapper container">
+        <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title" id="exampleModalCenterTitle"><i class="fas fa-info-circle" style="color: #36A1EA;"></i> 資訊說明</h1>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <i class="material-icons">close</i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        欄位注意事項及內容說明
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-title">查詢條件</p>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>公司別</label>
+                                    <input type="email" class="form-control" placeholder="QCI" disabled="disabled">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>事業群</label>
+                                    <input type="email" class="form-control" placeholder="BU3" disabled="disabled">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>申請者</label>
+                                    <input type="email" class="form-control" placeholder="Roger Chao(趙偉智)/ #10370" disabled="disabled">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>申請者編號 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                    <input type="email" class="form-control" placeholder="" disabled="disabled">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>申請者狀態 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                    <input type="email" class="form-control" placeholder="未送件/處理中/Release" disabled="disabled">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>查詢日期 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                    <input type="email" class="form-control" placeholder=" ~ " disabled="disabled">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>PCB Layout Status <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                    <input type="email" class="form-control" placeholder="New/Modify/RFQ" disabled="disabled">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>PCB Type <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                    <input type="email" class="form-control" placeholder="Non-HDI/Anylayer/FPC/Rigid-flex" disabled="disabled">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Project <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                    <input type="email" class="form-control" placeholder="XV1U" disabled="disabled">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>HDI/ Board Type Name <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                    <input type="email" class="form-control" placeholder="MB" disabled="disabled">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Rev. <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                    <input type="email" class="form-control" placeholder="A" disabled="disabled">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div style="padding-top: 10px;">
+                                    <a href="#" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">查詢紀錄</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body" style="padding-bottom: 0px;">
+                        <p class="card-title">查詢結果</p>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col" style="">申請單號</th>
+                                        <th scope="col" style="">單號順序</th>
+                                        <th scope="col" style="">申請狀態</th>
+                                        <th scope="col" style="width: 20%;">申請日期</th>
+                                        <th scope="col" style="">申請者</th>
+                                        <th scope="col" style="">PCB Layout Status</th>
+                                        <th scope="col" style="">Project</th>
+                                        <th scope="col" style="">Board Type</th>
+                                        <th scope="col" style="">Rev.</th>
+                                        <th scope="col" style="width: 30%;">PDC 負責人</th>
+                                        <th scope="col" style="">處理結果</th>
+                                        <th scope="col" style="">完成時間</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <a href="@Url.Action("FormApply", "Form")" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">CN000015</a>
+                                        </td>
+                                        <td></td>
+                                        <td>已完成</td>
+                                        <td>
+                                            2020/10/05<br>
+                                            10:25:32
+                                        </td>
+                                        <td>SC</td>
+                                        <td>New</td>
+                                        <td>XV1U</td>
+                                        <td>MB</td>
+                                        <td>A</td>
+                                        <td>
+                                            Roger Chao<br>
+                                            (趙偉智)/#10370
+                                        </td>
+                                        <td>Release</td>
+                                        <td>
+                                            2020/10/06<br>
+                                            13:51:00
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="@Url.Action("FormApply", "Form")" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">CN000147</a>
+                                        </td>
+                                        <td>1</td>
+                                        <td>處理中</td>
+                                        <td>
+                                            2020/10/08<br>
+                                            15:23:00
+                                        </td>
+                                        <td>SC</td>
+                                        <td>Modify</td>
+                                        <td>C53</td>
+                                        <td>AUDIO</td>
+                                        <td>C</td>
+                                        <td>
+                                            Roger Chao<br>
+                                            (趙偉智)/#10370
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="@Url.Action("FormApply", "Form")" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">CN000291</a>
+                                        </td>
+                                        <td></td>
+                                        <td>未送件</td>
+                                        <td></td>
+                                        <td>SC</td>
+                                        <td>New</td>
+                                        <td>J51</td>
+                                        <td>MB</td>
+                                        <td>B</td>
+                                        <td>
+                                            Roger Chao<br>
+                                            (趙偉智)/#10370
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Styles{
+    <!-- data tables css -->
+    <link rel="stylesheet" href="~/assets/plugins/data-tables/css/datatables.min.css">
+}
+
+@section Scripts {
+    <!-- datatable Js -->
+    <script src="~/assets/plugins/data-tables/js/datatables.min.js"></script>
+    <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#HomeLink').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: false,
+                scrollX: false,
+                bPaginate: false, // 顯示換頁
+                ordering: false,  // 是否顯示header排序
+
+            });
+            $('#PCBFileList').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: false,
+                scrollX: false,
+                bPaginate: false, // 顯示換頁
+                ordering: false,  // 是否顯示header排序
+
+            });
+
+            $('#PCBParameterList').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: false,
+                scrollX: false,
+                bPaginate: false, // 顯示換頁
+                ordering: false,  // 是否顯示header排序
+
+            });
+
+
+            var table = $('#HomeLink').DataTable();
+            var dd = table.rows().data().toArray();
+
+            $.each(dd, function (index, row) {
+                row.order = index;
+            });
+
+
+        });
+
+        $('input[id=HomeLinkFile]').change(function () {
+            $('#HomeLinkFileLabel').text($(this).val());
+        });
+
+    </script>
+}

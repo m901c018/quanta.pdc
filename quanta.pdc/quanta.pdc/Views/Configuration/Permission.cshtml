@@ -1,0 +1,362 @@
+﻿@*@model m_FormPartial*@
+@{
+    ViewData["Title"] = "Privilege 權限設定";
+}
+
+<div class="page-content">
+    <div class="page-info container">
+        <div class="row">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">PDC - CNS平台</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Privilege 權限設定</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="main-wrapper container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-pills card-header-tabs " role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#home" role="tab">PDC處理員</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#contact" role="tab">PDC指派員</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#profile" role="tab">PDC管理員</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="myTabContent">
+                            <!-- PDC處理員 -->
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="card-title">新增人員</p>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>工號</label>
+                                                    <input type="email" class="form-control" placeholder="100041F9">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>姓名</label>
+                                                    <input type="email" class="form-control" placeholder="Roger Chao(趙偉智)" disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>公司別</label>
+                                                    <input type="email" class="form-control" placeholder="QCI" disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>事業群</label>
+                                                    <input type="email" class="form-control" placeholder="PDC" disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label></label>
+                                                <div class="input-group" style="padding-top: 10px;">
+                                                    <a href="#" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">新增</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="card-title">清單</p>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover">
+                                                        <thead class="thead-dark">
+                                                            <tr>
+                                                                <th scope="col" style="width: 30%;">工號</th>
+                                                                <th scope="col" style="width: 30%;">姓名</th>
+                                                                <th scope="col" style="width: 20%;">公司別</th>
+                                                                <th scope="col" style="width: 20%;">事業群</th>
+                                                                <th scope="col" style="width: 10%;">功能</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>100041F10</td>
+                                                                <td>Roger Chao(趙偉智)/#10370</td>
+                                                                <td>QCI</td>
+                                                                <td>PDC</td>
+                                                                <td>
+                                                                    <a href="#" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>100041F11</td>
+                                                                <td>Roger Chao(趙偉智)/#10370</td>
+                                                                <td>QCI</td>
+                                                                <td>PDC</td>
+                                                                <td>
+                                                                    <a href="#" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>100041F12</td>
+                                                                <td>Roger Chao(趙偉智)/#10370</td>
+                                                                <td>QCI</td>
+                                                                <td>PDC</td>
+                                                                <td>
+                                                                    <a href="#" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- PDC指派員 -->
+                            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="card-title">新增人員</p>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>工號</label>
+                                                    <input type="email" class="form-control" placeholder="100041F10" disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>姓名</label>
+                                                    <input type="email" class="form-control" placeholder="Roger Chao(趙偉智)" disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>公司別</label>
+                                                    <input type="email" class="form-control" placeholder="QCI" disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>事業群</label>
+                                                    <input type="email" class="form-control" placeholder="PDC" disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>類別</label>
+                                                    <input type="email" class="form-control" placeholder="MB/其他" disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>Mail通知</label>
+                                                    <input type="email" class="form-control" placeholder="是/否" disabled="disabled">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <label></label>
+                                                <div class="input-group">
+                                                    <a href="#" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">新增</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="card-title">清單</p>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover">
+                                                        <thead class="thead-dark">
+                                                            <tr>
+                                                                <th scope="col" style="width: 30%;">工號</th>
+                                                                <th scope="col" style="width: 30%;">姓名</th>
+                                                                <th scope="col" style="width: 20%;">公司別</th>
+                                                                <th scope="col" style="width: 20%;">事業群</th>
+                                                                <th scope="col" style="width: 20%;">類別</th>
+                                                                <th scope="col" style="width: 20%;">Mail通知</th>
+                                                                <th scope="col" style="width: 10%;">功能</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>100041F10</td>
+                                                                <td>Roger Chao(趙偉智)/#10370</td>
+                                                                <td>QCI</td>
+                                                                <td>PDC</td>
+                                                                <td>MB</td>
+                                                                <td>是</td>
+                                                                <td>
+                                                                    <a href="#" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>100041F11</td>
+                                                                <td>Roger Chao(趙偉智)/#10370</td>
+                                                                <td>QCI</td>
+                                                                <td>PDC</td>
+                                                                <td>MB</td>
+                                                                <td>是</td>
+                                                                <td>
+                                                                    <a href="#" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>100041F12</td>
+                                                                <td>Roger Chao(趙偉智)/#10370</td>
+                                                                <td>QCI</td>
+                                                                <td>PDC</td>
+                                                                <td>其他</td>
+                                                                <td>是</td>
+                                                                <td>
+                                                                    <a href="#" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- PDC管理員 -->
+                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="card-title">新增人員</p>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>工號</label>
+                                                    <input type="email" class="form-control" placeholder="100041F10" disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>姓名</label>
+                                                    <input type="email" class="form-control" placeholder="Roger Chao(趙偉智)" disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>公司別</label>
+                                                    <input type="email" class="form-control" placeholder="QCI" disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>事業群</label>
+                                                    <input type="email" class="form-control" placeholder="PDC" disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label></label>
+                                                <div class="input-group" style="padding-top: 10px;">
+                                                    <a href="#" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">新增</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="card-title">清單</p>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover">
+                                                        <thead class="thead-dark">
+                                                            <tr>
+                                                                <th scope="col" style="width: 30%;">工號</th>
+                                                                <th scope="col" style="width: 30%;">姓名</th>
+                                                                <th scope="col" style="width: 20%;">公司別</th>
+                                                                <th scope="col" style="width: 20%;">事業群</th>
+                                                                <th scope="col" style="width: 10%;">功能</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>100041F10</td>
+                                                                <td>Roger Chao(趙偉智)/#10370</td>
+                                                                <td>QCI</td>
+                                                                <td>PDC</td>
+                                                                <td>
+                                                                    <a href="#" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>100041F11</td>
+                                                                <td>Roger Chao(趙偉智)/#10370</td>
+                                                                <td>QCI</td>
+                                                                <td>PDC</td>
+                                                                <td>
+                                                                    <a href="#" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>100041F12</td>
+                                                                <td>Roger Chao(趙偉智)/#10370</td>
+                                                                <td>QCI</td>
+                                                                <td>PDC</td>
+                                                                <td>
+                                                                    <a href="#" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- End of Main -->
+    </div>
+
+</div>
+
+@section Styles{
+    <!-- data tables css -->
+    <link rel="stylesheet" href="~/assets/plugins/data-tables/css/datatables.min.css">
+}
+
+@section Scripts {
+    <!-- datatable Js -->
+    <script src="~/assets/plugins/data-tables/js/datatables.min.js"></script>
+    <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+          
+    </script>
+}
