@@ -1536,7 +1536,9 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 .card .card-title {
-    margin-bottom: 20px;
+    /* Origin */
+    /*margin-bottom: 20px;*/
+    margin-bottom: 10px;
     font-size: 18px;
     font-weight: 700;
     text-transform: uppercase;
@@ -1579,7 +1581,12 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 .card .card-body {
-    padding: 25px
+    /* Origin */
+    /* padding: 25px; */
+    padding-bottom: 15px;
+    padding-top: 15px;
+    padding-right: 25px;
+    padding-left: 25px;
 }
 
 .card>.list-group:first-child .list-group-item:first-child {

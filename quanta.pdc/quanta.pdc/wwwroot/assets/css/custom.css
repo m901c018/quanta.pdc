@@ -1,1 +1,16 @@
 /* Write your custom CSS here */
+.info-list {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    align-items: stretch;
+    font-size: 13px;
+    font-weight: 700;
+    border-top: 1px solid #e8e8e8;
+    padding: 12px 25px;
+    -webkit-transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    -o-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+    line-height: 30px;
+}

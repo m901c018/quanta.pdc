@@ -105,7 +105,10 @@ body.dark-theme {
     /* User Suggestion */
     /* background: #595959; */
     /* Refine */
-    background: #313640;
+    /* background: #313640; */
+    /* Refine v2*/
+    background: #363c4a;
+    
     box-shadow: 0 0 .5rem rgba(0,0,0,.1);
 }
 
@@ -770,7 +773,7 @@ body.dark-theme {
 
 .dark-theme table.dataTable thead th,
 .dark-theme table.dataTable tfoot th {
-    color: #5E606E;
+    /*color: #5E606E;*/
 }
 
 .dark-theme .jstree-default .jstree-anchor:hover,
