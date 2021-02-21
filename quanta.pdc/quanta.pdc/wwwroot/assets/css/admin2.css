@@ -426,6 +426,17 @@ a:hover {
 
 }
 
+table {
+    /*display: block;*/
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+}
+
+th,td
+{
+    text-align: center;
+}
 
 /* Calendar */
 

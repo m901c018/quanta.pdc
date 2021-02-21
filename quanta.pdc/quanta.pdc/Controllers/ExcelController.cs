@@ -121,21 +121,35 @@ namespace cns.Controllers
 
                 return RedirectToAction("Download", new { fileName = Sample.FileFullName });
             }
+            else
+            {
+                //取得範例
+                MemoryStream stream = FileService.DownloadSampleFile();
 
-            //取得範例
-            MemoryStream stream = Helper.ExportExcelSample();
 
-            string sFileName = HttpUtility.UrlEncode("Sample.xlsx");
+                string sFileName = HttpUtility.UrlEncode("CNS_Sample" + DateTime.Now.ToString("_yyyyMMddHHmmss") + ".xlsx");
 
 
-            return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);
+                return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);
+            }
+            ////取得範例
+            //MemoryStream stream = Helper.ExportExcelSample();
+
+            //string sFileName = HttpUtility.UrlEncode("Sample.xlsx");
+
+
+            //return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);
         }
 
         [HttpPost]
         public IActionResult DownloadCheckFile([FromBody]object model)
         {
-            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             FileService FileService = new FileService(_hostingEnvironment, _context);
+            string SampleFilePath = "";
+            if (FileService.GetFileList("ConfigurationSample").Any())
+                SampleFilePath = FileService.GetFileList("ConfigurationSample").FirstOrDefault().FileFullName;
+
+            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment, SampleFilePath);
 
             var jsonString = JsonConvert.SerializeObject(model);
             m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
@@ -157,7 +171,10 @@ namespace cns.Controllers
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             FileService FileService = new FileService(_hostingEnvironment, _context);
             m_ExcelPartial ViewModel = new m_ExcelPartial();
+            ParameterService parameterService = new ParameterService(_context);
 
+            //組態設定線寬線距規則
+            ViewModel.m_ExcelRule = parameterService.GetParameterOne("ConfigurationFormApply");
             //Session紀錄
             DataTable ExcelDt = HttpContext.Session.GetObjectFromJson<DataTable>("SessionExcelData");
             //移除Session

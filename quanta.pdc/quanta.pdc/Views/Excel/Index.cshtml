@@ -130,7 +130,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <a href="javascript:window.open('@Url.Action("ExcelEdit", "Excel")?IsOnlyOnline=true')" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">開啟線上編輯</a>
+                                                    <a href="javascript:window.open('@Url.Action("ExcelEdit", "Excel")?IsOnlyOnline=true')" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">另開無檔編輯</a>
                                                     <input type="hidden" id="FileID" />
                                                 </div>
 
@@ -187,7 +187,7 @@
                                                     @*<input type="button" onclick="AddRow()" id="uploadExcel" value="新增欄位" class="btn-success" />
         <input type="button" onclick="DeleteRow()" id="uploadExcel" value="刪除欄位" class="btn-success" />*@
 
-                                                    <a href="javascript:window.open('@Url.Action("ExcelEdit", "Excel")')" class="btn btn-outline-success" style=" padding: 4px 25px; display:none" id="OpenOnlineEdit">線上修改</a>
+                                                    <a href="javascript:window.open('@Url.Action("ExcelEdit", "Excel")')" class="btn btn-outline-success" style=" padding: 4px 25px; display:none" id="OpenOnlineEdit">開啟線上編輯</a>
                                                     @*<a href="javascript:return false;" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose" onclick="SaveCheckFile()">執行檢測</a>*@
                                                     <br />
                                                     <br />
@@ -275,6 +275,7 @@
                 success: function (result) {
                     if (result.status == "400") {
                         alert(result.ErrorMessage);
+                        $('#showCover').text('Choose file');
                     }
                     else {
                         //$('#grid tbody').html(result);
@@ -298,12 +299,16 @@
                         GetTotal();
                         //驗證
                         SaveCheckFile();
+
+                        
                     }
                 },
                 error: function (jqXHR) {
-                    $('body').addClass('no-loader');
                 },
                 complete: function (jqXHR, status) {
+                    $('#lefile').val('');
+                    $('#FileID').val('');
+                    $('body').addClass('no-loader');
                 }
             });
         }

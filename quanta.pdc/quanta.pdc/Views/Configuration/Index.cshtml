@@ -62,7 +62,7 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label>上傳時間</label>
-                                                                <input type="email" id="CNS_CreateDate" class="form-control" placeholder="@Model.CNS_Sample.CreatorDate" disabled="disabled">
+                                                                <input type="email" id="CNS_CreateDate" class="form-control" placeholder="@(Model.CNS_Sample.CreatorDate.Year == 1 ? "" : Model.CNS_Sample.CreatorDate.ToString("yyyy/MM/dd HH:mm:ss"))" disabled="disabled">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
@@ -116,7 +116,7 @@
                                                         <div class="col-md-10">
                                                             <div class="form-group">
                                                                 <label>顯示文字</label>
-                                                                <input type="text" class="form-control" id="ParameterText" placeholder="New">
+                                                                <input type="text" class="form-control" id="ParameterText" placeholder="">
                                                             </div>
                                                         </div>
 
@@ -135,7 +135,7 @@
                                                         <div class="col-md-5">
                                                             <div class="form-group">
                                                                 <label>連結</label>
-                                                                <input type="email" id="Link" class="form-control" placeholder="http://sample.com/file">
+                                                                <input type="email" id="Link" class="form-control" placeholder="">
                                                             </div>
                                                         </div>
                                                         <div class="col-md-5">
@@ -159,8 +159,8 @@
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             <div class="table-responsive">
-                                                                <table id="HomeLink" class="table table-striped" width="100%">
-                                                                    <thead>
+                                                                <table id="HomeLink" class="table table-hover" style="width: 100%;">
+                                                                    <thead class="thead-dark">
                                                                         <tr>
                                                                             <th scope="col" style="width: 5%;">#</th>
                                                                             <th scope="col" style="width: 30%;">顯示文字</th>
@@ -256,7 +256,7 @@
                                                                     <div class="col-md-5">
                                                                         <div class="form-group">
                                                                             <label>圖檔顯示文字</label>
-                                                                            <input type="email" id="PCBFileDesc" class="form-control" placeholder="註解圖3">
+                                                                            <input type="email" id="PCBFileDesc" class="form-control" placeholder="">
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-5">
@@ -278,8 +278,8 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="table-responsive">
-                                                                    <table class="table table-striped" id="PCBFileList">
-                                                                        <thead>
+                                                                    <table class="table table-hover" id="PCBFileList" style="width: 100%;">
+                                                                        <thead class="thead-dark">
                                                                             <tr>
                                                                                 <th scope="col" style="width: 5%;">圖檔顯示文字</th>
                                                                                 <th scope="col" style="width: 30%;">檔案</th>
@@ -288,19 +288,19 @@
                                                                         </thead>
                                                                         <tbody>
                                                                             @*<tr>
-                                                            <td>註解圖1</td>
-                                                            <td>A1.jpg</td>
-                                                            <td>
-                                                                <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>註解圖2</td>
-                                                            <td>A2.jpg</td>
-                                                            <td>
-                                                                <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
-                                                            </td>
-                                                        </tr>*@
+                                                                                    <td>註解圖1</td>
+                                                                                    <td>A1.jpg</td>
+                                                                                    <td>
+                                                                                        <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>註解圖2</td>
+                                                                                    <td>A2.jpg</td>
+                                                                                    <td>
+                                                                                        <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                                                                    </td>
+                                                                                </tr>*@
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -338,7 +338,7 @@
                                                                     <div class="col-md-6">
                                                                         <div class="form-group">
                                                                             <label>項目名稱</label>
-                                                                            <input type="email" id="PCBParameterText" class="form-control" placeholder="New Item">
+                                                                            <input type="email" id="PCBParameterText" class="form-control" placeholder="">
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-2">
@@ -350,8 +350,8 @@
                                                                     <div class="col-md-2"></div>
                                                                 </div>
                                                                 <div class="table-responsive">
-                                                                    <table class="table table-striped" id="PCBParameterList">
-                                                                        <thead>
+                                                                    <table class="table table-hover" id="PCBParameterList" style="width: 100%;">
+                                                                        <thead class="thead-dark">
                                                                             <tr>
                                                                                 <th scope="col" style="width: 20%;">#</th>
                                                                                 <th scope="col" style="width: 40%;">項目名稱</th>
@@ -414,25 +414,25 @@
                                                             <div class="col-md-2">
                                                                 <div class="form-group">
                                                                     <label>申請者抽單</label>
-                                                                    <input type="email" class="form-control" placeholder="0.5" id="ApplyDraw" value="@Model.ApplyDraw.ParameterText">
+                                                                    <input type="email" class="form-control" placeholder="" id="ApplyDraw" value="@Model.ApplyDraw.ParameterText">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-2">
                                                                 <div class="form-group">
                                                                     <label>派單退件</label>
-                                                                    <input type="email" class="form-control" placeholder="0.5" id="SendReturn" value="@Model.SendReturn.ParameterText">
+                                                                    <input type="email" class="form-control" placeholder="" id="SendReturn" value="@Model.SendReturn.ParameterText">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-2">
                                                                 <div class="form-group">
                                                                     <label>處理-Release</label>
-                                                                    <input type="email" class="form-control" placeholder="0.5" id="Release" value="@Model.Release.ParameterText">
+                                                                    <input type="email" class="form-control" placeholder="" id="Release" value="@Model.Release.ParameterText">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-2">
                                                                 <div class="form-group">
                                                                     <label>處理-Reject</label>
-                                                                    <input type="email" class="form-control" placeholder="0.5" id="Reject" value="@Model.Reject.ParameterText">
+                                                                    <input type="email" class="form-control" placeholder="" id="Reject" value="@Model.Reject.ParameterText">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-2">
@@ -453,8 +453,8 @@
                                                                     疊構線寬和間距
                                                                     <div class="input-group" style="text-align: center; align-items: center;">
                                                                         @*<input type="email" class="form-control" placeholder="≦/=/≧" disabled="disabled" style="width: 20px;">*@
-                                                                        @Html.DropDownList("SystemCategorySelect", new SelectList(Model.SystemCategoryList.Where(x => x.Value != "2" && x.Value != "4").ToList(), "Value", "Text",Model.FormApply.ParameterText), new { @class = "form-control selectpicker",@style = "width: 20px" })
-                                                                        <input type="email" class="form-control" placeholder="3.00" id="FormApplyValue" style="width: 20px;" value="@Model.FormApply.ParameterValue">
+                                                                        @Html.DropDownList("SystemCategorySelect", new SelectList(Model.SystemCategoryList.Where(x => x.Value != "2" && x.Value != "4").ToList(), "Value", "Text",Model.FormApply.ParameterText), new { @class = "form-control selectpicker",@style = "width: 20px;height: 49px" })
+                                                                        <input type="email" class="form-control" placeholder="" id="FormApplyValue" style="width: 20px;" value="@Model.FormApply.ParameterValue">
                                                                         時，以下面訊息「提醒」使用者
                                                                     </div>
                                                                 </div>
@@ -485,9 +485,9 @@
                                                                     <label>疊構檢核注意事項</label>
                                                                     疊構線寬和間距
                                                                     <div class="input-group" style="text-align: center; align-items: center;">
-                                                                        @Html.DropDownList("WorkDetailCategorySelect", new SelectList(Model.SystemCategoryList, "Value", "Text",Model.WorkDetail.ParameterText), new { @class = "form-control selectpicker", @style = "width: 20px" })
+                                                                        @Html.DropDownList("WorkDetailCategorySelect", new SelectList(Model.SystemCategoryList, "Value", "Text",Model.WorkDetail.ParameterText), new { @class = "form-control selectpicker", @style = "width: 20px;height: 49px" })
                                                                         @*<input type="email" class="form-control" placeholder="<" disabled="disabled" style="width: 20px;">*@
-                                                                        <input type="email" class="form-control" placeholder="2.00" id="WorkDetailValue" style="width: 20px;" value="@Model.WorkDetail.ParameterValue">
+                                                                        <input type="email" class="form-control" placeholder="" id="WorkDetailValue" style="width: 20px;" value="@Model.WorkDetail.ParameterValue">
                                                                         時，顯示以下注意事項檔案
                                                                     </div>
                                                                 </div>
@@ -620,6 +620,9 @@
         });
 
         function PCBchangeItem(item) {
+            //loader
+            $('body').removeClass('no-loader');
+
             var ParameterID = $(item).val();
             var formData = new FormData();
             formData.append('ParameterID', ParameterID);
@@ -641,6 +644,7 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
         }
@@ -653,6 +657,9 @@
                 alert("清輸入註解文字");
                 return;
             }
+
+            //loader
+            $('body').removeClass('no-loader');
 
             var formData = new FormData();
             formData.append('ParameterID', ParameterID);
@@ -672,6 +679,7 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
         }
@@ -690,6 +698,9 @@
                 return;
             }
 
+            //loader
+            $('body').removeClass('no-loader');
+
             var formData = new FormData();
             formData.append('ParameterID', ParameterID);
             formData.append('FileDescription', PCBFileDesc);
@@ -704,6 +715,11 @@
                 processData: false,  // tell jQuery not to process the data
                 contentType: false,  // tell jQuery not to set contentType
                 success: function (result) {
+                    if (result.ErrorMsg) {
+                        alert(result.ErrorMsg);
+                        return;
+                    }
+
                     $('#PCBFileList').DataTable().row.add(
                     [
                         result.FileDescription,
@@ -715,12 +731,14 @@
                     td.append("<a href=\"javascript:return false;\" class=\"btn btn-outline-danger\" onclick=\"PCBFileRemove(this)\" style=\" padding: 4px 25px;\">刪除</a>");
                     td.append('<input type="hidden" value="' + result.FileID + '" />');
 
-                    $('#PCBFileDesc').val('');
-                    $('#PCBFile').val('');
+
                 },
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                    $('#PCBFileDesc').val('');
+                    $('#PCBFile').val('');
+                    $('body').addClass('no-loader');
                 }
             });
         }
@@ -729,6 +747,9 @@
             var ParameterID = $('#PCB_TypeItem').val();
             var formData = new FormData();
             formData.append('ParameterID', ParameterID);
+
+            //loader
+            $('body').removeClass('no-loader');
 
             var _url = '@Url.Action("SearchPCB", "Configuration")';
 
@@ -759,6 +780,7 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
         }
@@ -768,6 +790,9 @@
             var FileID = $(which).parents('tr').find('input[type=hidden]:eq(0)').val();
             var formData = new FormData();
             formData.append('FileID', FileID);
+
+            //loader
+            $('body').removeClass('no-loader');
 
             var _url = '@Url.Action("PCBFileRemove", "Configuration")';
 
@@ -788,6 +813,7 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
 	    }
@@ -802,6 +828,9 @@
                 alert("請輸入連結或檔案");
                 return;
             }
+
+            //loader
+            $('body').removeClass('no-loader');
 
             var formData = new FormData();
             formData.append('ParameterText', $('#ParameterText').val());
@@ -869,6 +898,7 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
         }
@@ -909,6 +939,9 @@
 
         function RowRemove(which) {
 
+            //loader
+            $('body').removeClass('no-loader');
+
             var ParameterID = $(which).parents('tr').find('input[type=hidden]:eq(0)').val();
             var formData = new FormData();
             formData.append('ParameterID', ParameterID);
@@ -934,6 +967,7 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
 	    }
@@ -964,6 +998,9 @@
             formData.append('ParameterID2', ParameterID2);
             formData.append('OrderNo2', data2[0]);
 
+            //loader
+            $('body').removeClass('no-loader');
+
             var _url = '@Url.Action("ParameterChangeOrderNo", "Configuration")';
 
             $.ajax({
@@ -980,6 +1017,7 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
 
@@ -989,6 +1027,9 @@
             var ParameterID = $('#PCBParameterSelect').val();
             var formData = new FormData();
             formData.append('ParameterID', ParameterID);
+
+            //loader
+            $('body').removeClass('no-loader');
 
             var _url = '@Url.Action("SearchPCBParameter", "Configuration")';
 
@@ -1028,6 +1069,7 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
         }
@@ -1037,6 +1079,9 @@
             var ParameterID = $(which).parents('tr').find('input[type=hidden]:eq(0)').val();
             var formData = new FormData();
             formData.append('ParameterID', ParameterID);
+
+            //loader
+            $('body').removeClass('no-loader');
 
             var _url = '@Url.Action("PCBParameterDelete", "Configuration")';
 
@@ -1059,6 +1104,7 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
 	    }
@@ -1069,6 +1115,8 @@
                 return;
             }
 
+            //loader
+            $('body').removeClass('no-loader');
 
             var formData = new FormData();
             formData.append('ParameterText', $('#PCBParameterText').val());
@@ -1110,9 +1158,11 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
         }
+
         $('input[id=customFile]').change(function () {
             $('#customFileTitle').text($(this).val());
         });
@@ -1120,6 +1170,9 @@
         function AnnouncementUpdate() {
             var formData = new FormData();
             formData.append('ParameterText', $('#Announcement').val());
+
+            //loader
+            $('body').removeClass('no-loader');
 
             var _url = '@Url.Action("UploadAnnouncement", "Configuration")';
 
@@ -1135,11 +1188,16 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
         }
 
         function DescriptionUpdate() {
+
+            //loader
+            $('body').removeClass('no-loader');
+
             var formData = new FormData();
             formData.append('ParameterText', $('#Description').val());
 
@@ -1157,11 +1215,15 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
         }
 
         function ProjectTimeUpdate() {
+            //loader
+            $('body').removeClass('no-loader');
+
             var formData = new FormData();
             formData.append('ApplyDrawText', $('#ApplyDraw').val());
             formData.append('SendReturnText', $('#SendReturn').val());
@@ -1182,11 +1244,15 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
         }
 
         function FormApplyUpdate() {
+            //loader
+            $('body').removeClass('no-loader');
+
             var formData = new FormData();
             formData.append('ParameterText', $('#SystemCategorySelect').val());
             formData.append('ParameterValue', $('#FormApplyValue').val());
@@ -1206,11 +1272,15 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
         }
 
         function WorkDetailUpdate() {
+            //loader
+            $('body').removeClass('no-loader');
+
             var formData = new FormData();
             formData.append('ParameterText', $('#WorkDetailCategorySelect').val());
             formData.append('ParameterValue', $('#WorkDetailValue').val());
@@ -1235,11 +1305,15 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
         }
 
         function WorkDetailFileDelete() {
+            //loader
+            $('body').removeClass('no-loader');
+
             var formData = new FormData();
             formData.append('FileID', $('#WorkDetailFileID').val());
 
@@ -1257,16 +1331,20 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
         }
 
         function uploadFile() {
+            //loader
+            $('body').removeClass('no-loader');
+
             var formData = new FormData();
             formData.append('pId', $('#hidPId').val());
             formData.append('file', $('#customFile')[0].files[0]); // myFile is the input type="file" control
 
-            var _url = '@Url.Action("UploadParameter", "Configuration")';
+            var _url = '@Url.Action("UploadFile", "Configuration")';
 
             $.ajax({
                 url: _url,
@@ -1288,6 +1366,7 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
+                     $('body').addClass('no-loader');
                 }
             });
 

@@ -8664,11 +8664,11 @@ a.btn-theme.active {
 
 /* Tabbable tabs */
 /* Hide tabbable panes to start, show them when `.active` */
-.tab-content {
+/*.tab-content {
   padding: 35px 30px;
   -webkit-box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.05);
           box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.05);
-}
+}*/
 .tab-content > .tab-pane {
   display: none;
 }

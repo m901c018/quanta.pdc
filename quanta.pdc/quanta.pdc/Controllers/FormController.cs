@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using cns.Data;
+using cns.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,8 +26,17 @@ namespace cns.Controllers
 
         }
 
+        [HttpGet]
         public IActionResult FormApply()
         {
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult FormApply(m_FormPartial model)
+        {
+          
             return View();
         }
 

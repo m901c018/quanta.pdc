@@ -92,8 +92,8 @@ namespace cns.Controllers
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             ParameterService parameterService = new ParameterService(_context);
             FileService FileService = new FileService(_hostingEnvironment, _context);
-            string userId = _userManager.GetUserId(HttpContext.User);
-            string userName = HttpContext.User.Identity.Name;
+            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
+            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
 
             m_ConfigurationPartial ViewModel = new m_ConfigurationPartial();
             if (!string.IsNullOrEmpty(Link))
@@ -175,8 +175,8 @@ namespace cns.Controllers
         public IActionResult ParameterChangeOrderNo(Int64 ParameterID1, Int64 ParameterID2, int OrderNo1, int OrderNo2)
         {
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
-            string userId = _userManager.GetUserId(HttpContext.User);
-            string userName = HttpContext.User.Identity.Name;
+            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
+            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
 
             ParameterService parameterService = new ParameterService(_context);
             FileService FileService = new FileService(_hostingEnvironment, _context);
@@ -266,8 +266,8 @@ namespace cns.Controllers
         public IActionResult SavePCB(Int64 ParameterID, string ParameterDesc)
         {
             ParameterService parameterService = new ParameterService(_context);
-            string userId = _userManager.GetUserId(HttpContext.User);
-            string userName = HttpContext.User.Identity.Name;
+            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
+            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
 
             PDC_Parameter m_PCBParameter = parameterService.GetParameterOne(ParameterID);
 
@@ -285,8 +285,19 @@ namespace cns.Controllers
         public IActionResult PCBFileAdd(IFormFile file, string FileDescription, Int64 ParameterID)
         {
             FileService FileService = new FileService(_hostingEnvironment, _context);
-            string userId = _userManager.GetUserId(HttpContext.User);
-            string userName = HttpContext.User.Identity.Name;
+            string FileExtension = Path.GetExtension(file.FileName).ToUpper().Replace(".", "");
+            List<string> CheckExtension = new List<string>();
+            CheckExtension.Add("PNG");
+            CheckExtension.Add("JPG");
+            CheckExtension.Add("BMP");
+            if(!CheckExtension.Where(x => x.Contains(FileExtension)).Any())
+            {
+                return Json(new { ErrorMsg= "檔案限定PNG/JPG/BMP" });
+            }
+
+
+            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
+            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
 
             PDC_File m_PCBFile = new PDC_File();
             string ErrorMsg = string.Empty;
@@ -351,8 +362,8 @@ namespace cns.Controllers
         public IActionResult UploadAnnouncement(string ParameterText)
         {
             ParameterService parameterService = new ParameterService(_context);
-            string userId = _userManager.GetUserId(HttpContext.User);
-            string userName = HttpContext.User.Identity.Name;
+            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
+            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
 
             string ErrorMsg = string.Empty;
 
@@ -373,8 +384,8 @@ namespace cns.Controllers
         {
             ParameterService parameterService = new ParameterService(_context);
 
-            string userId = _userManager.GetUserId(HttpContext.User);
-            string userName = HttpContext.User.Identity.Name;
+            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
+            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
 
             string ErrorMsg = string.Empty;
 
@@ -393,8 +404,8 @@ namespace cns.Controllers
         public IActionResult UploadProjectTime(string ApplyDrawText, string SendReturnText, string ReleaseText, string RejectText)
         {
             ParameterService parameterService = new ParameterService(_context);
-            string userId = _userManager.GetUserId(HttpContext.User);
-            string userName = HttpContext.User.Identity.Name;
+            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
+            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
 
             string ErrorMsg = string.Empty;
 
@@ -434,8 +445,8 @@ namespace cns.Controllers
         public IActionResult UploadFormApply(string ParameterText, string ParameterValue, string ParameterDesc)
         {
             ParameterService parameterService = new ParameterService(_context);
-            string userId = _userManager.GetUserId(HttpContext.User);
-            string userName = HttpContext.User.Identity.Name;
+            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
+            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
 
             string ErrorMsg = string.Empty;
 
@@ -512,8 +523,8 @@ namespace cns.Controllers
 
             m_ConfigurationPartial model = new m_ConfigurationPartial();
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
-            string userId = _userManager.GetUserId(HttpContext.User);
-            string userName = HttpContext.User.Identity.Name;
+            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
+            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
 
             Stream stream = file.OpenReadStream();
             //轉NPOI類型

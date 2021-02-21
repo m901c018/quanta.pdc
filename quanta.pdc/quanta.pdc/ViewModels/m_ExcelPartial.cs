@@ -66,6 +66,11 @@ namespace cns.ViewModels
         /// </summary>
         public List<SelectListItem> StackupTypeList { get; set; }
 
+        /// <summary> 組態設定線寬線距規則
+        /// 
+        /// </summary>
+        public PDC_Parameter m_ExcelRule { get; set; }
+
         public m_ExcelPartial()
         {
             StackupColumnList = new List<PDC_StackupColumn>();

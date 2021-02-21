@@ -773,7 +773,7 @@ body.dark-theme {
 
 .dark-theme table.dataTable thead th,
 .dark-theme table.dataTable tfoot th {
-    /*color: #5E606E;*/
+    color: #5E606E;
 }
 
 .dark-theme .jstree-default .jstree-anchor:hover,

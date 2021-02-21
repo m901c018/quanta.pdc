@@ -1,6 +1,6 @@
-﻿@*@model m_FormPartial*@
+﻿@model m_FormPartial
 @{
-    ViewData["Title"] = "表單資訊";
+    ViewData["Title"] = "表單資訊"; 
 }
 
 <div class="page-content">
@@ -15,247 +15,254 @@
                 </nav>
             </div>
         </div>
+        <div class"row"="">
+            <span style="color: #ffc107;">*功能仍在開發階段，尚未開放測試。</span>
+        </div>
     </div>
     <div class="main-wrapper container">
         <!-- 表頭 -->
         <div class="row">
             <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="card-title">@ViewData["Title"]</p>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>申請單編號</label>
-                                    <input type="email" class="form-control" placeholder="(系統自動產生)" disabled="disabled">
+                <form asp-action="FormApply" enctype="multipart/form-data">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-title">@ViewData["Title"]</p>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>申請單編號</label>
+                                        <input type="text" class="form-control" placeholder="(系統自動產生)" disabled="disabled">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>申請日期</label>
-                                    <input type="email" class="form-control" placeholder="2020/10/23 12:00:00" disabled="disabled">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>申請日期</label>
+                                        <input type="text" class="form-control" disabled="disabled" value="@DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>申請單狀態</label>
-                                    <input type="email" class="form-control" placeholder="未送件" disabled="disabled">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>公司別</label>
-                                    <input type="email" class="form-control" placeholder="QCI" disabled="disabled">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>事業群</label>
-                                    <input type="email" class="form-control" placeholder="PDC" disabled="disabled">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>申請者</label>
-                                    <input type="email" class="form-control" placeholder="Roger Chao(趙偉智)/ #10370" disabled="disabled">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>PCB Layout Status</label>
-                                    <input type="email" class="form-control" placeholder="New/RFQ/Modify" disabled="disabled">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>是否為MB</label>
-                                    <div class="input-group" style="color:#adb5bd">
-                                        <div class="custom-control custom-radio">
-                                            <input class="custom-control-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option3" disabled="">
-                                            <label class="custom-control-label" for="exampleRadios3" style="padding-right: 10px;">
-                                                MB
-                                            </label>
-                                        </div>
-                                        <div class="custom-control custom-radio">
-                                            <input class="custom-control-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option3" disabled="">
-                                            <label class="custom-control-label" for="exampleRadios3">
-                                                其他
-                                            </label>
-                                        </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>申請單狀態</label>
+                                        <input type="text" class="form-control" asp-for="m_PDC_Form.FormStatus" value="未送件"  disabled="disabled">
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>PCB Type</label>
-                                    <input type="email" class="form-control" placeholder="Non-HDI/HDI/Anylayer/FPC/Rigid-flex" disabled="disabled">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>公司別</label>
+                                        <input type="text" class="form-control" asp-for="m_PDC_Form.CompCode" value="QCI" >
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>事業群</label>
+                                        <input type="text" class="form-control" asp-for="m_PDC_Form.BUCode" value="PDC" >
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>申請者</label>
+                                        <input type="email" class="form-control" asp-for="m_PDC_Form.ApplierID" value="Roger Chao(趙偉智)/ #10370" disabled="disabled">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>PCB Layout Status</label>
+                                        <input type="email" class="form-control" placeholder="New/RFQ/Modify" disabled="disabled">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>是否為MB</label>
+                                        <div class="input-group">
+                                            <div class="custom-control custom-radio">
+                                                <input class="custom-control-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option3" disabled="">
+                                                <label class="custom-control-label" for="exampleRadios3" style="padding-right: 10px;">
+                                                    MB
+                                                </label>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input class="custom-control-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option3" disabled="">
+                                                <label class="custom-control-label" for="exampleRadios3">
+                                                    其他
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>PCB Type</label>
+                                        <input type="email" class="form-control" placeholder="Non-HDI/HDI/Anylayer/FPC/Rigid-flex" disabled="disabled">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Project</label>
+                                        <input type="email" class="form-control" placeholder="XV1U" disabled="disabled">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Board Type</label>
+                                        <input type="email" class="form-control" placeholder="MB" disabled="disabled">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Rev.</label>
+                                        <input type="email" class="form-control" placeholder="A" disabled="disabled">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Project Name</label>
-                                    <input type="email" class="form-control" placeholder="XV1U" disabled="disabled">
+                        <div class="card-body">
+                            <p class="card-title">Constraint Files</p>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <span>1. BRD 壓縮檔(限制Zip格式)</span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="custom-file mb-3">
+                                            <input type="file" asp-for="m_UplpadBRDFile" class="custom-file-input" id="UplpadBRDFile" >
+                                            <label id="UplpadBRDFileLabel" class="custom-file-label" for="UplpadBRDFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <a href="#">XV1U-brd.zip (2020/10/23)</a>
+                                        <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                    </div>
+                                    <div class="col-md-2">
+
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Board Type Name</label>
-                                    <input type="email" class="form-control" placeholder="MB" disabled="disabled">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <span>2. Constraint Excel</span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="custom-file mb-3">
+                                            <input type="file" asp-for="m_UplpadExcelFile" class="custom-file-input" id="UplpadExcelFile">
+                                            <label id="UplpadExcelFileLabel" class="custom-file-label" for="UplpadExcelFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <a href="#">XV1U-cns.xlsx (2020/10/23)</a>
+                                        <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a href="#" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">開啟線上編輯</a>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Rev.</label>
-                                    <input type="email" class="form-control" placeholder="A" disabled="disabled">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <span>3. pstchip.dat</span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="custom-file mb-3">
+                                            <input type="file" class="custom-file-input" id="customFile" name="filename">
+                                            <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <a href="#">pstchip.dat (2020/10/23)</a>
+                                        <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                    </div>
+                                    <div class="col-md-2">
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <span>4. pstxnet.dat</span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="custom-file mb-3">
+                                            <input type="file" class="custom-file-input" id="customFile" name="filename">
+                                            <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <a href="#">pstxnet.dat (2020/10/23)</a>
+                                        <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                    </div>
+                                    <div class="col-md-2">
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <span>5. pstxprt.dat</span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="custom-file mb-3">
+                                            <input type="file" class="custom-file-input" id="customFile" name="filename">
+                                            <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <a href="#">pstxprt.dat (2020/10/23)</a>
+                                        <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                    </div>
+                                    <div class="col-md-2">
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <span>6. 其他檔案</span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="custom-file mb-3">
+                                            <input type="file" class="custom-file-input" id="customFile" name="filename">
+                                            <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="padding-bottom: 10px;">
+                                        <li>
+                                            <a href="#">ChangeLog.xlsx (2020/10/23)</a>
+                                            <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Kickoff.msg (2020/10/23)</a>
+                                            <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                        </li>
+                                    </div>
+                                    <div class="col-md-2">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <span>意見</span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">增加減 Region</textarea>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="list-group">
+                                            <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                                                增加減 Region
+                                            </a>
+                                            <a href="#" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
+                                            <a href="#" class="list-group-item list-group-item-action">其他</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        @*<a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">暫存</a>*@
+                                        <button type="submit" class="btn btn-outline-success"style=" padding: 4px 25px;">暫存</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <p class="card-title">Constraint Files</p>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <span>1. BRD 壓縮檔(限制Zip格式)</span>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="custom-file mb-3">
-                                        <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                        <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="#">XV1U-brd.zip (2020/10/23)</a>
-                                    <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                </div>
-                                <div class="col-md-2">
-
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <span>2. Constraint Excel</span>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="custom-file mb-3">
-                                        <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                        <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="#">XV1U-cns.xlsx (2020/10/23)</a>
-                                    <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                </div>
-                                <div class="col-md-2">
-                                    <a href="#" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">開啟線上編輯</a>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <span>3. pstchip.dat</span>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="custom-file mb-3">
-                                        <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                        <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="#">pstchip.dat (2020/10/23)</a>
-                                    <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                </div>
-                                <div class="col-md-2">
-
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <span>4. pstxnet.dat</span>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="custom-file mb-3">
-                                        <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                        <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="#">pstxnet.dat (2020/10/23)</a>
-                                    <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                </div>
-                                <div class="col-md-2">
-
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <span>5. pstxprt.dat</span>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="custom-file mb-3">
-                                        <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                        <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="#">pstxprt.dat (2020/10/23)</a>
-                                    <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                </div>
-                                <div class="col-md-2">
-
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <span>6. 其他檔案</span>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="custom-file mb-3">
-                                        <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                        <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3" style="padding-bottom: 10px;">
-                                    <li>
-                                        <a href="#">ChangeLog.xlsx (2020/10/23)</a>
-                                        <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Kickoff.msg (2020/10/23)</a>
-                                        <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                    </li>
-                                </div>
-                                <div class="col-md-2">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <span>意見</span>
-                                </div>
-                                <div class="col-md-4">
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">增加減 Region</textarea>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="list-group">
-                                        <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-                                            增加減 Region
-                                        </a>
-                                        <a href="#" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
-                                        <a href="#" class="list-group-item list-group-item-action">其他</a>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <a href="#" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">暫存</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </form>
+                
             </div>
         </div>
         <div class="row">
@@ -263,8 +270,10 @@
                 <div class="card">
                     <div class="card-body" style="padding-bottom: 0px;">
                         <p class="card-title">Stackup</p>
-                        <div class="row">
-                            <div class="col-md-10"></div>
+                        <div class="row align-items-end">
+                            <div class="col-md-10">
+                                <span style="color: #ffc107;">*請務必使用最新版範本</span>
+                            </div>
                             <div class="col-md-1" style="text-align: center;">
                                 <br>unit: mil
                             </div>
@@ -440,7 +449,7 @@
                         <p class="card-title">表單紀錄</p>
                         <div class="table-responsive">
                             <table class="table table-hover">
-                                <thead>
+                                <thead class="thead-dark">
                                     <tr>
                                         <th scope="col" style="width: 5%;">序號</th>
                                         <th scope="col" style="width: 15%;">處理者</th>
@@ -569,48 +578,17 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            $('#HomeLink').DataTable({
-                lengthChange: false,
-                info: false,
-                searching: false,
-                scrollX: false,
-                bPaginate: false, // 顯示換頁
-                ordering: false,  // 是否顯示header排序
-
-            });
-            $('#PCBFileList').DataTable({
-                lengthChange: false,
-                info: false,
-                searching: false,
-                scrollX: false,
-                bPaginate: false, // 顯示換頁
-                ordering: false,  // 是否顯示header排序
-
-            });
-
-            $('#PCBParameterList').DataTable({
-                lengthChange: false,
-                info: false,
-                searching: false,
-                scrollX: false,
-                bPaginate: false, // 顯示換頁
-                ordering: false,  // 是否顯示header排序
-
-            });
-
-
-            var table = $('#HomeLink').DataTable();
-            var dd = table.rows().data().toArray();
-
-            $.each(dd, function (index, row) {
-                row.order = index;
-            });
+            
 
 
         });
 
-        $('input[id=HomeLinkFile]').change(function () {
-            $('#HomeLinkFileLabel').text($(this).val());
+        $('input[id=UplpadBRDFile]').change(function () {
+            $('#UplpadBRDFileLabel').text($(this).val());
+        });
+
+        $('input[id=UplpadExcelFile]').change(function () {
+            $('#UplpadExcelFileLabel').text($(this).val());
         });
 
     </script>

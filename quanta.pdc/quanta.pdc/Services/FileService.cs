@@ -54,10 +54,31 @@ namespace cns.Services
             return FilePath;
         }
 
+        /// <summary> 下載檔案
+        /// 
+        /// </summary>
+        /// <param name="FileName">檔案名</param>
+        /// <returns></returns>
         public MemoryStream DownloadFile(string FileName)
         {
             //檔案名
             var FilePath = rootPath + "\\FileUpload\\" + FileName;
+            MemoryStream fileStream = new MemoryStream();
+
+            using (FileStream file = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
+                file.CopyTo(fileStream);
+
+            return fileStream;
+        }
+
+        /// <summary> 下載範例檔案
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public MemoryStream DownloadSampleFile()
+        {
+            //檔案名
+            var FilePath = rootPath + "\\File\\CNS_Sample.xlsx";
             MemoryStream fileStream = new MemoryStream();
 
             using (FileStream file = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
