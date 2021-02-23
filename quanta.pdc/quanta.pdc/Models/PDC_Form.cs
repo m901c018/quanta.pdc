@@ -19,13 +19,13 @@ namespace cns.Models
         /// <summary>
         /// 申請者編號
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "必填")]
         [MaxLength(64)]
         public string AppliedFormNo { get; set; }
         /// <summary>
         /// 申請單狀態
         /// </summary>
-        [Required]
+        [Required(ErrorMessage ="必填")]
         [MaxLength(10)]
         public string FormStatus { get; set; }
         /// <summary>
@@ -41,7 +41,7 @@ namespace cns.Models
         /// <summary>
         /// 申請者
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "必填")]
         public string ApplierID { get; set; }
         /// <summary>
         /// PCBLayoutStatus
@@ -51,7 +51,7 @@ namespace cns.Models
         /// <summary>
         /// 是否為MB
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "必填")]
         public Boolean IsMB { get; set; }
         /// <summary>
         /// PCBType
@@ -61,16 +61,19 @@ namespace cns.Models
         /// 專案名稱
         /// </summary>
         [MaxLength(64)]
+        [Required(ErrorMessage = "必填")]
         public string ProjectName { get; set; }
         /// <summary>
         /// BoardTypeName
         /// </summary>
         [MaxLength(64)]
+        [Required(ErrorMessage = "必填")]
         public string BoardTypeName { get; set; }
         /// <summary>
         /// Rev
         /// </summary>
         [MaxLength(256)]
+        [Required(ErrorMessage = "必填")]
         public string Revision { get; set; }
         /// <summary>
         /// 建立者

@@ -23,7 +23,7 @@
         <!-- 表頭 -->
         <div class="row">
             <div class="col-lg-12">
-                <form asp-action="FormApply" enctype="multipart/form-data" id="FormApply">
+                <form asp-action="FormApply" enctype="multipart/form-data">
                     @*<div asp-validation-summary="All"></div>*@
                     <div class="card">
                         <div class="card-body">
@@ -32,13 +32,13 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>申請單編號</label>
-                                        <input type="text" class="form-control" placeholder="(系統自動產生)" disabled="disabled">
+                                        <input type="text" class="form-control" asp-for="m_PDC_Form.AppliedFormNo"  disabled="disabled">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>申請日期</label>
-                                        <input type="text" class="form-control" disabled="disabled" value="@DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")">
+                                        <input type="text" class="form-control" disabled="disabled" asp-for="m_PDC_Form.CreatorDate" value="@Model.m_PDC_Form.CreatorDate.ToString("yyyy/MM/dd HH:mm:ss")">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -64,7 +64,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>申請者</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.ApplierID" value="TestUser" disabled="disabled">
+                                        <input type="email" class="form-control" asp-for="m_PDC_Form.ApplierID" value="TestUser" disabled="disabled">
                                     </div>
                                 </div>
                             </div>
@@ -72,7 +72,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>PCB Layout Status</label>
-                                        <select class="select2 form-control" asp-for="m_PDC_Form.PCBLayoutStatus" >
+                                        <select class="select2 form-control" asp-for="m_PDC_Form.PCBLayoutStatus" disabled="disabled">
                                             <option value="New">New</option>
                                             <option value="RFQ">RFQ</option>
                                             <option value="Modify">Modify</option>
@@ -123,7 +123,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Project</label>
-                                        <input type="text" asp-for="m_PDC_Form.ProjectName" class="form-control">
+                                        <input type="email" asp-for="m_PDC_Form.ProjectName" class="form-control">
                                         <div class="input-group">
                                             <span asp-validation-for="m_PDC_Form.ProjectName" class="text-danger"></span>
                                         </div>
@@ -132,7 +132,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Board Type</label>
-                                        <input type="text" asp-for="m_PDC_Form.BoardTypeName" class="form-control">
+                                        <input type="email" asp-for="m_PDC_Form.BoardTypeName" class="form-control">
                                         <div class="input-group">
                                             <span asp-validation-for="m_PDC_Form.BoardTypeName" class="text-danger"></span>
                                         </div>
@@ -141,7 +141,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Rev.</label>
-                                        <input type="text" asp-for="m_PDC_Form.Revision" class="form-control">
+                                        <input type="email" asp-for="m_PDC_Form.Revision" class="form-control">
                                         <div class="input-group">
                                             <span asp-validation-for="m_PDC_Form.Revision" class="text-danger"></span>
                                         </div>
@@ -161,14 +161,15 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="custom-file mb-3">
-                                            <input type="file" asp-for="m_UplpadBRDFile" class="custom-file-input" id="UplpadBRDFile" accept=".zip" >
+                                            <input type="file" asp-for="m_UplpadBRDFile" class="custom-file-input" id="UplpadBRDFile">
                                             <label id="UplpadBRDFileLabel" class="custom-file-label" for="UplpadBRDFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         @if (Model.m_BRDFile != null)
                                         {
-                                            <a href="#">@Model.m_BRDFile.FileName (@Model.m_BRDFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                            var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_BRDFile.FileID;
+                                            <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_BRDFile.FileName (@Model.m_BRDFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
                                             <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
                                         }
                                     </div>
@@ -185,19 +186,20 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="custom-file mb-3">
-                                            <input type="file" asp-for="m_UplpadExcelFile" class="custom-file-input" id="UplpadExcelFile" accept=".xlsx">
+                                            <input type="file" asp-for="m_UplpadExcelFile" class="custom-file-input" id="UplpadExcelFile">
                                             <label id="UplpadExcelFileLabel" class="custom-file-label" for="UplpadExcelFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         @if (Model.m_ExcelFile != null)
                                         {
-                                            <a href="#">@Model.m_ExcelFile.FileName (@Model.m_ExcelFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                            var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_ExcelFile.FileID;
+                                            <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_ExcelFile.FileName (@Model.m_ExcelFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
                                             <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
                                         }
                                     </div>
                                     <div class="col-md-2">
-                                        <a href="javascript:window.open('@Url.Action("ExcelEdit", "Excel")?IsOnlyOnline=true')" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">另開無檔編輯</a>
+                                        <a href="#" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">開啟線上編輯</a>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -209,14 +211,15 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="custom-file mb-3">
-                                            <input type="file" asp-for="m_UplpadpstchipFile" class="custom-file-input" id="UplpadpstchipFile" accept=".dat">
+                                            <input type="file" asp-for="m_UplpadpstchipFile" class="custom-file-input" id="UplpadpstchipFile">
                                             <label id="UplpadpstchipFileLabel" class="custom-file-label" for="UplpadpstchipFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         @if (Model.m_pstchipFile != null)
                                         {
-                                            <a href="#">@Model.m_pstchipFile.FileName (@Model.m_pstchipFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                            var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_pstchipFile.FileID;
+                                            <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstchipFile.FileName (@Model.m_pstchipFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
                                             <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
                                         }
                                     </div>
@@ -233,14 +236,15 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="custom-file mb-3">
-                                            <input type="file" asp-for="m_UplpadpstxnetFile" class="custom-file-input" id="UplpadpstxnetFile" accept=".dat">
+                                            <input type="file" asp-for="m_UplpadpstxnetFile" class="custom-file-input" id="UplpadpstxnetFile">
                                             <label id="UplpadpstxnetFileLabel" class="custom-file-label" for="UplpadpstxnetFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         @if (Model.m_pstxnetFile != null)
                                         {
-                                            <a href="#">@Model.m_pstxnetFile.FileName (@Model.m_pstxnetFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                            var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_pstxnetFile.FileID;
+                                            <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstxnetFile.FileName (@Model.m_pstxnetFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
                                             <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
                                         }
                                     </div>
@@ -257,14 +261,15 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="custom-file mb-3">
-                                            <input type="file" asp-for="m_UplpadpstxprtFile" class="custom-file-input" id="UplpadpstxprtFile" accept=".dat">
+                                            <input type="file" asp-for="m_UplpadpstxprtFile" class="custom-file-input" id="UplpadpstxprtFile">
                                             <label id="UplpadpstxprtFileLabel" class="custom-file-label" for="UplpadpstxprtFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         @if (Model.m_pstxprtFile != null)
                                         {
-                                            <a href="#">@Model.m_pstxprtFile.FileName (@Model.m_pstxprtFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                            var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_pstxprtFile.FileID;
+                                            <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstxprtFile.FileName (@Model.m_pstxprtFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
                                             <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
                                         }
                                     </div>
@@ -285,17 +290,18 @@
                                     <div class="col-md-3" style="padding-bottom: 10px;">
                                         @if (Model.m_Other != null)
                                         {
-                                            <a href="#">@Model.m_Other.FileName (@Model.m_Other.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                            var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_Other.FileID;
+                                            <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_Other.FileName (@Model.m_Other.CreatorDate.ToString("yyyy/MM/dd"))</a>
                                             <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
                                         }
                                         @*<li>
-                                            <a href="#">ChangeLog.xlsx (2020/10/23)</a>
-                                            <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Kickoff.msg (2020/10/23)</a>
-                                            <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                        </li>*@
+            <a href="#">ChangeLog.xlsx (2020/10/23)</a>
+            <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+        </li>
+        <li>
+            <a href="#">Kickoff.msg (2020/10/23)</a>
+            <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+        </li>*@
                                     </div>
                                     <div class="col-md-2">
                                     </div>
@@ -305,7 +311,7 @@
                                         <span>意見</span>
                                     </div>
                                     <div class="col-md-4">
-                                        <textarea class="form-control" id="exampleFormControlTextarea1" asp-for="Result" rows="3">增加減 Region</textarea>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">增加減 Region</textarea>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="list-group">
@@ -317,9 +323,8 @@
                                         </div>
                                     </div>
                                     <div class="col-md-2">
-                                        <input type="hidden" asp-for="IsSendApply" id="IsSeedApply" value="false" />
                                         @*<a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">暫存</a>*@
-                                        <button type="submit" class="btn btn-outline-success" id="SaveApply" style=" padding: 4px 25px;">暫存</button>
+                                        <button type="submit" class="btn btn-outline-success" style=" padding: 4px 25px;">暫存</button>
                                     </div>
                                 </div>
                             </div>
@@ -360,7 +365,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                   
+                                    @for (int i = 0; i <= Model.ExcelDt.Rows.Count - 1; i++)
+                                    {
+                                    <tr>
+                                        <td>@Model.ExcelDt.Rows[i][0]</td>
+                                        <td>@Model.ExcelDt.Rows[i][1]</td>
+                                        <td>@Model.ExcelDt.Rows[i][2]</td>
+                                        <td>@Model.ExcelDt.Rows[i][3]</td>
+                                        <td>@Model.ExcelDt.Rows[i][4]</td>
+                                        <td>@Model.ExcelDt.Rows[i][5]</td>
+                                        <td>@Model.ExcelDt.Rows[i][6]</td>
+                                        <td>@Model.ExcelDt.Rows[i][7]</td>
+                                    </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -368,7 +385,7 @@
                             <p class="card-title">Stackup 檢測</p>
                             <div class="row">
                                 <div class="col-md-8">
-                                    <textarea class="form-control" id="ErrorMsg" rows="3" disabled="disabled"></textarea>
+                                    <textarea class="form-control" id="ErrorMsg" rows="3" disabled="disabled">@(Model.ErrorMsg ?? "驗證成功!")</textarea>
                                 </div>
                                 <div class="col-md-4">
                                     <a href="javascript:window.open('@Url.Action("ExcelEdit", "Excel")')" class="btn btn-outline-success" style=" padding: 4px 25px; display:none" id="OpenOnlineEdit">開啟線上編輯</a>
@@ -376,7 +393,7 @@
                                     <br />
                                     <br />
                                     <a href="javascript:return false;" class="btn btn-outline-danger" style=" padding: 4px 25px;display:none" id="downloadError">下載錯誤明細</a>
-                                    <a href="javascript:return false;" class="btn btn-outline-warning" style=" padding: 4px 25px;display:none" onclick="SeedApply()" id="SendApply">送出申請</a>
+                                    <a href="javascript:return false;" class="btn btn-outline-warning" style=" padding: 4px 25px;display:none" id="SendApply">送出申請</a>
                                     @*<a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;display:none" id="disApply">抽單</a>*@
                                 </div>
                             </div>
@@ -398,7 +415,190 @@
                 </div>
             </div>
         </div>
-   
+        <!-- PDC 處理結果 -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-title">PDC 處理結果</p>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>處理人員</label>
+                                <input type="email" class="form-control" placeholder="Roger Chao(趙偉智)/ #10370" disabled="disabled">
+                            </div>
+                            <div class="col-md-4">
+                                <label>處理結果</label>
+                                <input type="email" class="form-control" placeholder="Release" disabled="disabled">
+                            </div>
+                            <div class="col-md-4">
+                                <label>簽核時間</label>
+                                <input type="email" class="form-control" placeholder="2020/11/03 15:30" disabled="disabled">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <label>簽核意見</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">請參考附檔</textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label>附件</label>
+                                <ul>
+                                    <li>
+                                        <a href="#">XV1U_A.docx</a>
+                                        <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="#">補充說明.txt</a>
+                                        <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 表單紀錄 -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-title">表單紀錄</p>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col" style="width: 5%;">序號</th>
+                                        <th scope="col" style="width: 15%;">處理者</th>
+                                        <th scope="col" style="width: 10%;">關卡</th>
+                                        <th scope="col" style="width: 20%;">處理意見</th>
+                                        <th scope="col" style="width: 10%;">附件</th>
+                                        <th scope="col" style="width: 10%;">處理時間</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="thead-dark">
+                                    @for (int i = Model.PDC_Form_StageLogList.Count; i > 0; i--)
+                                    {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@Model.PDC_Form_StageLogList[(i - 1)].CreatorName</td>
+                                        <td>@Model.PDC_Form_StageLogList[(i - 1)].StageName</td>
+                                        <td>@Model.PDC_Form_StageLogList[(i - 1)].Result</td>
+                                        <td>
+                                            <ul style="text-align: left;">
+                                                @foreach (PDC_File item in Model.PDC_Form_StageLogFileList.Where(x => x.SourceID == Model.PDC_Form_StageLogList[(i - 1)].StageLogID))
+                                                {
+                                                    var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + item.FileID;
+                                                    <li>
+                                                        <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@item.FileName</a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </td>
+                                        <td>@Model.PDC_Form_StageLogList[(i-1)].CreatorDate.ToString("yyyy/MM/dd HH:mm:ss")</td>
+                                    </tr>
+                                    }
+                                    @*<tr>
+                                        <td>5</td>
+                                        <td>Jason</td>
+                                        <td>Assign</td>
+                                        <td>注意，看附圖</td>
+                                        <td>
+                                            <ul style="text-align: left;">
+                                                <li>
+                                                    <a href="#">REMINDER.jpg</a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                        <td>2020/11/01 15:30</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>Mike Huang (黃培碩)</td>
+                                        <td>Apply</td>
+                                        <td>已修正</td>
+                                        <td>
+                                            <ul style="text-align: left;">
+                                                <li>
+                                                    <a href="#">BRD壓縮檔.zip</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">CNS.xlsx</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">pstchip.dat</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">pstxnet.dat</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">change_log.xlsx</a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                        <td>2020/11/01 15:30</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Roger</td>
+                                        <td>Work</td>
+                                        <td>疊構不符</td>
+                                        <td>
+                                            <ul style="text-align: left;">
+                                                <li>
+                                                    <a href="#">截圖.jpg</a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                        <td>2020/11/01 15:30</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Jason</td>
+                                        <td>Assign</td>
+                                        <td>注意，看附圖</td>
+                                        <td>
+                                            <ul style="text-align: left;">
+                                                <li>
+                                                    <a href="#">REMINDER.jpg</a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                        <td>2020/11/01 15:30</td>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Mike Huang (黃培碩)</td>
+                                        <td>Apply</td>
+                                        <td>New</td>
+                                        <td>
+                                            <ul style="text-align: left;">
+                                                <li>
+                                                    <a href="#">BRD壓縮檔.zip</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">CNS.xlsx</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">pstchip.dat</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">pstxnet.dat</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">change_log.xlsx</a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                        <td>2020/10/29 16:30</td>
+                                    </tr>*@
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- End of Main -->
     </div>
 
@@ -427,14 +627,9 @@
 
 
         });
-        //點擊Radio
+
         function ClickMB(obj) {
             $('#' + obj).trigger('click');
-        }
-
-        function SeedApply() {
-            $('#IsSeedApply').val('true');
-            $('#SaveApply').trigger('click');
         }
 
         $('input[id=UplpadBRDFile]').change(function () {
@@ -580,41 +775,6 @@
                 },
                 error: function (jqXHR) {
                     $('body').addClass('no-loader');
-                },
-                complete: function (jqXHR, status) {
-                }
-            });
-        }
-
-        //下載錯誤訊息
-        function DownloadError() {
-            var data = new Array();
-
-            $.each($('#grid tbody tr'), function (index,row) {
-                $.each($(row).find('td'), function (colIndex,col) {
-                    var StackupDetalList = {};
-                    StackupDetalList.IndexNo = index;
-                    StackupDetalList.ColumnValue = $(col).find('input:eq(0)').val();
-                    StackupDetalList.StackupColumnID = (colIndex + 1);
-                    data.push(StackupDetalList);
-                });
-            });
-
-            var ViewModel = { StackupDetalList: data };
-
-            var _url = '@Url.Action("DownloadError", "Excel")';
-
-            $.ajax({
-                url: _url,
-                type: 'POST',
-                data: JSON.stringify(ViewModel),  //JSON.stringify(model)
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8",
-                success: function (result) {
-                    //顯示訊息
-                    window.location.href = "@Url.RouteUrl(new { Controller = "Excel", Action = "DownloadErrorFile" })/?FileName=" + result + "&RealFileName=" + $('#FileID').val();
-                },
-                error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
                 }

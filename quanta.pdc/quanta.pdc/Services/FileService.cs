@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using cns.Data;
 using cns.Models;
+using cns.Services.Helper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -127,6 +128,15 @@ namespace cns.Services
             return PDC_File;
         }
 
+        public PDC_File GetFileOne(Int64 SourceID,string FunctionName)
+        {
+            PDC_File PDC_File = new PDC_File();
+
+            PDC_File = _context.PDC_File.Where(x => x.SourceID == SourceID && x.FunctionName == FunctionName).SingleOrDefault();
+
+            return PDC_File;
+        }
+
         public List<PDC_File> GetFileList(string FunctionName,Int64 SourceID)
         {
             List<PDC_File> FileList = new List<PDC_File>();
@@ -134,6 +144,25 @@ namespace cns.Services
             FileList = _context.PDC_File.Where(x => x.FunctionName == FunctionName && x.SourceID == SourceID).ToList();
 
             return FileList;
+        }
+
+        public List<PDC_File> GetForm_StageFileList(List<PDC_Form_StageLog> Form_StageLogs)
+        {
+            List<PDC_File> result = new List<PDC_File>();
+
+            foreach(PDC_Form_StageLog item in Form_StageLogs)
+            {
+                if(item.StageName == "Apply")
+                {
+                    result.AddRange(_context.PDC_File.Where(x => x.FunctionName.StartsWith("FormApply") && x.SourceID == item.StageLogID).ToList());
+                }
+                else
+                {
+                    result.AddRange(_context.PDC_File.Where(x => x.FunctionName == "Form_StageLog" && x.SourceID == item.StageLogID).ToList());
+                }
+            }
+
+            return result;
         }
 
         public List<PDC_File> GetFileList(string FunctionName)
@@ -199,6 +228,14 @@ namespace cns.Services
                 if (_context.PDC_File.Where(x => x.FileID == FileID).Any())
                 {
                     PDC_File item = _context.PDC_File.Where(x => x.FileID == FileID).SingleOrDefault();
+                    //檔案名
+                    var FilePath = rootPath + "\\FileUpload\\" + item.FileFullName;
+                    //如果為檔案則刪除檔案
+                    if (!(item.FileCategory == 1 && FileHelper.RemoveFile(FilePath)))
+                    {
+                        return false;
+                    }
+
                     _context.PDC_File.Remove(item);
                     _context.SaveChanges();
                 }

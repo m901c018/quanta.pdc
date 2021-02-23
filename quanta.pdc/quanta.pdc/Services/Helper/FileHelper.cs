@@ -27,7 +27,7 @@ namespace cns.Services.Helper
 
         //public static string FILESIZE { get { return Configuration.GetConnectionString("DFS_FILESIZE"); } }
 
-        public static string RootPath { get;set; }
+        public static string RootPath { get; set; }
 
         public FileHelper(IHostingEnvironment _hostingEnvironment)
         {
@@ -231,6 +231,7 @@ namespace cns.Services.Helper
             }
             return sResult;
         }
+
 
         public static string ReadTextFile(string path)
         {
@@ -727,5 +728,53 @@ namespace cns.Services.Helper
         }
 
         #endregion
+
+        public static string GetContentType(string Extension)
+        {
+            string ContentType = string.Empty;
+            switch (Extension)
+            {
+                case ".asf":
+                    ContentType = "video/x-ms-asf";
+                    break;
+                case ".avi":
+                    ContentType = "video/avi";
+                    break;
+                case ".doc":
+                    ContentType = "application/msword";
+                    break;
+                case ".zip":
+                    ContentType = "application/zip";
+                    break;
+                case ".xls":
+                case ".xlsx":
+                    ContentType = "application/vnd.ms-excel";
+                    break;
+                case ".gif":
+                    ContentType = "image/gif";
+                    break;
+                case ".jpg":
+                case "jpeg":
+                    ContentType = "image/jpeg";
+                    break;
+                case ".wav":
+                    ContentType = "audio/wav";
+                    break;
+                case ".mp3":
+                    ContentType = "audio/mpeg3";
+                    break;
+                case ".mpg":
+                case ".mpeg":
+                    ContentType = "video/mpeg";
+                    break;
+                case ".rtf":
+                    ContentType = "application/rtf";
+                    break;
+                default:
+                    ContentType = "application/octet-stream";
+                    break;
+            }
+            return ContentType;
+        }
     }
 }

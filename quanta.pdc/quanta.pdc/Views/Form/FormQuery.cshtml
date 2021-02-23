@@ -1,6 +1,6 @@
-﻿@*@model m_FormPartial*@
+﻿@model m_FormPartial
 @{
-    ViewData["Title"] = "表單資訊";
+    ViewData["Title"] = "表單查詢";
 }
 
 <div class="page-content">
@@ -16,7 +16,7 @@
             </div>
         </div>
 
-        <div class"row"="">
+        <div class="row">
             <span style="color: #ffc107;">*功能仍在開發階段，尚未開放測試。</span>
         </div>
     </div>
@@ -39,96 +39,121 @@
                 </div>
             </div>
         </div>
+        
+
         <div class="row">
             <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="card-title">查詢條件</p>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>公司別</label>
-                                    <input type="email" class="form-control" placeholder="QCI" disabled="disabled">
+                <form asp-action="FormQuery" method="post" enctype="multipart/form-data">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-title">查詢條件</p>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>公司別</label>
+                                        <input type="email" class="form-control" asp-for="CompCode" disabled="disabled">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>事業群</label>
+                                        <input type="email" class="form-control" asp-for="BUCode" disabled="disabled">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>申請者</label>
+                                        <input type="email" class="form-control" asp-for="CreatorName" disabled="disabled">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>事業群</label>
-                                    <input type="email" class="form-control" placeholder="BU3" disabled="disabled">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>申請單編號 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <input type="text" class="form-control" asp-for="AppliedFormNo">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>申請者狀態 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <select class="select2 form-control" asp-for="FormStatus">
+                                            <option value=""></option>
+                                            <option value="未送件">未送件</option>
+                                            <option value="未派單">未派單</option>
+                                            <option value="處理中">處理中</option>
+                                            <option value="Release">Release</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>查詢日期 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <input type="text" class="form-control" id="SearchDate" asp-for="SearchDate">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>申請者</label>
-                                    <input type="email" class="form-control" placeholder="Roger Chao(趙偉智)/ #10370" disabled="disabled">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>PCB Layout Status <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <select class="select2 form-control" asp-for="PCBLayoutStatus">
+                                            <option value=""></option>
+                                            <option value="New">New</option>
+                                            <option value="RFQ">RFQ</option>
+                                            <option value="Modify">Modify</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>PCB Type <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <select class="select2 form-control" asp-for="PCBType">
+                                            <option value=""></option>
+                                            <option value="Non-HDI">Non-HDI</option>
+                                            <option value="HDI">HDI</option>
+                                            <option value="Anylayer">Anylayer</option>
+                                            <option value="FPC">FPC</option>
+                                            <option value="Rigid-flex">Rigid-flex</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>申請者編號 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                    <input type="email" class="form-control" placeholder="" disabled="disabled">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Project <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <input type="text" asp-for="ProjectName" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Board Type <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <input type="text" asp-for="BoardTypeName" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Rev. <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <input type="text" asp-for="Revision" class="form-control">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>申請者狀態 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                    <input type="email" class="form-control" placeholder="未送件/處理中/Release" disabled="disabled">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>查詢日期 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                    <input type="email" class="form-control" placeholder=" ~ " disabled="disabled">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>PCB Layout Status <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                    <input type="email" class="form-control" placeholder="New/Modify/RFQ" disabled="disabled">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>PCB Type <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                    <input type="email" class="form-control" placeholder="Non-HDI/HDI/Anylayer/FPC/Rigid-flex" disabled="disabled">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Project <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                    <input type="email" class="form-control" placeholder="XV1U" disabled="disabled">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Board Type <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                    <input type="email" class="form-control" placeholder="MB" disabled="disabled">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Rev. <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                    <input type="email" class="form-control" placeholder="A" disabled="disabled">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div style="padding-top: 10px;">
-                                    <a href="#" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">查詢紀錄</a>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div style="padding-top: 10px;">
+                                        @*<a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">查詢紀錄</a>*@
+                                        <button type="submit" class="btn btn-outline-info" id="SearchApply" style=" padding: 4px 25px;">查詢紀錄</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
+                
             </div>
         </div>
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -153,72 +178,37 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                            <a href="@Url.Action("FormApply", "Form")" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">CN000015</a>
-                                        </td>
-                                        <td></td>
-                                        <td>已完成</td>
-                                        <td>
-                                            2020/10/05<br>
-                                            10:25:32
-                                        </td>
-                                        <td>SC</td>
-                                        <td>New</td>
-                                        <td>XV1U</td>
-                                        <td>MB</td>
-                                        <td>A</td>
-                                        <td>
-                                            Roger Chao<br>
-                                            (趙偉智)/#10370
-                                        </td>
-                                        <td>Release</td>
-                                        <td>
-                                            2020/10/06<br>
-                                            13:51:00
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="@Url.Action("FormApply", "Form")" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">CN000147</a>
-                                        </td>
-                                        <td>1</td>
-                                        <td>處理中</td>
-                                        <td>
-                                            2020/10/08<br>
-                                            15:23:00
-                                        </td>
-                                        <td>SC</td>
-                                        <td>Modify</td>
-                                        <td>C53</td>
-                                        <td>AUDIO</td>
-                                        <td>C</td>
-                                        <td>
-                                            Roger Chao<br>
-                                            (趙偉智)/#10370
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="@Url.Action("FormApply", "Form")" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">CN000291</a>
-                                        </td>
-                                        <td></td>
-                                        <td>未送件</td>
-                                        <td></td>
-                                        <td>SC</td>
-                                        <td>New</td>
-                                        <td>J51</td>
-                                        <td>MB</td>
-                                        <td>B</td>
-                                        <td>
-                                            Roger Chao<br>
-                                            (趙偉智)/#10370
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
+                                    @for (int i = 0; i <= Model.PDC_FormList.Count - 1; i++)
+                                    {
+                                        var Path = Url.Action("FormApplyEdit", "Form") + "/?FormID=" + @Model.PDC_FormList[i].FormID;
+                                        <tr>
+                                            <td>
+                                                <a href="@Path" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">@Model.PDC_FormList[i].AppliedFormNo</a>
+                                            </td>
+                                            <td></td>
+                                            <td>@Model.PDC_FormList[i].FormStatus</td>
+                                            <td>
+                                                @Model.PDC_FormList[i].CreatorDate.ToString("yyyy/MM/dd")<br>
+                                                @Model.PDC_FormList[i].CreatorDate.ToString("HH:mm:ss")
+                                            </td>
+                                            <td>@Model.PDC_FormList[i].CreatorName</td>
+                                            <td>@Model.PDC_FormList[i].PCBLayoutStatus</td>
+                                            <td>@Model.PDC_FormList[i].ProjectName</td>
+                                            <td>@Model.PDC_FormList[i].BoardTypeName</td>
+                                            <td>@Model.PDC_FormList[i].Revision</td>
+                                            <td>
+                                                Roger Chao<br>
+                                                (趙偉智)/#10370
+                                            </td>
+                                            <td></td>
+                                            <td>
+                                                <br>
+
+                                            </td>
+                                        </tr>
+                                    }
+
+
                                 </tbody>
                             </table>
                         </div>
@@ -242,49 +232,12 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            $('#HomeLink').DataTable({
-                lengthChange: false,
-                info: false,
-                searching: false,
-                scrollX: false,
-                bPaginate: false, // 顯示換頁
-                ordering: false,  // 是否顯示header排序
-
-            });
-            $('#PCBFileList').DataTable({
-                lengthChange: false,
-                info: false,
-                searching: false,
-                scrollX: false,
-                bPaginate: false, // 顯示換頁
-                ordering: false,  // 是否顯示header排序
-
-            });
-
-            $('#PCBParameterList').DataTable({
-                lengthChange: false,
-                info: false,
-                searching: false,
-                scrollX: false,
-                bPaginate: false, // 顯示換頁
-                ordering: false,  // 是否顯示header排序
-
-            });
-
-
-            var table = $('#HomeLink').DataTable();
-            var dd = table.rows().data().toArray();
-
-            $.each(dd, function (index, row) {
-                row.order = index;
-            });
+            $('#SearchDate').datepicker();
 
 
         });
 
-        $('input[id=HomeLinkFile]').change(function () {
-            $('#HomeLinkFileLabel').text($(this).val());
-        });
+
 
     </script>
 }

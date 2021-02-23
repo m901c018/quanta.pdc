@@ -230,9 +230,9 @@ namespace cns.Services.Helper
         /// </summary>
         /// <param name="ExcelDt">Stackup資料</param>
         /// <param name="model">返回ViewModel</param>
-        public void ExcelStackupCheck(DataTable ExcelDt, m_ExcelPartial model)
+        public string ExcelStackupCheck(DataTable ExcelDt)
         {
-            model.Errmsg = string.Empty;
+            string ErrorMsg = string.Empty;
 
             List<string> NameList = new List<string>();
             List<string> GroupNameList = new List<string>();
@@ -396,59 +396,59 @@ namespace cns.Services.Helper
 
             //第一筆資料是起始
             if (ExcelDt.Rows[0][6].ToString() != "Solder Mask")
-                model.Errmsg += "第一筆起始疊構(Stack up)必需為Solder Mask\n";
+                ErrorMsg += "第一筆起始疊構(Stack up)必需為Solder Mask\n";
 
             //if (StackupTypeCheck)
-            //    model.Errmsg += "疊構類別：只有 Conductor、Dielectric、Plane三種項目。\n";
+            //    ErrorMsg += "疊構類別：只有 Conductor、Dielectric、Plane三種項目。\n";
 
             if (TopCheck)
-                model.Errmsg += "固定值『TOP』，線寬 & 間距必須有值。\n";
+                ErrorMsg += "固定值『TOP』，線寬 & 間距必須有值。\n";
 
             if (BotCheck)
-                model.Errmsg += "固定值『BOT』，線寬 & 間距必須有值。\n";
+                ErrorMsg += "固定值『BOT』，線寬 & 間距必須有值。\n";
 
             if (VCCCheck)
-                model.Errmsg += "Name=『VCCx』，線寬 & 間距必須有值。\n";
+                ErrorMsg += "Name=『VCCx』，線寬 & 間距必須有值。\n";
 
             if (NameList.Where(x => x.StartsWith("VCC")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any())
-                model.Errmsg += "VCC, VCC1 …最多到 9。\n";
+                ErrorMsg += "VCC, VCC1 …最多到 9。\n";
 
             if (GNDCheck)
-                model.Errmsg += "Name=『GNDx』，線寬 & 間距必須有值。\n";
+                ErrorMsg += "Name=『GNDx』，線寬 & 間距必須有值。\n";
 
             if (NameList.Where(x => x.StartsWith("GND")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any())
-                model.Errmsg += "GND, GND1 …最多到 9。\n";
+                ErrorMsg += "GND, GND1 …最多到 9。\n";
 
             //if (SVCCCheck)
-            //    model.Errmsg += "Name=『SVCCx』疊構類別對應『Plane』且欄位不可編輯，HIGH SPEED GROUP NAME對應『不填值』且欄位不可編輯， 線寬 & 間距『不填值』且欄位不可編輯。\n";
+            //    ErrorMsg += "Name=『SVCCx』疊構類別對應『Plane』且欄位不可編輯，HIGH SPEED GROUP NAME對應『不填值』且欄位不可編輯， 線寬 & 間距『不填值』且欄位不可編輯。\n";
 
             if (NameList.Where(x => x.StartsWith("SVCC")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any()) 
-                model.Errmsg += "SVCC, SVCC1 …最多到 9。\n";
+                ErrorMsg += "SVCC, SVCC1 …最多到 9。\n";
 
             //if (SGNDCheck)
-            //    model.Errmsg += "Name=『SGNDx』疊構類別對應『Plane』且欄位不可編輯，HIGH SPEED GROUP NAME對應『不填值』且欄位不可編輯， 線寬 & 間距『不填值』且欄位不可編輯。\n";
+            //    ErrorMsg += "Name=『SGNDx』疊構類別對應『Plane』且欄位不可編輯，HIGH SPEED GROUP NAME對應『不填值』且欄位不可編輯， 線寬 & 間距『不填值』且欄位不可編輯。\n";
 
             if (NameList.Where(x => x.StartsWith("SGND")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any()) 
-                model.Errmsg += "SGND, SGND1, …最多到 9。\n";
+                ErrorMsg += "SGND, SGND1, …最多到 9。\n";
 
             if (INxCheck)
-                model.Errmsg += "Name=『INx』， 線寬 & 間距必須有值。\n";
+                ErrorMsg += "Name=『INx』， 線寬 & 間距必須有值。\n";
 
             if (INxNumCheck)
-                model.Errmsg += "Name=『INx』，HIGH SPEED GROUP NAME對應『數字』且欄位不可編輯。\n";
+                ErrorMsg += "Name=『INx』，HIGH SPEED GROUP NAME對應『數字』且欄位不可編輯。\n";
 
             if (NameList.Where(x => x.StartsWith("IN")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any())
-                model.Errmsg += "IN1=1, IN2=2, …最多到 9。\n";
+                ErrorMsg += "IN1=1, IN2=2, …最多到 9。\n";
 
 
             if (GroupNameList.Count > 0 && GroupNameList[0] != "T")
             {
-                model.Errmsg += "HIGH SPEED GROUP NAME規則 開頭應為 T。\n";
+                ErrorMsg += "HIGH SPEED GROUP NAME規則 開頭應為 T。\n";
             }
 
             if (GroupNameList.Count > 0 && GroupNameList[GroupNameList.Count - 1] != "B")
             {
-                model.Errmsg += "HIGH SPEED GROUP NAME規則 結尾應為 B。\n";
+                ErrorMsg += "HIGH SPEED GROUP NAME規則 結尾應為 B。\n";
             }
             List<string> NameType = new List<string>();
             NameType.Add("IN");
@@ -480,7 +480,7 @@ namespace cns.Services.Helper
                 }
 
                 if(NameNumCheck)
-                    model.Errmsg += "NAME規則『" + item+ "』數字不可跳號。\n";
+                    ErrorMsg += "NAME規則『" + item+ "』數字不可跳號。\n";
 
             }
             //取出數字部分
@@ -505,16 +505,17 @@ namespace cns.Services.Helper
             //}
 
             //if (GroupNameCheck)
-            //    model.Errmsg += "HIGH SPEED GROUP NAME規則 = T + 數字（小至大自動排序）+ B。\n";
+            //    ErrorMsg += "HIGH SPEED GROUP NAME規則 = T + 數字（小至大自動排序）+ B。\n";
             //判斷Name是否有重複
             if (NameList.GroupBy(x => x).Select(group => new { name=group.Key,count =group.Count() }).Where(z=>z.count > 1).Any())
-                model.Errmsg += "Name(Top,GND,IN1,VCC,BOTTOM) 值不可重複。\n";
+                ErrorMsg += "Name(Top,GND,IN1,VCC,BOTTOM) 值不可重複。\n";
 
             if (EndCheck)
-                model.Errmsg += "最後一筆起始疊構(Stack up)必需為Solder Mask。\n";
+                ErrorMsg += "最後一筆起始疊構(Stack up)必需為Solder Mask。\n";
 
-            model.ExcelSheetDts.Add(ExcelDt);
-            model.ThicknessTotal = decimal.Round(ThicknessTotal, 2);
+            
+
+            return ErrorMsg;
         }
 
 

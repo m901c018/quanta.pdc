@@ -61,7 +61,8 @@ namespace cns.Controllers
                 //資料轉為Datatable
                 DataTable sheetDt = Helper.GetDataTableFromExcel(sheet, true);
                 //驗證資料
-                Helper.ExcelStackupCheck(sheetDt, model);
+                model.Errmsg = Helper.ExcelStackupCheck(sheetDt);
+                model.ExcelSheetDts.Add(sheetDt);
                 //Session紀錄
                 HttpContext.Session.SetObjectAsJson("SessionExcelData", sheetDt);
                 HttpContext.Session.SetString("SessionFileName", "");
@@ -84,7 +85,10 @@ namespace cns.Controllers
             //資料轉為Datatable
             DataTable ExcelDt = Helper.GetDataTableFromExcel(xSSFSheet, true);
             //驗證資料
-            Helper.ExcelStackupCheck(ExcelDt, model);
+            model.Errmsg = Helper.ExcelStackupCheck(ExcelDt);
+
+            model.ExcelSheetDts.Add(ExcelDt);
+            //model.ThicknessTotal = decimal.Round(ThicknessTotal, 2);
 
             //Session紀錄
             HttpContext.Session.SetObjectAsJson("SessionExcelData", ExcelDt);
@@ -104,7 +108,10 @@ namespace cns.Controllers
             //轉DataTable
             DataTable StackupDetalDt = Helper.GetDataTableFromStackupDetail(ViewModel.StackupDetalList);
             ////驗證資料
-            Helper.ExcelStackupCheck(StackupDetalDt, ViewModel);
+            //Helper.ExcelStackupCheck(StackupDetalDt, ViewModel);
+            ViewModel.Errmsg = Helper.ExcelStackupCheck(StackupDetalDt);
+
+            ViewModel.ExcelSheetDts.Add(StackupDetalDt);
 
             return Json(ViewModel.Errmsg);
         }
@@ -229,7 +236,8 @@ namespace cns.Controllers
             //資料轉為DataTable
             DataTable StackupDetalDt = Helper.GetDataTableFromStackupDetail(ViewModel.StackupDetalList);
             ////驗證資料
-            Helper.ExcelStackupCheck(StackupDetalDt, ViewModel);
+            ViewModel.Errmsg = Helper.ExcelStackupCheck(StackupDetalDt);
+            ViewModel.ExcelSheetDts.Add(StackupDetalDt);
 
             var contentBytes = new System.Text.UTF8Encoding().GetBytes(ViewModel.Errmsg);
             var outputBytes = new byte[contentBytes.Length + 3];
