@@ -15,9 +15,6 @@
                 </nav>
             </div>
         </div>
-        <div class"row"="">
-            <span style="color: #ffc107;">*功能仍在開發階段，尚未開放測試。</span>
-        </div>
     </div>
     <div class="main-wrapper container">
         <!-- 表頭 -->
@@ -305,15 +302,13 @@
                                         <span>意見</span>
                                     </div>
                                     <div class="col-md-4">
-                                        <textarea class="form-control" id="exampleFormControlTextarea1" asp-for="Result" rows="3">增加減 Region</textarea>
+                                        <textarea class="form-control" id="StageResult" asp-for="Result" rows="3"></textarea>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="list-group">
-                                            <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-                                                增加減 Region
-                                            </a>
-                                            <a href="#" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
-                                            <a href="#" class="list-group-item list-group-item-action">其他</a>
+                                            <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action active" aria-current="true">增加減 Region</a>
+                                            <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
+                                            <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action">其他</a>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -375,7 +370,7 @@
                                     @*<a href="#" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose">執行檢測</a>*@
                                     <br />
                                     <br />
-                                    <a href="javascript:return false;" class="btn btn-outline-danger" style=" padding: 4px 25px;display:none" id="downloadError">下載錯誤明細</a>
+                                    <a href="javascript:return false;" class="btn btn-outline-danger" style=" padding: 4px 25px;display:none" onclick="DownloadError()" id="downloadError">下載錯誤明細</a>
                                     <a href="javascript:return false;" class="btn btn-outline-warning" style=" padding: 4px 25px;display:none" onclick="SeedApply()" id="SendApply">送出申請</a>
                                     @*<a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;display:none" id="disApply">抽單</a>*@
                                 </div>
@@ -427,6 +422,13 @@
 
 
         });
+
+        function SetResult(obj) {
+            $('#StageResult').val($(obj).text());
+            $('.list-group-item').removeClass('active');
+            $(obj).addClass('active');
+        }
+
         //點擊Radio
         function ClickMB(obj) {
             $('#' + obj).trigger('click');
@@ -594,7 +596,7 @@
                 $.each($(row).find('td'), function (colIndex,col) {
                     var StackupDetalList = {};
                     StackupDetalList.IndexNo = index;
-                    StackupDetalList.ColumnValue = $(col).find('input:eq(0)').val();
+                    StackupDetalList.ColumnValue = $(col).text();
                     StackupDetalList.StackupColumnID = (colIndex + 1);
                     data.push(StackupDetalList);
                 });

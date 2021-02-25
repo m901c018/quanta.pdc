@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using static cns.Services.Enum.FormEnum;
 
 namespace cns.Models
 {
@@ -21,6 +22,17 @@ namespace cns.Models
         /// </summary>
         [Required]
         public Int64 FormID { get; set; }
+        /// <summary>
+        /// 關卡
+        /// </summary>
+        [Required]
+        public Form_Stage Stage { get; set; }
+
+        /// <summary>
+        /// 負責人
+        /// </summary>
+        public string PDC_Member { get; set; }
+
         /// <summary>
         /// 關卡名稱
         /// </summary>

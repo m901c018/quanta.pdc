@@ -193,7 +193,7 @@ namespace cns.Services.Helper
                         dr[j] = cellValue;
 
                         //判斷資料是否為最後一筆
-                        if (i > 5 && !string.IsNullOrWhiteSpace(cellValue) && cellValue == "Solder Mask")
+                        if (i > 5 && !string.IsNullOrWhiteSpace(cellValue) && cellValue == "BOT")
                             IsEnd = true;
                     }
 
@@ -279,16 +279,14 @@ namespace cns.Services.Helper
                 //設定Layer欄位
                 ColFirst[0] = "L" + ColIndex;
 
-                //最後一筆疊構(Stack up)結尾是Solder Mask代表結束
-                if (ColFirst[6].ToString() == "Solder Mask")
+                //最後BOT代表結束
+                if (ColFirst[2].ToString() == "BOT")
                 {
-                    if (ColFirst[2].ToString() == "BOT")
-                    {
-                        ColFirst[1] = "Conductor";
-                        ColFirst[3] = "B";
-                        if (string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
-                            BotCheck = true;
-                    }
+                    NameList.Add(ColFirst[2].ToString());
+                    ColFirst[1] = "Conductor";
+                    ColFirst[3] = "B";
+                    if (string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
+                        BotCheck = true;
 
                     if (i == (ExcelDt.Rows.Count - 1))
                     {
@@ -301,6 +299,8 @@ namespace cns.Services.Helper
                         break;
                     }
                 }
+
+                
 
                 DataRow ColSecond = ExcelDt.Rows[i + 1];
 
@@ -483,32 +483,30 @@ namespace cns.Services.Helper
                     ErrorMsg += "NAME規則『" + item+ "』數字不可跳號。\n";
 
             }
-            //取出數字部分
-            //var GroupNameNumList = GroupNameList.Where(x => x != "T" && x != "B").ToList();
-
-            //int GroupNameNum1 = 0;
-            //for (int i = 0; i <= GroupNameNumList.Count - 1; i++) 
-            //{
-            //    if (Int32.TryParse(GroupNameNumList[i], out GroupNameNum1)) 
-            //    {
-            //        if((i + 1) != GroupNameNum1)
-            //        {
-            //            GroupNameCheck = true;
-            //        }
-            //        break;
-            //    }
-            //    else
-            //    {
-            //        GroupNameCheck = true;
-            //        break;
-            //    }
-            //}
-
-            //if (GroupNameCheck)
-            //    ErrorMsg += "HIGH SPEED GROUP NAME規則 = T + 數字（小至大自動排序）+ B。\n";
+            
             //判斷Name是否有重複
-            if (NameList.GroupBy(x => x).Select(group => new { name=group.Key,count =group.Count() }).Where(z=>z.count > 1).Any())
-                ErrorMsg += "Name(Top,GND,IN1,VCC,BOTTOM) 值不可重複。\n";
+            foreach(var item in NameList.GroupBy(x => x).Select(group => new { name = group.Key, count = group.Count() }).Where(z => z.count > 1))
+            {
+                ErrorMsg += "Name : " + item.name +" 值不可重複。\n";
+            }
+
+            NameType.Add("TOP");
+            NameType.Add("BOT");
+            foreach (string item in NameList)
+            {
+                bool NameCheck = true;
+                foreach (string NameTypeitem in NameType)
+                {
+                    if (item.StartsWith(NameTypeitem))
+                    {
+                        NameCheck = false;
+                    }
+                }
+                if (NameCheck)
+                    ErrorMsg += "Name : " + item + " 值有錯誤。\n";
+            }
+            //if (NameList.GroupBy(x => x).Select(group => new { name=group.Key,count =group.Count() }).Where(z=>z.count > 1).Any())
+            //    ErrorMsg += "Name(Top,GND,IN1,VCC,BOTTOM) 值不可重複。\n";
 
             if (EndCheck)
                 ErrorMsg += "最後一筆起始疊構(Stack up)必需為Solder Mask。\n";

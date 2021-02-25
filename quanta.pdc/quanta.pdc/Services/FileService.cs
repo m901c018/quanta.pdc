@@ -98,7 +98,7 @@ namespace cns.Services
             string FilePath = string.Empty;
             //隨機產生檔案名
             if (IsCsv)
-                FilePath = rootPath + "\\FileUpload\\" + Guid.NewGuid().ToString("N") + ".csv";
+                FilePath = rootPath + "\\FileUpload\\" + Guid.NewGuid().ToString("N") + ".txt";
             else
                 FilePath = rootPath + "\\FileUpload\\" + Guid.NewGuid().ToString("N") + ".xlsx";
 
@@ -218,6 +218,29 @@ namespace cns.Services
                 return false;
             }
 
+            return true;
+        }
+
+        public bool UpdateFile(PDC_File NewFile, ref string ErrorMsg)
+        {
+            ErrorMsg = string.Empty;
+            try
+            {
+                PDC_File OldForm = GetFileOne(NewFile.FileID);
+
+                OldForm.SourceID = NewFile.SourceID;
+                OldForm.FileRemark = NewFile.FileRemark;
+                OldForm.FileNote = NewFile.FileNote;
+                OldForm.FileDescription = NewFile.FileDescription;
+                _context.SaveChanges();
+
+                ErrorMsg = "儲存成功";
+            }
+            catch (Exception ex)
+            {
+                ErrorMsg = "儲存失敗";
+                return false;
+            }
             return true;
         }
 

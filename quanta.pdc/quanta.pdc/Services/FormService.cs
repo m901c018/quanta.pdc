@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using cns.Services.Enum;
 
 namespace cns.Services
 {
@@ -18,16 +19,12 @@ namespace cns.Services
     {
 
         private readonly ApplicationDbContext _context;
-        private readonly Dictionary<int, string> Dic_Form_Stage;
 
 
         public FormService(ApplicationDbContext context)
         {
             _context = context;
-            Dic_Form_Stage = new Dictionary<int, string>();
-            Dic_Form_Stage.Add(1, "Apply");
-            Dic_Form_Stage.Add(2, "Assign");
-            Dic_Form_Stage.Add(3, "Work");
+            
         }
 
 
@@ -132,6 +129,13 @@ namespace cns.Services
             {
                 PDC_Form OldForm = GetFormOne(NewForm.FormID);
                
+                OldForm.ApplyDate = NewForm.ApplyDate;
+                OldForm.BoardTypeName = NewForm.BoardTypeName;
+                OldForm.FormStatus = NewForm.FormStatus;
+                OldForm.PCBLayoutStatus = NewForm.PCBLayoutStatus;
+                OldForm.PCBType = NewForm.PCBType;
+                OldForm.ProjectName = NewForm.ProjectName;
+                OldForm.Revision = NewForm.Revision;
                 OldForm.Modifyer = NewForm.Modifyer;
                 OldForm.ModifyerName = NewForm.ModifyerName;
                 OldForm.ModifyerDate = NewForm.ModifyerDate;
@@ -178,7 +182,7 @@ namespace cns.Services
             return true;
         }
 
-        public decimal GetWorkHour(Form_Stage form_Stage)
+        public decimal GetWorkHour(Enum.FormEnum.Form_Stage form_Stage)
         {
             PDC_Parameter pDC_Parameter = new PDC_Parameter();
             ParameterService parameterService = new ParameterService(_context);
@@ -205,7 +209,7 @@ namespace cns.Services
                 return 0.5M;
         }
 
-        public bool AddForm_StageLog(long FormID, Form_Stage form_Stage, string result,out long FormStageID, ref string ErrorMsg)
+        public bool AddForm_StageLog(long FormID, Enum.FormEnum.Form_Stage form_Stage, string result,out long FormStageID, ref string ErrorMsg)
         {
             PDC_Form_StageLog FormStage = new PDC_Form_StageLog();
             ErrorMsg = string.Empty;
@@ -213,7 +217,8 @@ namespace cns.Services
             {
                 FormStage.FormID = FormID;
                 FormStage.Result = result;
-                FormStage.StageName = Dic_Form_Stage[(int)Form_Stage.Apply];
+                FormStage.Stage = Enum.FormEnum.Form_Stage.Apply;
+                FormStage.StageName = FormEnum.GetForm_StageName(Enum.FormEnum.Form_Stage.Apply);
                 FormStage.WorkHour = 0;
                 FormStage.Creator = "super@admin.com";
                 FormStage.CreatorName = "Roger Chao (趙偉智)";
@@ -234,21 +239,7 @@ namespace cns.Services
             return true;
         }
 
-        public enum Form_Stage
-        {
-            /// <summary>
-            /// 申請中
-            /// </summary>
-            Apply = 1,
-            /// <summary>
-            /// 派單中
-            /// </summary>
-            Assign = 2,
-            /// <summary>
-            /// 工作中
-            /// </summary>
-            Work = 3
-        }
+        
     }
 
     /// <summary>

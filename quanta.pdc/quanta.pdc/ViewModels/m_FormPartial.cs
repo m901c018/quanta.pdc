@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace cns.ViewModels
 {
     //view model for changeroles screen
+    [Serializable]
     public class m_FormPartial
     {
         
@@ -29,6 +30,16 @@ namespace cns.ViewModels
         /// 
         /// </summary>
         public List<PDC_File> PDC_Form_StageLogFileList { get; set; }
+
+        /// <summary> 意見
+        /// 
+        /// </summary>
+        public string m_Result { get; set; }
+
+        /// <summary> 最後一筆LOG資料
+        /// 
+        /// </summary>
+        public PDC_Form_StageLog m_PDC_Form_StageLog { get; set; }
 
         /// <summary> BRD壓縮檔
         /// 
@@ -59,6 +70,31 @@ namespace cns.ViewModels
         /// </summary>
         [Required(ErrorMessage = "必填")]
         public IFormFile m_UplpadpstxprtFile { get; set; }
+
+        /// <summary> BRD壓縮檔(編輯用)
+        /// 
+        /// </summary>
+        public IFormFile m_UplpadBRDFile2 { get; set; }
+
+        /// <summary> Constraint Excel(編輯用)
+        /// 
+        /// </summary>
+        public IFormFile m_UplpadExcelFile2 { get; set; }
+
+        /// <summary> pstchip.dat(編輯用)
+        /// 
+        /// </summary>
+        public IFormFile m_UplpadpstchipFile2 { get; set; }
+
+        /// <summary> pstxnet.dat(編輯用)
+        /// 
+        /// </summary>
+        public IFormFile m_UplpadpstxnetFile2 { get; set; }
+
+        /// <summary> pstxprt.dat(編輯用)
+        /// 
+        /// </summary>
+        public IFormFile m_UplpadpstxprtFile2 { get; set; }
 
         /// <summary> 其他檔案
         /// 

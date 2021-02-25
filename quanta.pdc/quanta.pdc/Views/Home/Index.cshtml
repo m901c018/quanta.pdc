@@ -25,7 +25,7 @@
                         <p class="card-title">公告說明</p>
                         <div class="form-group">
                             <!--<label for="exampleFormControlTextarea1">公告說明</label>-->
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">@Model.Announcement.ParameterText</textarea>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" disabled="disabled">@Model.Announcement.ParameterText</textarea>
                         </div>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                                             </div>
 
                                             <div style=" text-align: right; display: inline-block; ">
-                                                <a href="javascript:return false;" onclick="window.location.href='@Path'" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                                <a href="javascript:return false;" onclick="window.location.href='@Path'" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">下載</a>
                                             </div>
                                         </div>
 
@@ -82,7 +82,7 @@
                                     </div>
 
                                     <div style=" text-align: right; display: inline-block; ">
-                                        <a href="javascript:return false;" class="btn btn-outline-info" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                        <a href="javascript:return false;" class="btn btn-outline-info" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" style=" padding: 4px 25px;" id="mail-compose">下載</a>
                                     </div>
                                 </div>
 

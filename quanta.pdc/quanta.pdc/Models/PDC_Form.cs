@@ -44,6 +44,11 @@ namespace cns.Models
         [Required(ErrorMessage = "必填")]
         public string ApplierID { get; set; }
         /// <summary>
+        /// 申請日期
+        /// </summary>
+        [Required(ErrorMessage = "必填")]
+        public DateTime ApplyDate { get; set; }
+        /// <summary>
         /// PCBLayoutStatus
         /// </summary>
         [MaxLength(32)]

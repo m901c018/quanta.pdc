@@ -134,7 +134,7 @@ namespace cns.Controllers
                 MemoryStream stream = FileService.DownloadSampleFile();
 
 
-                string sFileName = HttpUtility.UrlEncode("CNS_Sample" + DateTime.Now.ToString("_yyyyMMddHHmmss") + ".xlsx");
+                string sFileName = HttpUtility.UrlEncode("CNS_Sample.xlsx");
 
 
                 return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);
@@ -220,7 +220,7 @@ namespace cns.Controllers
             MemoryStream stream = FileService.DownloadFile(fileName);
 
 
-            string sFileName = HttpUtility.UrlEncode(Path.GetFileNameWithoutExtension(RealFileName) + DateTime.Now.ToString("_yyyyMMddHHmmss") + ".xlsx");
+            string sFileName = HttpUtility.UrlEncode(Path.GetFileNameWithoutExtension(RealFileName) + ".xlsx");
 
 
             return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);

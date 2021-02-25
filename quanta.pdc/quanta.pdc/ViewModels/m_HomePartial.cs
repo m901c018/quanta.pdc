@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace cns.ViewModels
 {
     //view model for changeroles screen
+    [Serializable]
     public class m_HomePartial
     {
         
