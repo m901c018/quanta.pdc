@@ -74,7 +74,7 @@ namespace cns.Services.Helper
             return bResult;
         }
 
-        public static bool SaveFile(IFormFile file, string folder, string newFileName,
+        public bool SaveFile(IFormFile file, string folder, string newFileName,
             out string filePath, out string message)
         {
             bool bResult = false;
@@ -117,19 +117,21 @@ namespace cns.Services.Helper
             return bResult;
         }
 
-        public static bool RemoveFile(string filePath)
+        public bool RemoveFile(string filePath)
         {
             bool bResult = false;
             string sArchivePath = "";
             string sNewFilePath = "";
-            if (File.Exists(filePath))
+            string sTempPath = Path.Combine(RootPath, "Temp");
+            sTempPath = Path.Combine(sTempPath, filePath);
+            if (File.Exists(sTempPath))
             {
                 try
                 {
-                    sArchivePath = Path.Combine(RootPath, "Archive");
-                    sNewFilePath = Path.Combine(sArchivePath, Path.GetFileName(filePath));
+                    sArchivePath = Path.Combine(RootPath, "FileUpload");
+                    sNewFilePath = Path.Combine(sArchivePath, filePath);
                     CreateNewFolder(sArchivePath);
-                    File.Move(filePath, sNewFilePath);
+                    File.Move(sTempPath, sNewFilePath);
                     //File.Delete(filePath);
                     bResult = true;
                 }

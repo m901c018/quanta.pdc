@@ -11,6 +11,7 @@ using cns.Services;
 using cns.Services.Helper;
 using cns.ViewModels;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NPOI.SS.UserModel;
@@ -39,6 +40,7 @@ namespace cns.Controllers
         {
             m_FormPartial model = new m_FormPartial();
             model.m_PDC_Form.IsMB = true;
+            model.GUID = Guid.NewGuid().ToString("N");
 
             return View(model);
         }
@@ -47,7 +49,7 @@ namespace cns.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult FormApply(m_FormPartial model)
         {
-            FormService formService = new FormService(_context);
+            FormService formService = new FormService(_hostingEnvironment, _context);
             FileService fileService = new FileService(_hostingEnvironment, _context);
             string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
             string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
@@ -57,76 +59,42 @@ namespace cns.Controllers
             model.m_PDC_Form.AppliedFormNo = "CN";
             model.m_PDC_Form.ApplierID = "TestUser";
             model.m_PDC_Form.FormStatus = model.IsSendApply ? "未派單" : "未送件";
-            model.m_PDC_Form.ApplyDate = DateTime.Now;
+            model.m_PDC_Form.ApplyDate = model.IsSendApply ? DateTime.Now : default(DateTime); ;
             model.m_PDC_Form.Creator = userId;
             model.m_PDC_Form.CreatorName = userName;
             model.m_PDC_Form.CreatorDate = DateTime.Now;
-            if(formService.AddForm(model.m_PDC_Form, ref ErrorMsg,out FormID))
+
+            List<PDC_File> ALLFileList = new List<PDC_File>();
+            ALLFileList.Add(model.m_BRDFile);
+            ALLFileList.Add(model.m_ExcelFile);
+            ALLFileList.Add(model.m_pstchipFile);
+            ALLFileList.Add(model.m_pstxnetFile);
+            ALLFileList.Add(model.m_pstxprtFile);
+            ALLFileList.AddRange(model.m_OtherFileList);
+            
+
+            if (formService.AddForm(model.m_PDC_Form, ALLFileList, ref ErrorMsg,out FormID))
             {
                 long SourceID = FormID;
+                string folder = string.Empty;
                 //是否直接送出申請
                 if (model.IsSendApply)
                 {
-                    formService.AddForm_StageLog(FormID, Services.Enum.FormEnum.Form_Stage.Apply, "New",out SourceID, ref ErrorMsg);
-                }
-                
-                PDC_File FileBRD = new PDC_File();
-                bool IsBRDSuccess = fileService.FileAdd(model.m_UplpadBRDFile, "FormApplyBRD", userId, userName, out FileBRD, SourceID);
-
-                PDC_File FileExcel = new PDC_File();
-                bool IsExcelSuccess = fileService.FileAdd(model.m_UplpadExcelFile, "FormApplyExcel", userId, userName, out FileExcel, SourceID);
-
-                PDC_File Filepstchip = new PDC_File();
-                bool IspstchipSuccess = fileService.FileAdd(model.m_UplpadpstchipFile, "FormApplypstchip", userId, userName, out Filepstchip, SourceID);
-
-                PDC_File Filepstxnet = new PDC_File();
-                bool IspstxnetSuccess = fileService.FileAdd(model.m_UplpadpstxnetFile, "FormApplypstxnet", userId, userName, out Filepstxnet, SourceID);
-
-                PDC_File Filepstxprt = new PDC_File();
-                bool IspstxprtSuccess = fileService.FileAdd(model.m_UplpadpstxprtFile, "FormApplypstxprt", userId, userName, out Filepstxprt, SourceID);
-
-                if(model.m_UplpadOtherFile != null)
-                {
-                    PDC_File FileOther = new PDC_File();
-                    fileService.FileAdd(model.m_UplpadOtherFile, "FormApplyOther", userId, userName, out FileOther, SourceID);
+                    formService.AddForm_StageLog(FormID, Services.Enum.FormEnum.Form_Stage.Apply, model.Result ?? "New", ALLFileList, out SourceID, ref ErrorMsg);
                 }
 
-                if (IsBRDSuccess && IsExcelSuccess && IspstchipSuccess && IspstxnetSuccess && IspstxprtSuccess)
-                {
-                    TempData["TempMsg"] = "申請單新增成功";
-                    return RedirectToAction("FormApplyEdit", new { FormID = FormID });
-                }
-                else
-                {
+                return RedirectToAction("FormApplyEdit", new { FormID = FormID });
+                //if (formService.UpdateFormFile(SourceID, FileBRD, FileExcel, Filepstchip, Filepstxnet, Filepstxprt, FileOther, ref ErrorMsg))
+                //{
+                //    return RedirectToAction("FormApplyEdit", new { FormID = FormID });
+                //}
+                //else
+                //{
+                //    TempData["TempMsg"] = ErrorMsg;
+                //    return View(model);
+                //}
 
-                    if (!IsBRDSuccess)
-                        ErrorMsg += string.IsNullOrWhiteSpace(ErrorMsg) ? "BRD檔案新增失敗" : "BRD檔案新增失敗\n";
-                    else
-                        fileService.FileRemove(FileBRD.FileID);
-
-                    if (!IsExcelSuccess)
-                        ErrorMsg += string.IsNullOrWhiteSpace(ErrorMsg) ? "Constraint Excel檔案新增失敗" : "Constraint Excel檔案新增失敗\n";
-                    else
-                        fileService.FileRemove(FileExcel.FileID);
-
-                    if (!IspstchipSuccess)
-                        ErrorMsg += string.IsNullOrWhiteSpace(ErrorMsg) ? "pstchip檔案新增失敗" : "pstchip檔案新增失敗\n";
-                    else
-                        fileService.FileRemove(Filepstchip.FileID);
-
-                    if (!IspstxnetSuccess)
-                        ErrorMsg += string.IsNullOrWhiteSpace(ErrorMsg) ? "pstxnet檔案新增失敗" : "pstxnet檔案新增失敗\n";
-                    else
-                        fileService.FileRemove(Filepstxnet.FileID);
-
-                    if (!IspstxprtSuccess)
-                        ErrorMsg += string.IsNullOrWhiteSpace(ErrorMsg) ? "pstxprt檔案新增失敗" : "pstxprt檔案新增失敗\n";
-                    else
-                        fileService.FileRemove(Filepstxprt.FileID);
-
-                    TempData["TempMsg"] = ErrorMsg;
-                    return View(model);
-                }
+              
             }
 
             TempData["TempMsg"] = "申請單新增失敗";
@@ -150,7 +118,6 @@ namespace cns.Controllers
             long sourceID = FormID;
             if (model.m_PDC_Form.FormStatus != "未送件")
             {
-                sourceID = model.PDC_Form_StageLogList.Where(x => x.StageName == "Apply").OrderByDescending(x => x.CreatorDate).FirstOrDefault().StageLogID;
                 model.IsSendApply = true;
             }
             else
@@ -158,12 +125,12 @@ namespace cns.Controllers
                 model.IsSendApply = false;
             }
 
-            model.m_BRDFile = fileService.GetFileOne(sourceID, "FormApplyBRD");
-            model.m_ExcelFile = fileService.GetFileOne(sourceID, "FormApplyExcel");
-            model.m_Other = fileService.GetFileOne(sourceID, "FormApplyOther");
-            model.m_pstchipFile = fileService.GetFileOne(sourceID, "FormApplypstchip");
-            model.m_pstxnetFile = fileService.GetFileOne(sourceID, "FormApplypstxnet");
-            model.m_pstxprtFile = fileService.GetFileOne(sourceID, "FormApplypstxprt");
+            model.m_BRDFile = fileService.GetFileOne(FormID, "FormApplyBRD");
+            model.m_ExcelFile = fileService.GetFileOne(FormID, "FormApplyExcel");
+            model.m_OtherFileList = fileService.GetFileList("FormApplyOther", FormID);
+            model.m_pstchipFile = fileService.GetFileOne(FormID, "FormApplypstchip");
+            model.m_pstxnetFile = fileService.GetFileOne(FormID, "FormApplypstxnet");
+            model.m_pstxprtFile = fileService.GetFileOne(FormID, "FormApplypstxprt");
 
             //取得範例
             Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\FileUpload\\" + model.m_ExcelFile.FileFullName, FileMode.Open, FileAccess.Read);
@@ -182,13 +149,13 @@ namespace cns.Controllers
         [HttpPost]
         public IActionResult FormApplyEdit(m_FormPartial model)
         {
-            FormService formService = new FormService(_context);
+            FormService formService = new FormService(_hostingEnvironment, _context);
             FileService fileService = new FileService(_hostingEnvironment, _context);
             ExcelHepler excelHepler = new ExcelHepler(_hostingEnvironment);
             string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
             string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
             string ErrorMsg = string.Empty;
-            model.m_PDC_Form.ApplyDate = DateTime.Now;
+            model.m_PDC_Form.ApplyDate = model.IsSendApply ? DateTime.Now : default(DateTime);
             model.m_PDC_Form.FormStatus = model.IsSendApply ? "未派單" : "未送件";
             model.m_PDC_Form.ApplyDate = DateTime.Now;
             model.m_PDC_Form.Modifyer = userId;
@@ -197,119 +164,23 @@ namespace cns.Controllers
 
             long SourceID = model.m_PDC_Form.FormID;
 
-            if(formService.UpdateForm(model.m_PDC_Form,ref ErrorMsg))
+            List<PDC_File> ALLFileList = new List<PDC_File>();
+            ALLFileList.Add(model.m_BRDFile);
+            ALLFileList.Add(model.m_ExcelFile);
+            ALLFileList.Add(model.m_pstchipFile);
+            ALLFileList.Add(model.m_pstxnetFile);
+            ALLFileList.Add(model.m_pstxprtFile);
+            ALLFileList.AddRange(model.m_OtherFileList);
+
+            if (formService.UpdateForm(model.m_PDC_Form, ALLFileList, ref ErrorMsg))
             {
                 //是否直接送出申請
                 if (model.IsSendApply)
                 {
-                    formService.AddForm_StageLog(model.m_PDC_Form.FormID, Services.Enum.FormEnum.Form_Stage.Apply, model.m_Result ?? "New", out SourceID, ref ErrorMsg);
-                }
-                bool IsBRDSuccess = false;
-                bool IsExcelSuccess = false;
-                bool IspstchipSuccess = false;
-                bool IspstxnetSuccess = false;
-                bool IspstxprtSuccess = false;
-                if (model.m_UplpadBRDFile2 != null)
-                {
-                    PDC_File FileBRD = new PDC_File();
-                    IsBRDSuccess = fileService.FileAdd(model.m_UplpadBRDFile2, "FormApplyBRD", userId, userName, out FileBRD, SourceID);
-                    if(IsBRDSuccess)
-                        fileService.FileRemove(model.m_BRDFile.FileID);
-                }
-                else
-                {
-                    PDC_File FileBRD = new PDC_File();
-                    FileBRD = fileService.GetFileOne(model.m_BRDFile.FileID);
-                    FileBRD.SourceID = SourceID;
-                    IsBRDSuccess = fileService.UpdateFile(FileBRD, ref ErrorMsg);
+                    formService.AddForm_StageLog(model.m_PDC_Form.FormID, Services.Enum.FormEnum.Form_Stage.Apply, model.m_Result ?? "New", ALLFileList, out SourceID, ref ErrorMsg);
                 }
 
-                if (model.m_UplpadExcelFile2 != null)
-                {
-                    PDC_File FileExcel = new PDC_File();
-                    IsExcelSuccess = fileService.FileAdd(model.m_UplpadExcelFile2, "FormApplyExcel", userId, userName, out FileExcel, SourceID);
-                    if (IsExcelSuccess)
-                        fileService.FileRemove(model.m_ExcelFile.FileID);
-                }
-                else
-                {
-                    PDC_File FileExcel = new PDC_File();
-                    FileExcel = fileService.GetFileOne(model.m_ExcelFile.FileID);
-                    FileExcel.SourceID = SourceID;
-                    IsExcelSuccess = fileService.UpdateFile(FileExcel, ref ErrorMsg);
-                }
-
-                if (model.m_UplpadpstchipFile2 != null)
-                {
-                    PDC_File Filepstchip = new PDC_File();
-                    IspstchipSuccess = fileService.FileAdd(model.m_UplpadpstchipFile2, "FormApplypstchip", userId, userName, out Filepstchip, SourceID);
-                    if (IspstchipSuccess)
-                        fileService.FileRemove(model.m_pstchipFile.FileID);
-                }
-                else
-                {
-                    PDC_File Filepstchip = new PDC_File();
-                    Filepstchip = fileService.GetFileOne(model.m_pstchipFile.FileID);
-                    Filepstchip.SourceID = SourceID;
-                    IspstchipSuccess = fileService.UpdateFile(Filepstchip, ref ErrorMsg);
-                }
-
-                if (model.m_UplpadpstxnetFile2 != null)
-                {
-                    PDC_File Filepstxnet = new PDC_File();
-                    IspstxnetSuccess = fileService.FileAdd(model.m_UplpadpstxnetFile2, "FormApplypstxnet", userId, userName, out Filepstxnet, SourceID);
-                    if (IspstxnetSuccess)
-                        fileService.FileRemove(model.m_pstxnetFile.FileID);
-                }
-                else
-                {
-                    PDC_File Filepstxnet = new PDC_File();
-                    Filepstxnet = fileService.GetFileOne(model.m_pstxnetFile.FileID);
-                    Filepstxnet.SourceID = SourceID;
-                    IspstxnetSuccess = fileService.UpdateFile(Filepstxnet, ref ErrorMsg);
-                }
-
-                if (model.m_UplpadpstxprtFile2 != null)
-                {
-                    PDC_File Filepstxprt = new PDC_File();
-                    IspstxprtSuccess = fileService.FileAdd(model.m_UplpadpstxprtFile2, "FormApplypstxprt", userId, userName, out Filepstxprt, SourceID);
-                    if (IspstxprtSuccess)
-                        fileService.FileRemove(model.m_pstxprtFile.FileID);
-                }
-                else
-                {
-                    PDC_File Filepstxprt = new PDC_File();
-                    Filepstxprt = fileService.GetFileOne(model.m_pstxprtFile.FileID);
-                    Filepstxprt.SourceID = SourceID;
-                    IspstxprtSuccess = fileService.UpdateFile(Filepstxprt, ref ErrorMsg);
-                }
-
-                if (IsBRDSuccess && IsExcelSuccess && IspstchipSuccess && IspstxnetSuccess && IspstxprtSuccess)
-                {
-                    TempData["TempMsg"] = "申請單編輯成功";
-                    return RedirectToAction("FormApplyEdit", new { FormID = model.m_PDC_Form.FormID });
-                }
-                else
-                {
-
-                    if (!IsBRDSuccess)
-                        ErrorMsg += string.IsNullOrWhiteSpace(ErrorMsg) ? "BRD檔案新增失敗" : "BRD檔案新增失敗\n";
-
-                    if (!IsExcelSuccess)
-                        ErrorMsg += string.IsNullOrWhiteSpace(ErrorMsg) ? "Constraint Excel檔案新增失敗" : "Constraint Excel檔案新增失敗\n";
-
-                    if (!IspstchipSuccess)
-                        ErrorMsg += string.IsNullOrWhiteSpace(ErrorMsg) ? "pstchip檔案新增失敗" : "pstchip檔案新增失敗\n";
-
-                    if (!IspstxnetSuccess)
-                        ErrorMsg += string.IsNullOrWhiteSpace(ErrorMsg) ? "pstxnet檔案新增失敗" : "pstxnet檔案新增失敗\n";
-
-                    if (!IspstxprtSuccess)
-                        ErrorMsg += string.IsNullOrWhiteSpace(ErrorMsg) ? "pstxprt檔案新增失敗" : "pstxprt檔案新增失敗\n";
-
-                    TempData["TempMsg"] = ErrorMsg;
-                    return View(model);
-                }
+                return RedirectToAction("FormApplyEdit", new { FormID = model.m_PDC_Form.FormID });
             }
             else
             {
@@ -317,17 +188,98 @@ namespace cns.Controllers
                 return View(model);
             }
 
+        }
 
-            //model.m_BRDFile = fileService.GetFileOne(SourceID, "FormApplyBRD");
-            //model.m_ExcelFile = fileService.GetFileOne(SourceID, "FormApplyExcel");
-            //model.m_Other = fileService.GetFileOne(SourceID, "FormApplyOther");
-            //model.m_pstchipFile = fileService.GetFileOne(SourceID, "FormApplypstchip");
-            //model.m_pstxnetFile = fileService.GetFileOne(SourceID, "FormApplypstxnet");
-            //model.m_pstxprtFile = fileService.GetFileOne(SourceID, "FormApplypstxprt");
+        [HttpPost]
+        public IActionResult UploadFile(IFormFile file,string Extension,string GUID,string type,long OldFileID = 0)
+        {
+            m_ExcelPartial model = new m_ExcelPartial();
+            FileService fileService = new FileService(_hostingEnvironment, _context);
+            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
+            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
+            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
+            Dictionary<string, string> functionName = new Dictionary<string, string>();
+            functionName.Add("UplpadBRDFile", "FormApplyBRD");
+            functionName.Add("UplpadExcelFile", "FormApplyExcel");
+            functionName.Add("UplpadpstchipFile", "FormApplypstchip");
+            functionName.Add("UplpadpstxnetFile", "FormApplypstxnet");
+            functionName.Add("UplpadpstxprtFile", "FormApplypstxprt");
+            functionName.Add("UplpadOtherFile", "FormApplyOther");
 
-         
+            //驗證是否上傳正確檔案
+            if (!string.IsNullOrWhiteSpace(Extension) && !Path.GetExtension(file.FileName).Contains(Extension))
+            {
+                return Json(new { status = 400, ErrorMessage = "請上傳"+ Extension + "檔案" });
+            }
+            string FilePath = string.Empty;
+            string ErrorMsg = string.Empty;
+            PDC_File File = new PDC_File();
 
-            return View(model);
+            if (!fileService.FileAdd(file, functionName[type], userId, userName, out File, "Temp", 0, GUID)) 
+            {
+                return Json(new { status = 400, ErrorMessage = ErrorMsg });
+            }
+            else
+            {
+                //判斷是否有暫存檔案，有則刪除
+                if(OldFileID != 0)
+                {
+                    PDC_File OldFile = fileService.GetFileOne(OldFileID);
+                    if(OldFile.SourceID == 0)
+                    {
+                        fileService.FileRemove(OldFileID);
+                    }
+                }
+
+                if(type == "UplpadExcelFile")
+                {
+                    Stream stream = file.OpenReadStream();
+                    //轉NPOI類型
+                    XSSFWorkbook ExcelFile = new XSSFWorkbook(stream);
+
+                    ISheet xSSFSheet = ExcelFile.GetSheet("Stackup");
+                    //資料轉為Datatable
+                    DataTable ExcelDt = Helper.GetDataTableFromExcel(xSSFSheet, true);
+
+                    //驗證資料
+                    model.Errmsg = Helper.ExcelStackupCheck(ExcelDt);
+
+                    return Json(new { Excel = ExcelDt, File = File });
+                }
+                return Json(File);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult FileDelete(Int64 FileID)
+        {
+            FileService FileService = new FileService(_hostingEnvironment, _context);
+
+            //取得檔案
+            if(!FileService.FileRemove(FileID))
+            {
+                return Json(new { status = 400, ErrorMessage = "刪除失敗" });
+            }
+            else
+            {
+                return Json(new { status = 0, ErrorMessage = "" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult CloseApply(Int64 FormID)
+        {
+            FormService formService = new FormService(_hostingEnvironment, _context);
+            string ErrorMsg = "";
+            //取得檔案
+            if (!formService.CloseFormApply(FormID,ref ErrorMsg))
+            {
+                return Json(new { status = 400, ErrorMessage = ErrorMsg });
+            }
+            else
+            {
+                return Json(new { status = 0, ErrorMessage = "" });
+            }
         }
 
         [HttpGet]
@@ -336,8 +288,10 @@ namespace cns.Controllers
             FileService FileService = new FileService(_hostingEnvironment, _context);
 
             PDC_File PDC_File = FileService.GetFileOne(FileID);
+            bool IsTemp = false;
+            IsTemp = PDC_File.SourceID != 0 ? false : true;
             //取得檔案
-            MemoryStream stream = FileService.DownloadFile(PDC_File.FileFullName);
+            MemoryStream stream = FileService.DownloadFile(PDC_File.FileFullName, IsTemp);
 
 
             string sFileName = HttpUtility.UrlEncode(PDC_File.FileName);
@@ -353,9 +307,9 @@ namespace cns.Controllers
             string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
 
             //暫時寫死，後續帶對方資料
-            model.BUCode = "BU_Test";
-            model.CompCode = "QCI";
-            model.CreatorName = userName;
+            model.QueryParam.BUCode = "BU_Test";
+            model.QueryParam.CompCode = "QCI";
+            model.QueryParam.CreatorName = userName;
 
             return View(model);
         }
@@ -367,28 +321,14 @@ namespace cns.Controllers
             string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
             string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
 
-            m_FormPartial.BUCode = "BU_Test";
-            m_FormPartial.CompCode = "QCI";
-            m_FormPartial.CreatorName = userName;
+            m_FormPartial.QueryParam.BUCode = "BU_Test";
+            m_FormPartial.QueryParam.CompCode = "QCI";
+            m_FormPartial.QueryParam.CreatorName = userName;
+            m_FormPartial.QueryParam.ApplierID = "TestUser";
 
-            m_FormPartial.m_PDC_Form.ApplierID = "TestUser";
-            m_FormPartial.m_PDC_Form.AppliedFormNo = m_FormPartial.AppliedFormNo;
-            m_FormPartial.m_PDC_Form.BUCode = m_FormPartial.BUCode;
-            m_FormPartial.m_PDC_Form.CompCode = m_FormPartial.CompCode;
-            m_FormPartial.m_PDC_Form.BoardTypeName = m_FormPartial.BoardTypeName;
-            m_FormPartial.m_PDC_Form.FormStatus = m_FormPartial.FormStatus;
-            m_FormPartial.m_PDC_Form.PCBLayoutStatus = m_FormPartial.PCBLayoutStatus;
-            m_FormPartial.m_PDC_Form.PCBType = m_FormPartial.PCBType;
-            m_FormPartial.m_PDC_Form.ProjectName = m_FormPartial.ProjectName;
-            m_FormPartial.m_PDC_Form.Revision = m_FormPartial.Revision;
-            m_FormPartial.m_PDC_Form.BUCode = m_FormPartial.BUCode;
-            m_FormPartial.m_PDC_Form.CompCode = m_FormPartial.CompCode;
-            m_FormPartial.m_PDC_Form.CreatorName = userName;
+          
 
-            if (m_FormPartial.SearchDate != null)
-                m_FormPartial.m_PDC_Form.CreatorDate = m_FormPartial.SearchDate.Value;
-
-            m_FormPartial.PDC_FormList = formService.GetFilterFormList(m_FormPartial.m_PDC_Form);
+            m_FormPartial.vw_FormQueryList = formService.GetFilterFormList(m_FormPartial.QueryParam);
 
             return View(m_FormPartial);
         }

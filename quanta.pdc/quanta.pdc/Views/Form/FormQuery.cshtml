@@ -51,19 +51,19 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>公司別</label>
-                                        <input type="email" class="form-control" asp-for="CompCode" disabled="disabled">
+                                        <input type="email" class="form-control" asp-for="QueryParam.CompCode" disabled="disabled">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>事業群</label>
-                                        <input type="email" class="form-control" asp-for="BUCode" disabled="disabled">
+                                        <input type="email" class="form-control" asp-for="QueryParam.BUCode" disabled="disabled">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>申請者</label>
-                                        <input type="email" class="form-control" asp-for="CreatorName" disabled="disabled">
+                                        <input type="email" class="form-control" asp-for="QueryParam.CreatorName" disabled="disabled">
                                     </div>
                                 </div>
                             </div>
@@ -71,33 +71,43 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>申請單編號 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                        <input type="text" class="form-control" asp-for="AppliedFormNo">
+                                        <input type="text" class="form-control" asp-for="QueryParam.AppliedFormNo">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>申請者狀態 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                        <select class="select2 form-control" asp-for="FormStatus">
+                                        <select class="select2 form-control" asp-for="QueryParam.FormStatus">
                                             <option value=""></option>
                                             <option value="未送件">未送件</option>
                                             <option value="未派單">未派單</option>
                                             <option value="處理中">處理中</option>
                                             <option value="Release">Release</option>
+                                            <option value="Reject">Reject</option>
+                                            <option value="已抽單">已抽單</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label>查詢日期 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                        <input type="text" class="form-control" id="SearchDate" asp-for="SearchDate">
+                                        <input type="text" class="form-control" id="SearchDate_Start" asp-for="QueryParam.SearchDate_Start">
                                     </div>
+
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>　<a></a></label>
+                                            <input type="text" class="form-control" id="SearchDate_End" asp-for="QueryParam.SearchDate_End">
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>PCB Layout Status <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                        <select class="select2 form-control" asp-for="PCBLayoutStatus">
+                                        <select class="select2 form-control" asp-for="QueryParam.PCBLayoutStatus">
                                             <option value=""></option>
                                             <option value="New">New</option>
                                             <option value="RFQ">RFQ</option>
@@ -108,7 +118,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>PCB Type <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                        <select class="select2 form-control" asp-for="PCBType">
+                                        <select class="select2 form-control" asp-for="QueryParam.PCBType">
                                             <option value=""></option>
                                             <option value="Non-HDI">Non-HDI</option>
                                             <option value="HDI">HDI</option>
@@ -123,19 +133,19 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Project <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                        <input type="text" asp-for="ProjectName" class="form-control">
+                                        <input type="text" asp-for="QueryParam.ProjectName" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Board Type <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                        <input type="text" asp-for="BoardTypeName" class="form-control">
+                                        <input type="text" asp-for="QueryParam.BoardTypeName" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Rev. <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
-                                        <input type="text" asp-for="Revision" class="form-control">
+                                        <input type="text" asp-for="QueryParam.Revision" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -178,34 +188,40 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @for (int i = 0; i <= Model.PDC_FormList.Count - 1; i++)
+                                    @for (int i = 0; i <= Model.vw_FormQueryList.Count - 1; i++)
                                     {
-                                        var Path = Url.Action("FormApplyEdit", "Form") + "/?FormID=" + @Model.PDC_FormList[i].FormID;
-                                        <tr>
-                                            <td>
-                                                <a href="@Path" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">@Model.PDC_FormList[i].AppliedFormNo</a>
-                                            </td>
-                                            <td></td>
-                                            <td>@Model.PDC_FormList[i].FormStatus</td>
-                                            <td>
-                                                @Model.PDC_FormList[i].CreatorDate.ToString("yyyy/MM/dd")<br>
-                                                @Model.PDC_FormList[i].CreatorDate.ToString("HH:mm:ss")
-                                            </td>
-                                            <td>@Model.PDC_FormList[i].CreatorName</td>
-                                            <td>@Model.PDC_FormList[i].PCBLayoutStatus</td>
-                                            <td>@Model.PDC_FormList[i].ProjectName</td>
-                                            <td>@Model.PDC_FormList[i].BoardTypeName</td>
-                                            <td>@Model.PDC_FormList[i].Revision</td>
-                                            <td>
-                                                Roger Chao<br>
-                                                (趙偉智)/#10370
-                                            </td>
-                                            <td></td>
-                                            <td>
-                                                <br>
+                                        var Path = Url.Action("FormApplyEdit", "Form") + "/?FormID=" + @Model.vw_FormQueryList[i].FormID;
+                                    <tr>
+                                        <td>
+                                            <a href="@Path" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">@Model.vw_FormQueryList[i].AppliedFormNo</a>
+                                        </td>
+                                        <td>@Model.vw_FormQueryList[i].ApplyOrder</td>
+                                        <td>@Model.vw_FormQueryList[i].FormStatus</td>
+                                        <td>
+                                            @if (Model.vw_FormQueryList[i].ApplyDate.Year != 1)
+                                            {
+                                                @Model.vw_FormQueryList[i].ApplyDate.ToString("yyyy/MM/dd")<br>
+                                                @Model.vw_FormQueryList[i].ApplyDate.ToString("HH:mm:ss")
+                                            }
 
-                                            </td>
-                                        </tr>
+                                        </td>
+                                        <td>@Model.vw_FormQueryList[i].CreatorName</td>
+                                        <td>@Model.vw_FormQueryList[i].PCBLayoutStatus</td>
+                                        <td>@Model.vw_FormQueryList[i].ProjectName</td>
+                                        <td>@Model.vw_FormQueryList[i].BoardTypeName</td>
+                                        <td>@Model.vw_FormQueryList[i].Revision</td>
+                                        <td>
+                                            @*Roger Chao<br>
+        (趙偉智)/#10370*@
+                                            @Model.vw_FormQueryList[i].PDC_Member
+                                        </td>
+                                        <td>@Model.vw_FormQueryList[i].StageName</td>
+                                        <td>
+                                            @(Model.vw_FormQueryList[i].StageDate.HasValue ? Model.vw_FormQueryList[i].StageDate.Value.ToString("yyyy/MM/dd") : "")
+                                            <br />
+                                            @(Model.vw_FormQueryList[i].StageDate.HasValue ? Model.vw_FormQueryList[i].StageDate.Value.ToString("HH:mm:ss") : "")
+                                        </td>
+                                    </tr>
                                     }
 
 
@@ -232,7 +248,8 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            $('#SearchDate').datepicker();
+            $('#SearchDate_Start').datepicker({ dateFormat: 'yy-mm-dd' });
+            $('#SearchDate_End').datepicker({ dateFormat: 'yy-mm-dd' });
 
 
         });

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using cns.Services.Enum;
+using cns.Services.Helper;
 
 namespace cns.Services
 {
@@ -20,6 +21,7 @@ namespace cns.Services
 
         private readonly ApplicationDbContext _context;
 
+        private readonly IHostingEnvironment _hostingEnvironment;
 
         public FormService(ApplicationDbContext context)
         {
@@ -27,7 +29,11 @@ namespace cns.Services
             
         }
 
-
+        public FormService(IHostingEnvironment hostingEnvironment, ApplicationDbContext context)
+        {
+            _hostingEnvironment = hostingEnvironment;
+            _context = context;
+        }
 
         /// <summary> 取得申請單紀錄
         /// 
@@ -45,6 +51,11 @@ namespace cns.Services
             return Form_StageLogList;
         }
 
+        /// <summary> 取得申請單
+        /// 
+        /// </summary>
+        /// <param name="FormID">申請單ID</param>
+        /// <returns></returns>
         public PDC_Form GetFormOne(Int64 FormID)
         {
             PDC_Form item = new PDC_Form();
@@ -54,10 +65,10 @@ namespace cns.Services
             return item;
         }
 
-        public List<PDC_Form> GetFilterFormList(PDC_Form PDC_Form)
+        public List<vw_FormQuery> GetFilterFormList(QueryParam PDC_Form)
         {
             //判斷物件
-            var Predicate = PredicateBuilder.True<PDC_Form>();
+            var Predicate = PredicateBuilder.True<vw_FormQuery>();
 
             if(!string.IsNullOrWhiteSpace(PDC_Form.ApplierID))
             {
@@ -99,9 +110,14 @@ namespace cns.Services
                 Predicate = Predicate.And(a => a.Revision.Contains(PDC_Form.Revision));
             }
 
-            if (PDC_Form.CreatorDate.Year != 1)
+            if (PDC_Form.SearchDate_Start.HasValue)
             {
-                Predicate = Predicate.And(a => a.CreatorDate == PDC_Form.CreatorDate);
+                Predicate = Predicate.And(a => a.CreatorDate >= PDC_Form.SearchDate_Start.Value);
+            }
+
+            if (PDC_Form.SearchDate_End.HasValue)
+            {
+                Predicate = Predicate.And(a => a.CreatorDate <= PDC_Form.SearchDate_End.Value);
             }
 
             if (!string.IsNullOrWhiteSpace(PDC_Form.FormStatus))
@@ -114,16 +130,17 @@ namespace cns.Services
                 Predicate = Predicate.And(a => a.AppliedFormNo.Contains(PDC_Form.AppliedFormNo));
             }
 
-            List<PDC_Form> pDC_FormList = new List<PDC_Form>();
+            List<vw_FormQuery> pDC_FormList = new List<vw_FormQuery>();
 
-            pDC_FormList = _context.PDC_Form.Where(Predicate).ToList();
+            pDC_FormList = _context.vw_FormQuery.Where(Predicate).ToList();
 
             return pDC_FormList;
         }
 
 
-        public bool UpdateForm(PDC_Form NewForm, ref string ErrorMsg)
+        public bool UpdateForm(PDC_Form NewForm, List<PDC_File> FileList, ref string ErrorMsg)
         {
+            FileHelper fileHelper = new FileHelper(_hostingEnvironment);
             ErrorMsg = string.Empty;
             try
             {
@@ -139,7 +156,24 @@ namespace cns.Services
                 OldForm.Modifyer = NewForm.Modifyer;
                 OldForm.ModifyerName = NewForm.ModifyerName;
                 OldForm.ModifyerDate = NewForm.ModifyerDate;
+
+                List<PDC_File> NewFileList = new List<PDC_File>();
+
+                foreach (PDC_File item in FileList)
+                {
+                    PDC_File File = _context.PDC_File.Where(x => x.FileID == item.FileID).SingleOrDefault();
+                    File.SourceID = NewForm.FormID;
+                    File.FileDescription = "";
+                    NewFileList.Add(File);
+                }
+
                 _context.SaveChanges();
+
+                //把檔案從Temp移到FileUpload
+                foreach (PDC_File item in NewFileList)
+                {
+                    fileHelper.RemoveFile(item.FileFullName);
+                }
 
                 ErrorMsg = "儲存成功";
             }
@@ -158,8 +192,9 @@ namespace cns.Services
         /// <param name="ErrorMsg">錯誤訊息</param>
         /// <param name="FormID">表單ID</param>
         /// <returns></returns>
-        public bool AddForm(PDC_Form NewForm, ref string ErrorMsg, out long FormID)
+        public bool AddForm(PDC_Form NewForm,List<PDC_File> FileList, ref string ErrorMsg, out long FormID)
         {
+            FileHelper fileHelper = new FileHelper(_hostingEnvironment);
             ErrorMsg = string.Empty;
             try
             {
@@ -168,8 +203,23 @@ namespace cns.Services
 
                 FormID = NewForm.FormID;
 
+                List<PDC_File> NewFileList = new List<PDC_File>();
+
+                foreach(PDC_File item in FileList)
+                {
+                    PDC_File File = _context.PDC_File.Where(x => x.FileID == item.FileID).SingleOrDefault();
+                    File.SourceID = FormID;
+                    File.FileDescription = "";
+                    NewFileList.Add(File);
+                }
+
                 NewForm.AppliedFormNo = "CN" + NewForm.FormID.ToString().PadLeft(6, '0');
                 _context.SaveChanges();
+                //把檔案從Temp移到FileUpload
+                foreach (PDC_File item in NewFileList)
+                {
+                    fileHelper.RemoveFile(item.FileFullName);
+                }
 
                 ErrorMsg = "儲存成功";
             }
@@ -181,6 +231,7 @@ namespace cns.Services
             }
             return true;
         }
+
 
         public decimal GetWorkHour(Enum.FormEnum.Form_Stage form_Stage)
         {
@@ -209,7 +260,7 @@ namespace cns.Services
                 return 0.5M;
         }
 
-        public bool AddForm_StageLog(long FormID, Enum.FormEnum.Form_Stage form_Stage, string result,out long FormStageID, ref string ErrorMsg)
+        public bool AddForm_StageLog(long FormID, Enum.FormEnum.Form_Stage form_Stage, string result, List<PDC_File> FileList, out long FormStageID, ref string ErrorMsg)
         {
             PDC_Form_StageLog FormStage = new PDC_Form_StageLog();
             ErrorMsg = string.Empty;
@@ -226,8 +277,31 @@ namespace cns.Services
                 _context.PDC_Form_StageLog.Add(FormStage);
                 _context.SaveChanges();
 
-                ErrorMsg = "儲存成功";
                 FormStageID = FormStage.StageLogID;
+
+                List<PDC_File> NewFileList = new List<PDC_File>();
+                foreach(PDC_File item in FileList)
+                {
+                    PDC_File OldFile = _context.PDC_File.Where(x => x.FileID == item.FileID).SingleOrDefault();
+                    PDC_File NewFile = new PDC_File();
+                    NewFile.Creator = OldFile.Creator;
+                    NewFile.CreatorName = OldFile.CreatorName;
+                    NewFile.CreatorDate = DateTime.Now;
+                    NewFile.FileCategory = OldFile.FileCategory;
+                    NewFile.FileDescription = OldFile.FileDescription;
+                    NewFile.FileExtension = OldFile.FileExtension;
+                    NewFile.FileFullName = OldFile.FileFullName;
+                    NewFile.FileName = OldFile.FileName;
+                    NewFile.FileSize = OldFile.FileSize;
+                    NewFile.FileType = OldFile.FileType;
+                    NewFile.FileNote = OldFile.FileNote;
+                    NewFile.FileRemark = OldFile.FileRemark;
+                    NewFile.FunctionName = "FormStage";
+                    NewFile.SourceID = FormStageID;
+                    NewFileList.Add(NewFile);
+                    _context.Add(NewFile);
+                }
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -239,7 +313,38 @@ namespace cns.Services
             return true;
         }
 
-        
+        public bool CloseFormApply(long FormID, ref string ErrorMsg)
+        {
+            ErrorMsg = string.Empty;
+            try
+            {
+                PDC_Form Form = _context.PDC_Form.Where(x => x.FormID == FormID).SingleOrDefault();
+                Form.FormStatus = FormEnum.GetForm_StatusDic()[(int)FormEnum.Form_Status.End];
+                Form.Modifyer = "super@admin.com";
+                Form.ModifyerName = "Roger Chao (趙偉智)";
+                Form.ModifyerDate = DateTime.Now;
+
+                PDC_Form_StageLog FormStage = new PDC_Form_StageLog();
+                FormStage.FormID = FormID;
+                FormStage.Result = "已抽單";
+                FormStage.Stage = Enum.FormEnum.Form_Stage.End;
+                FormStage.StageName = FormEnum.GetForm_StageName(Enum.FormEnum.Form_Stage.End);
+                FormStage.WorkHour = GetWorkHour(FormEnum.Form_Stage.End);
+                FormStage.Creator = "super@admin.com";
+                FormStage.CreatorName = "Roger Chao (趙偉智)";
+                FormStage.CreatorDate = DateTime.Now;
+                _context.PDC_Form_StageLog.Add(FormStage);
+
+                _context.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                ErrorMsg = "儲存失敗";
+                return false;
+            }
+            return true;
+        }
     }
 
     /// <summary>

@@ -23,13 +23,17 @@ namespace cns.Services.Enum
             /// </summary>
             Work = 3,
             /// <summary>
-            /// 完成
+            /// 完成(Release
             /// </summary>
             Release = 4,
             /// <summary>
-            /// 處理
+            /// 完成(Reject
             /// </summary>
             Reject = 5,
+            /// <summary>
+            /// 已結束(抽單
+            /// </summary>
+            End = 6,
         }
 
         public static string GetForm_StageName(Form_Stage Form_Stage)
@@ -40,6 +44,7 @@ namespace cns.Services.Enum
             Dic_Form_Stage.Add(3, "Work");
             Dic_Form_Stage.Add(4, "Release");
             Dic_Form_Stage.Add(5, "Reject");
+            Dic_Form_Stage.Add(6, "End");
 
             return Dic_Form_Stage[(int)Form_Stage];
         }
@@ -66,16 +71,21 @@ namespace cns.Services.Enum
             /// 已完成(Reject)
             /// </summary>
             Reject = 5,
+            /// <summary>
+            /// 已結束(抽單
+            /// </summary>
+            End = 6,
         }
 
         public static Dictionary<int, string> GetForm_StatusDic()
         {
             Dictionary<int, string> Dic_Form_Status = new Dictionary<int, string>();
-            Dic_Form_Status.Add(1, "未申請");
-            Dic_Form_Status.Add(2, "未送件");
+            Dic_Form_Status.Add(1, "未送件");
+            Dic_Form_Status.Add(2, "未派單");
             Dic_Form_Status.Add(3, "處理中");
-            Dic_Form_Status.Add(4, "已完成(Release)");
-            Dic_Form_Status.Add(5, "已完成(Reject)");
+            Dic_Form_Status.Add(4, "Release");
+            Dic_Form_Status.Add(5, "Reject");
+            Dic_Form_Status.Add(6, "已抽單");
 
             return Dic_Form_Status;
         }

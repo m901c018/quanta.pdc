@@ -198,9 +198,18 @@ namespace cns.Services.Helper
                     }
 
                     dtExcelRecords.Rows.Add(dr);
-
+                    //資料取到BOT + 1行
                     if (IsEnd)
                     {
+                        XSSFRow Row2 = (XSSFRow)xSSFSheet.GetRow(i + 1);
+                        DataRow dr2 = dtExcelRecords.NewRow();
+                        for (int j = 0; j <= StackupColumnList.Count - 1; j++) //對工作表每一列 
+                        {
+                            string cellValue = GetCellValue(Row2, j); //獲取i行j列數據 
+                            dr2[j] = cellValue;
+                        }
+                        dtExcelRecords.Rows.Add(dr2);
+
                         return dtExcelRecords;
                     }
                 }
@@ -269,6 +278,8 @@ namespace cns.Services.Helper
                 ColIndex += 1;
                 //每筆有兩列
                 DataRow ColFirst = ExcelDt.Rows[i];
+                DataRow ColSecond = ExcelDt.Rows[i + 1];
+
 
                 decimal Thickness1 = 0;
                 if(Decimal.TryParse(ColFirst[7].ToString(),out Thickness1))
@@ -280,29 +291,48 @@ namespace cns.Services.Helper
                 ColFirst[0] = "L" + ColIndex;
 
                 //最後BOT代表結束
-                if (ColFirst[2].ToString() == "BOT")
+                if (ColFirst[2].ToString() == "BOT" || ColSecond[2].ToString() == "BOT")
                 {
-                    NameList.Add(ColFirst[2].ToString());
-                    ColFirst[1] = "Conductor";
-                    ColFirst[3] = "B";
-                    if (string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
-                        BotCheck = true;
-
-                    if (i == (ExcelDt.Rows.Count - 1))
+                    if(ColFirst[2].ToString() == "BOT")
                     {
+                        NameList.Add(ColFirst[2].ToString());
+                        ColFirst[1] = "Conductor";
+                        ColFirst[3] = "B";
+                        ColFirst[6] = "Cu + Plating";
+                        ColSecond[6] = "Solder Mask";
+                        if (string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
+                            BotCheck = true;
+
                         GroupNameList.Add(ColFirst[3].ToString());
                         break;
+
                     }
                     else
                     {
-                        EndCheck = true;
-                        break;
+                        NameList.Add(ColSecond[2].ToString());
+                        ColSecond[1] = "Conductor";
+                        ColSecond[3] = "B";
+                        ColSecond[6] = "Cu + Plating";
+                        if (string.IsNullOrWhiteSpace(ColSecond[4].ToString()) || string.IsNullOrWhiteSpace(ColSecond[5].ToString()))
+                            BotCheck = true;
+
+                        GroupNameList.Add(ColSecond[3].ToString());
+
+                        if (i == (ExcelDt.Rows.Count - 1))
+                        {
+                            
+                            break;
+                        }
+                        else
+                        {
+                            EndCheck = true;
+                            break;
+                        }
                     }
                 }
 
                 
 
-                DataRow ColSecond = ExcelDt.Rows[i + 1];
 
                 decimal Thickness2 = 0;
                 if (Decimal.TryParse(ColSecond[7].ToString(), out Thickness2))

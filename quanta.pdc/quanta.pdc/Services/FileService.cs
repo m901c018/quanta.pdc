@@ -55,45 +55,12 @@ namespace cns.Services
             return FilePath;
         }
 
-        /// <summary> 下載檔案
-        /// 
-        /// </summary>
-        /// <param name="FileName">檔案名</param>
-        /// <returns></returns>
-        public MemoryStream DownloadFile(string FileName)
-        {
-            //檔案名
-            var FilePath = rootPath + "\\FileUpload\\" + FileName;
-            MemoryStream fileStream = new MemoryStream();
-
-            using (FileStream file = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
-                file.CopyTo(fileStream);
-
-            return fileStream;
-        }
-
-        /// <summary> 下載範例檔案
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public MemoryStream DownloadSampleFile()
-        {
-            //檔案名
-            var FilePath = rootPath + "\\File\\CNS_Sample.xlsx";
-            MemoryStream fileStream = new MemoryStream();
-
-            using (FileStream file = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
-                file.CopyTo(fileStream);
-
-            return fileStream;
-        }
-
         /// <summary> 儲存檔案並返回檔案路徑
         /// 
         /// </summary>
         /// <param name="file">NetCore檔案類別</param>
         /// <returns></returns>
-        public string SaveAndGetExcelPath(MemoryStream file,bool IsCsv = false)
+        public string SaveAndGetExcelPath(MemoryStream file, bool IsCsv = false)
         {
             string FilePath = string.Empty;
             //隨機產生檔案名
@@ -118,6 +85,46 @@ namespace cns.Services
 
             return FilePath;
         }
+
+        /// <summary> 下載檔案
+        /// 
+        /// </summary>
+        /// <param name="FileName">檔案名</param>
+        /// <returns></returns>
+        public MemoryStream DownloadFile(string FileName,bool IsTemp = false)
+        {
+            string FilePath = string.Empty;
+            //檔案名
+            if(IsTemp)
+                FilePath = rootPath + "\\Temp\\" + FileName;
+            else
+                FilePath = rootPath + "\\FileUpload\\" + FileName;
+
+            MemoryStream fileStream = new MemoryStream();
+
+            using (FileStream file = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
+                file.CopyTo(fileStream);
+
+            return fileStream;
+        }
+
+        /// <summary> 下載範例檔案
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public MemoryStream DownloadSampleFile()
+        {
+            //檔案名
+            var FilePath = rootPath + "\\File\\CNS_Sample.xlsx";
+            MemoryStream fileStream = new MemoryStream();
+
+            using (FileStream file = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
+                file.CopyTo(fileStream);
+
+            return fileStream;
+        }
+
+        
 
         public PDC_File GetFileOne(Int64 FileID)
         {
@@ -152,14 +159,7 @@ namespace cns.Services
 
             foreach(PDC_Form_StageLog item in Form_StageLogs)
             {
-                if(item.StageName == "Apply")
-                {
-                    result.AddRange(_context.PDC_File.Where(x => x.FunctionName.StartsWith("FormApply") && x.SourceID == item.StageLogID).ToList());
-                }
-                else
-                {
-                    result.AddRange(_context.PDC_File.Where(x => x.FunctionName == "Form_StageLog" && x.SourceID == item.StageLogID).ToList());
-                }
+                result.AddRange(_context.PDC_File.Where(x => x.FunctionName == "FormStage" && x.SourceID == item.StageLogID).ToList());
             }
 
             return result;
@@ -174,13 +174,15 @@ namespace cns.Services
             return FileList;
         }
 
-        public Boolean FileAdd(IFormFile file, string FunctionName, string userId, string userName, out PDC_File item, Int64 SourceID = 0, string FileDescription = "")
+        public Boolean FileAdd(IFormFile file, string FunctionName, string userId, string userName, out PDC_File item, string Folder = "FileUpload", Int64 SourceID = 0, string FileDescription = "")
         {
             item = new PDC_File();
+            string FilePath = string.Empty;
+            string ErrorMsg = string.Empty;
+            FileHelper fileHelper = new FileHelper(_hostingEnvironment);
             try
             {
-                string FilePath = SaveAndGetExcelPath(file);
-                if(FilePath != "Error")
+                if(fileHelper.SaveFile(file, Folder, Guid.NewGuid().ToString("N") + Path.GetExtension(file.FileName), out FilePath, out ErrorMsg))
                 {
                     item.FileFullName = Path.GetFileName(FilePath);
                     item.FileName = file.FileName;
@@ -246,15 +248,16 @@ namespace cns.Services
 
         public Boolean FileRemove(Int64 FileID)
         {
+            FileHelper fileHelper = new FileHelper(_hostingEnvironment);
             try
             {
                 if (_context.PDC_File.Where(x => x.FileID == FileID).Any())
                 {
                     PDC_File item = _context.PDC_File.Where(x => x.FileID == FileID).SingleOrDefault();
-                    //檔案名
-                    var FilePath = rootPath + "\\FileUpload\\" + item.FileFullName;
+                    //檔案名(只有暫存區檔案需要刪除)
+                    var FilePath = rootPath + "\\Temp\\" + item.FileFullName;
                     //如果為檔案則刪除檔案
-                    if (!(item.FileCategory == 1 && FileHelper.RemoveFile(FilePath)))
+                    if (item.FileCategory == 1 && item.SourceID == 0 && !FileHelper.DeleteFile(FilePath))
                     {
                         return false;
                     }

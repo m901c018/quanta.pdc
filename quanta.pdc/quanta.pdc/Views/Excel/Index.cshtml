@@ -114,7 +114,7 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="custom-file mb-3">
-                                                        <input type="file" class="custom-file-input" id="datFile" name="filename">
+                                                        <input type="file" class="custom-file-input" id="datFile" name="filename" accept=".dat">
                                                         <label class="custom-file-label" for="datFile" id="datshowCover" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                                     </div>
                                                 </div>
@@ -125,7 +125,7 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="custom-file mb-3">
-                                                        <input type="file" class="custom-file-input" id="lefile" name="filename">
+                                                        <input type="file" class="custom-file-input" id="lefile" name="filename" accept=".xlsx">
                                                         <label class="custom-file-label" for="lefile" id="showCover" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                                     </div>
                                                 </div>
@@ -222,14 +222,14 @@
     <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#grid').DataTable({
-                lengthChange: false,
-                info: false,
-                searching: false,
-                scrollX: false,
-                bPaginate: false, // 顯示換頁
-                ordering: false,  // 是否顯示header排序
-            });
+            //$('#grid').DataTable({
+            //    lengthChange: false,
+            //    info: false,
+            //    searching: false,
+            //    scrollX: false,
+            //    bPaginate: false, // 顯示換頁
+            //    ordering: false,  // 是否顯示header排序
+            //});
         });
 
         $('input[id=lefile]').change(function () {
@@ -253,6 +253,43 @@
                 }
             });
             $('#ThicknessTotal').text(Sum.toFixed(2));
+        }
+
+        //載入Excel資料
+        function SetDataTable(dt) {
+            $('#grid > tbody').html('');
+            var ErrorMsg = "";
+            $.each(dt, function (index, row) {
+                var Html = "<tr>";
+                Html += "<td>" + row[0] + "</td>";
+                Html += "<td>" + row[1] + "</td>";
+                if (row[2] != "BOT" && row[2] != "" && dt[index + 1][2] != "") {
+                    ErrorMsg += row[2] + "、";
+                    Html += "<td><span style=\"color:red\">" + row[2] + "</span></td>";
+                }
+                else {
+                    Html += "<td>" + row[2] + "</td>";
+                }
+                Html += "<td>" + row[3] + "</td>";
+                Html += "<td>" + row[4] + "</td>";
+                Html += "<td>" + row[5] + "</td>";
+                Html += "<td>" + row[6] + "</td>";
+                Html += "<td>" + row[7] + "</td>";
+
+                $('#grid > tbody').append(Html);
+                
+            });
+            //計算總版厚
+            GetTotal();
+            if (ErrorMsg == "") {
+                //驗證
+                SaveCheckFile();
+                $('#OpenOnlineEdit').show();
+            }
+            else {
+                $('#ErrorMsg').text(ErrorMsg + "疊構不符，請由原始檔案修改");
+                $('#OpenOnlineEdit').hide();
+            }
         }
 
         function uploadFile() {
@@ -279,27 +316,7 @@
                     }
                     else {
                         //$('#grid tbody').html(result);
-                        var dt = $('#grid').DataTable();
-                        dt.clear().draw();
-
-                        $.each(result, function (index, row) {
-                            dt.row.add([
-                                row[0]
-                                , row[1]
-                                , row[2]
-                                , row[3]
-                                , row[4]
-                                , row[5]
-                                , row[6]
-                                , row[7]
-                            ]);
-                        });
-                        dt.draw(false);
-                        //計算總版厚
-                        GetTotal();
-                        //驗證
-                        SaveCheckFile();
-
+                        SetDataTable(result);
                         
                     }
                 },

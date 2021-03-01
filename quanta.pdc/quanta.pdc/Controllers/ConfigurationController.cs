@@ -302,7 +302,7 @@ namespace cns.Controllers
             PDC_File m_PCBFile = new PDC_File();
             string ErrorMsg = string.Empty;
 
-            if (FileService.FileAdd(file, "Configuration_PCBFile", userId, userName, out m_PCBFile, ParameterID, FileDescription))
+            if (FileService.FileAdd(file, "Configuration_PCBFile", userId, userName, out m_PCBFile,"FileUpload", ParameterID, FileDescription))
             {
                 return Json(m_PCBFile);
             }
@@ -483,7 +483,7 @@ namespace cns.Controllers
                     FileService.FileRemove(WorkDetail_File.FileID);
                 }
 
-                FileService.FileAdd(file, "ConfigurationWorkDetail", userId, userName, out newFile, item.ParameterID);
+                FileService.FileAdd(file, "ConfigurationWorkDetail", userId, userName, out newFile, "FileUpload", item.ParameterID);
             }
 
             item.ParameterText = ParameterText;

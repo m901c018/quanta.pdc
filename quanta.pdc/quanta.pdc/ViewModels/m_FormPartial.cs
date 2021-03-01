@@ -129,7 +129,7 @@ namespace cns.ViewModels
         /// <summary> 其他檔案
         /// 
         /// </summary>
-        public PDC_File m_Other { get; set; }
+        public List<PDC_File> m_OtherFileList { get; set; }
 
         /// <summary> 是否直接申請
         /// 
@@ -154,12 +154,17 @@ namespace cns.ViewModels
         /// <summary> 查詢資料
         /// 
         /// </summary>
-        public List<PDC_Form> PDC_FormList { get; set; }
+        public List<vw_FormQuery> vw_FormQueryList { get; set; }
 
         /// <summary> 查詢用
         /// 
         /// </summary>
         public DateTime? SearchDate { get; set; }
+
+        /// <summary> 臨時戳記
+        /// 
+        /// </summary>
+        public string GUID { get; set; }
 
 
         public string AppliedFormNo { get; set; }
@@ -173,12 +178,37 @@ namespace cns.ViewModels
         public string BUCode { get; set; }
         public string CreatorName { get; set; }
 
+        public QueryParam QueryParam { get; set; }
+
         public m_FormPartial()
         {
             m_PDC_Form = new PDC_Form();
-            PDC_FormList = new List<PDC_Form>();
+            vw_FormQueryList = new List<vw_FormQuery>();
+            QueryParam = new QueryParam();
         }
     }
 
-    
+    public class QueryParam
+    {
+        public string ApplierID { get; set; }
+        public string AppliedFormNo { get; set; }
+        public string FormStatus { get; set; }
+        public string PCBLayoutStatus { get; set; }
+        public string PCBType { get; set; }
+        public string ProjectName { get; set; }
+        public string BoardTypeName { get; set; }
+        public string Revision { get; set; }
+        public string CompCode { get; set; }
+        public string BUCode { get; set; }
+        public string CreatorName { get; set; }
+        /// <summary> 查詢用
+        /// 
+        /// </summary>
+        public DateTime? SearchDate_Start { get; set; }
+
+        /// <summary> 查詢用
+        /// 
+        /// </summary>
+        public DateTime? SearchDate_End { get; set; }
+    }
 }
