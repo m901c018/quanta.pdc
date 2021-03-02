@@ -72,6 +72,11 @@ namespace cns.ViewModels
         /// </summary>
         public PDC_Parameter m_ExcelRule { get; set; }
 
+        /// <summary> 是否表單申請編輯Excel
+        /// 
+        /// </summary>
+        public bool IsFormApplyEdit { get; set; }
+
         public m_ExcelPartial()
         {
             StackupColumnList = new List<PDC_StackupColumn>();

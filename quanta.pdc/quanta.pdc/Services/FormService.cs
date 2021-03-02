@@ -153,6 +153,8 @@ namespace cns.Services
                 OldForm.PCBType = NewForm.PCBType;
                 OldForm.ProjectName = NewForm.ProjectName;
                 OldForm.Revision = NewForm.Revision;
+                OldForm.FormStatusCode = NewForm.FormStatusCode;
+                OldForm.Result = NewForm.Result;
                 OldForm.Modifyer = NewForm.Modifyer;
                 OldForm.ModifyerName = NewForm.ModifyerName;
                 OldForm.ModifyerDate = NewForm.ModifyerDate;
@@ -319,23 +321,32 @@ namespace cns.Services
             try
             {
                 PDC_Form Form = _context.PDC_Form.Where(x => x.FormID == FormID).SingleOrDefault();
-                Form.FormStatus = FormEnum.GetForm_StatusDic()[(int)FormEnum.Form_Status.End];
-                Form.Modifyer = "super@admin.com";
-                Form.ModifyerName = "Roger Chao (趙偉智)";
-                Form.ModifyerDate = DateTime.Now;
+                if(Form.FormStatusCode == FormEnum.Form_Status.Apply || Form.FormStatusCode == FormEnum.Form_Status.Apply)
+                {
+                    Form.FormStatus = FormEnum.GetForm_StatusDic()[(int)FormEnum.Form_Status.End];
+                    Form.FormStatusCode = FormEnum.Form_Status.End;
+                    Form.Modifyer = "super@admin.com";
+                    Form.ModifyerName = "Roger Chao (趙偉智)";
+                    Form.ModifyerDate = DateTime.Now;
 
-                PDC_Form_StageLog FormStage = new PDC_Form_StageLog();
-                FormStage.FormID = FormID;
-                FormStage.Result = "已抽單";
-                FormStage.Stage = Enum.FormEnum.Form_Stage.End;
-                FormStage.StageName = FormEnum.GetForm_StageName(Enum.FormEnum.Form_Stage.End);
-                FormStage.WorkHour = GetWorkHour(FormEnum.Form_Stage.End);
-                FormStage.Creator = "super@admin.com";
-                FormStage.CreatorName = "Roger Chao (趙偉智)";
-                FormStage.CreatorDate = DateTime.Now;
-                _context.PDC_Form_StageLog.Add(FormStage);
+                    PDC_Form_StageLog FormStage = new PDC_Form_StageLog();
+                    FormStage.FormID = FormID;
+                    FormStage.Result = "已抽單";
+                    FormStage.Stage = Enum.FormEnum.Form_Stage.End;
+                    FormStage.StageName = FormEnum.GetForm_StageName(Enum.FormEnum.Form_Stage.End);
+                    FormStage.WorkHour = GetWorkHour(FormEnum.Form_Stage.End);
+                    FormStage.Creator = "super@admin.com";
+                    FormStage.CreatorName = "Roger Chao (趙偉智)";
+                    FormStage.CreatorDate = DateTime.Now;
+                    _context.PDC_Form_StageLog.Add(FormStage);
 
-                _context.SaveChanges();
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    ErrorMsg = "該申請單已處理完成";
+                    return false;
+                }
 
             }
             catch (Exception ex)

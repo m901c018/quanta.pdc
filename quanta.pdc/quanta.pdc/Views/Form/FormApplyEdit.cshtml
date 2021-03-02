@@ -38,13 +38,13 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>申請日期</label>
-                                        <input type="text" class="form-control" disabled="disabled" asp-for="m_PDC_Form.ApplyDate" value="@Model.m_PDC_Form.ApplyDate.ToString("yyyy/MM/dd HH:mm:ss")">
+                                        <input type="text" class="form-control" disabled="disabled"  value="@(Model.m_PDC_Form.ApplyDate.Year == 1 ? "" : Model.m_PDC_Form.ApplyDate.ToString("yyyy/MM/dd HH:mm:ss"))">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>申請單狀態</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.FormStatus"  disabled="disabled">
+                                        <input type="text" class="form-control" asp-for="m_PDC_Form.FormStatus" disabled="disabled">
                                     </div>
                                 </div>
                             </div>
@@ -52,19 +52,19 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>公司別</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.CompCode"  disabled="disabled">
+                                        <input type="text" class="form-control" value="@Model.m_PDC_Form.CompCode" disabled="disabled">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>事業群</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.BUCode"  disabled="disabled">
+                                        <label>部門</label>
+                                        <input type="text" class="form-control" value="@Model.m_PDC_Form.BUCode" disabled="disabled">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>申請者</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.ApplierID"  disabled="disabled">
+                                        <input type="text" class="form-control" asp-for="m_PDC_Form.ApplierID" disabled="disabled">
                                     </div>
                                 </div>
                             </div>
@@ -102,7 +102,7 @@
                                                 </div>
                                                 <div class="custom-control custom-radio">
                                                     <input class="custom-control-input" @(Model.m_PDC_Form.IsMB ? "" : "checked=\"checked\"") id="IsMBNo" type="radio" value="false">
-                                                    <label class="custom-control-label" for="exampleRadios3" >
+                                                    <label class="custom-control-label" for="exampleRadios3">
                                                         其他
                                                     </label>
                                                 </div>
@@ -213,7 +213,7 @@
                                     <div class="col-md-3">
                                         <span>1. BRD 壓縮檔(限制Zip格式)</span>
                                         <div>
-                                            <span id="UplpadBRDFileError"style="display:none" class="text-danger">必填</span>
+                                            <span id="UplpadBRDFileError" style="display:none" class="text-danger">必填</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -226,15 +226,15 @@
                                         @if (Model.m_BRDFile != null)
                                         {
                                             var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_BRDFile.FileID;
-                                        <div>
-                                            <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_BRDFile.FileName (@Model.m_BRDFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                            @if (!Model.IsSendApply)
-                                            {
-                                                <a href="javascript:return false;" onclick="FileDelete(@Model.m_BRDFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                            <div>
+                                                <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_BRDFile.FileName (@Model.m_BRDFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                                @if (!Model.IsSendApply)
+                                                {
+                                                    <a href="javascript:return false;" onclick="FileDelete(@Model.m_BRDFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
 
-                                            }
-                                            <input type="hidden" asp-for="m_BRDFile.FileID" />
-                                        </div>
+                                                }
+                                                <input type="hidden" asp-for="m_BRDFile.FileID" />
+                                            </div>
                                         }
                                     </div>
                                     <div class="col-md-2">
@@ -245,7 +245,7 @@
                                     <div class="col-md-3">
                                         <span>2. Constraint Excel</span>
                                         <div>
-                                            <span id="UplpadExcelFileError"style="display:none" class="text-danger">必填</span>
+                                            <span id="UplpadExcelFileError" style="display:none" class="text-danger">必填</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -258,21 +258,21 @@
                                         @if (Model.m_ExcelFile != null)
                                         {
                                             var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_ExcelFile.FileID;
-                                        <div>
-                                            <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_ExcelFile.FileName (@Model.m_ExcelFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                            @if (!Model.IsSendApply)
-                                            {
-                                                <a href="javascript:return false;" onclick="FileDelete(@Model.m_ExcelFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                            <div>
+                                                <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_ExcelFile.FileName (@Model.m_ExcelFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                                @if (!Model.IsSendApply)
+                                                {
+                                                    <a href="javascript:return false;" onclick="FileDelete(@Model.m_ExcelFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
 
-                                            }
-                                            <input type="hidden" asp-for="m_ExcelFile.FileID" />
-                                        </div>
+                                                }
+                                                <input type="hidden" asp-for="m_ExcelFile.FileID" />
+                                            </div>
                                         }
                                     </div>
                                     <div class="col-md-2">
                                         @if (!Model.IsSendApply)
                                         {
-                                            <a href="javascript:window.open('@Url.Action("ExcelEdit", "Excel")?IsOnlyOnline=true')" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">另開無檔編輯</a>
+                                            @*<a href="javascript:window.open('@Url.Action("ExcelEdit", "Excel")?IsOnlyOnline=true')" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">另開無檔編輯</a>*@
                                         }
                                     </div>
                                 </div>
@@ -280,7 +280,7 @@
                                     <div class="col-md-3">
                                         <span>3. pstchip.dat</span>
                                         <div>
-                                            <span id="UplpadpstchipFileError"style="display:none" class="text-danger">必填</span>
+                                            <span id="UplpadpstchipFileError" style="display:none" class="text-danger">必填</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -293,15 +293,15 @@
                                         @if (Model.m_pstchipFile != null)
                                         {
                                             var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_pstchipFile.FileID;
-                                        <div>
-                                            <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstchipFile.FileName (@Model.m_pstchipFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                            @if (!Model.IsSendApply)
-                                            {
-                                                <a href="javascript:return false;" onclick="FileDelete(@Model.m_pstchipFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                            <div>
+                                                <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstchipFile.FileName (@Model.m_pstchipFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                                @if (!Model.IsSendApply)
+                                                {
+                                                    <a href="javascript:return false;" onclick="FileDelete(@Model.m_pstchipFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
 
-                                            }
-                                            <input type="hidden" asp-for="m_pstchipFile.FileID" />
-                                        </div>
+                                                }
+                                                <input type="hidden" asp-for="m_pstchipFile.FileID" />
+                                            </div>
                                         }
                                     </div>
                                     <div class="col-md-2">
@@ -312,7 +312,7 @@
                                     <div class="col-md-3">
                                         <span>4. pstxnet.dat</span>
                                         <div>
-                                            <span id="UplpadpstxnetFileError"style="display:none" class="text-danger">必填</span>
+                                            <span id="UplpadpstxnetFileError" style="display:none" class="text-danger">必填</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -325,15 +325,15 @@
                                         @if (Model.m_pstxnetFile != null)
                                         {
                                             var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_pstxnetFile.FileID;
-                                        <div>
-                                            <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstxnetFile.FileName (@Model.m_pstxnetFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                            @if (!Model.IsSendApply)
-                                            {
-                                                <a href="javascript:return false;" onclick="FileDelete(@Model.m_pstxnetFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                            <div>
+                                                <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstxnetFile.FileName (@Model.m_pstxnetFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                                @if (!Model.IsSendApply)
+                                                {
+                                                    <a href="javascript:return false;" onclick="FileDelete(@Model.m_pstxnetFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
 
-                                            }
-                                            <input type="hidden" asp-for="m_pstxnetFile.FileID" />
-                                        </div>
+                                                }
+                                                <input type="hidden" asp-for="m_pstxnetFile.FileID" />
+                                            </div>
                                         }
                                     </div>
                                     <div class="col-md-2">
@@ -357,15 +357,15 @@
                                         @if (Model.m_pstxprtFile != null)
                                         {
                                             var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_pstxprtFile.FileID;
-                                        <div>
-                                            <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstxprtFile.FileName (@Model.m_pstxprtFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                            @if (!Model.IsSendApply)
-                                            {
-                                                <a href="javascript:return false;" onclick="FileDelete(@Model.m_pstxprtFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                            <div>
+                                                <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstxprtFile.FileName (@Model.m_pstxprtFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                                @if (!Model.IsSendApply)
+                                                {
+                                                    <a href="javascript:return false;" onclick="FileDelete(@Model.m_pstxprtFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
 
-                                            }
-                                            <input type="hidden" asp-for="m_pstxprtFile.FileID" />
-                                        </div>
+                                                }
+                                                <input type="hidden" asp-for="m_pstxprtFile.FileID" />
+                                            </div>
                                         }
                                     </div>
                                     <div class="col-md-2">
@@ -385,7 +385,7 @@
                                     <div class="col-md-5" style="padding-bottom: 10px;" id="UplpadOtherFileDiv">
                                         @if (Model.m_OtherFileList != null)
                                         {
-                                            for (int i =0; i<= Model.m_OtherFileList.Count -1; i ++)
+                                            for (int i = 0; i <= Model.m_OtherFileList.Count - 1; i++)
                                             {
                                                 var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_OtherFileList[i].FileID;
                                                 <div>
@@ -400,13 +400,13 @@
                                             }
                                         }
                                         @*<li>
-            <a href="#">ChangeLog.xlsx (2020/10/23)</a>
-            <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-        </li>
-        <li>
-            <a href="#">Kickoff.msg (2020/10/23)</a>
-            <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-        </li>*@
+                                            <a href="#">ChangeLog.xlsx (2020/10/23)</a>
+                                            <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Kickoff.msg (2020/10/23)</a>
+                                            <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                        </li>*@
                                     </div>
                                     <div class="col-md-2">
                                     </div>
@@ -418,13 +418,11 @@
                                             <span>意見</span>
                                         </div>
                                         <div class="col-md-4">
-                                            <textarea class="form-control" asp-for="m_Result" id="StageResult" rows="3"></textarea>
+                                            <textarea class="form-control" asp-for="m_PDC_Form.Result" id="StageResult" rows="3"></textarea>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="list-group">
-                                                <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action active" aria-current="true">
-                                                    增加減 Region
-                                                </a>
+                                                <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action active" aria-current="true">增加減 Region</a>
                                                 <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
                                                 <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action">其他</a>
                                             </div>
@@ -440,12 +438,12 @@
                                         </div>
                                     </div>
                                 }
-                                
+
                             </div>
                         </div>
                     </div>
                 </form>
-                
+
             </div>
         </div>
         <div class="row">
@@ -460,7 +458,7 @@
                             <div class="col-md-1" style="text-align: center;">
                                 <br>unit: mil
                             </div>
-                            <div class="col-md-1"  style="text-align: center;">
+                            <div class="col-md-1" style="text-align: center;">
                                 總板厚<br><label id="ThicknessTotal">0.00</label>
                             </div>
                         </div>
@@ -481,16 +479,16 @@
                                 <tbody>
                                     @for (int i = 0; i <= Model.ExcelDt.Rows.Count - 1; i++)
                                     {
-                                    <tr>
-                                        <td>@Model.ExcelDt.Rows[i][0]</td>
-                                        <td>@Model.ExcelDt.Rows[i][1]</td>
-                                        <td>@Model.ExcelDt.Rows[i][2]</td>
-                                        <td>@Model.ExcelDt.Rows[i][3]</td>
-                                        <td>@Model.ExcelDt.Rows[i][4]</td>
-                                        <td>@Model.ExcelDt.Rows[i][5]</td>
-                                        <td>@Model.ExcelDt.Rows[i][6]</td>
-                                        <td>@Model.ExcelDt.Rows[i][7]</td>
-                                    </tr>
+                                        <tr>
+                                            <td>@Model.ExcelDt.Rows[i][0]</td>
+                                            <td>@Model.ExcelDt.Rows[i][1]</td>
+                                            <td>@Model.ExcelDt.Rows[i][2]</td>
+                                            <td>@Model.ExcelDt.Rows[i][3]</td>
+                                            <td>@Model.ExcelDt.Rows[i][4]</td>
+                                            <td>@Model.ExcelDt.Rows[i][5]</td>
+                                            <td>@Model.ExcelDt.Rows[i][6]</td>
+                                            <td>@Model.ExcelDt.Rows[i][7]</td>
+                                        </tr>
                                     }
                                 </tbody>
                             </table>
@@ -499,16 +497,24 @@
                             <p class="card-title">Stackup 檢測</p>
                             <div class="row">
                                 <div class="col-md-8">
-                                    <textarea class="form-control" id="ErrorMsg" rows="3" disabled="disabled">@(string.IsNullOrWhiteSpace(Model.ErrorMsg) ? "驗證成功!" : "")</textarea>
+                                    <textarea class="form-control" id="ErrorMsg" rows="3" disabled="disabled">@(string.IsNullOrWhiteSpace(Model.ErrorMsg) ? "驗證成功!" : Model.ErrorMsg)</textarea>
                                 </div>
                                 <div class="col-md-4">
                                     @if (!Model.IsSendApply)
                                     {
-                                        <a href="javascript:window.open('@Url.Action("ExcelEdit", "Excel")')" class="btn btn-outline-success" style=" padding: 4px 25px; @(string.IsNullOrWhiteSpace(Model.ErrorMsg) ? "display:none" : "")" id="OpenOnlineEdit">線上修改</a>
+                                        <a href="javascript:return false;" onclick="ExcelEdit()" class="btn btn-outline-success" style=" padding: 4px 25px; @(string.IsNullOrWhiteSpace(Model.ErrorMsg) ? "display:none" : "")" id="OpenOnlineEdit">線上修改</a>
                                         <br />
                                         <br />
-                                        <a href="javascript:return false;" class="btn btn-outline-danger" onclick="DownloadError()" style=" padding: 4px 25px;@(string.IsNullOrWhiteSpace(Model.ErrorMsg) ? "display:none" : "")" id="downloadError">下載錯誤明細</a>
-                                        <a href="javascript:return false;" class="btn btn-outline-warning" onclick="SeedApply()" style=" padding: 4px 25px;@(!string.IsNullOrWhiteSpace(Model.ErrorMsg) ? "display:none" : "")" id="SendApply">送出申請</a>
+                                        if (string.IsNullOrWhiteSpace(Model.ErrorMsg))
+                                        {
+                                            <a href="javascript:return false;" class="btn btn-outline-warning" onclick="SeedApply()" style=" padding: 4px 25px;" id="SendApply">送出申請</a>
+                                            <a href="javascript:return false;" class="btn btn-outline-danger" onclick="DownloadError()" style=" padding: 4px 25px; display:none" id="downloadError">下載錯誤明細</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="javascript:return false;" class="btn btn-outline-warning" onclick="SeedApply()" style=" padding: 4px 25px;display:none" id="SendApply">送出申請</a>
+                                            <a href="javascript:return false;" class="btn btn-outline-danger" onclick="DownloadError()" style=" padding: 4px 25px;" id="downloadError">下載錯誤明細</a>
+                                        }
                                     }
                                     else
                                     {
@@ -538,109 +544,113 @@
                 </div>
             </div>
         </div>
-        <!-- PDC 處理結果 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="card-title">PDC 處理結果</p>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label>處理人員</label>
-                                @if (Model.m_PDC_Form_StageLog != null)
-                                {
-                                    <input type="email" class="form-control" value="@((int)Model.m_PDC_Form_StageLog.Stage >= 3 ? Model.m_PDC_Form_StageLog.PDC_Member : "")" disabled="disabled">
-                                }
-                                else
-                                {
-                                    <input type="email" class="form-control" value="" disabled="disabled">
-                                }
-                            </div>
-                            <div class="col-md-4">
-                                <label>處理結果</label>
-                                @if (Model.m_PDC_Form_StageLog != null)
-                                {
-                                    @if ((int)Model.m_PDC_Form_StageLog.Stage == 4)
-                                    {
-                                        <input type="email" class="form-control" value="Release" disabled="disabled">
-                                    }
-                                    else if ((int)Model.m_PDC_Form_StageLog.Stage == 5)
-                                    {
-                                        <input type="email" class="form-control" value="Reject" disabled="disabled">
-                                    }
-                                    else
-                                    {
-                                        <input type="email" class="form-control" value="" disabled="disabled">
-                                    }
-                                }
-                                else
-                                {
-                                    <input type="email" class="form-control" value="" disabled="disabled">
-                                }
-                            </div>
-                            <div class="col-md-4">
-                                <label>簽核時間</label>
-                                @if (Model.m_PDC_Form_StageLog != null)
-                                {
-                                    if (string.IsNullOrWhiteSpace(Model.m_PDC_Form_StageLog.PDC_Member))
-                                    {
-                                        <input type="email" class="form-control" value="" disabled="disabled">
-                                    }
-                                    else
-                                    {
-                                        <input type="email" class="form-control" value="@((int)Model.m_PDC_Form_StageLog.Stage >= 4 ? Model.m_PDC_Form_StageLog.CreatorDate.ToString("yyyy/MM/dd HH:mm:ss") : "")" disabled="disabled">
-                                    }
-                                    
-                                }
-                                else
-                                {
-                                    <input type="email" class="form-control" value="" disabled="disabled">
-                                }
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-8">
-                                <label>簽核意見</label>
-                                @if (Model.m_PDC_Form_StageLog != null)
-                                {
-                                    if (string.IsNullOrWhiteSpace(Model.m_PDC_Form_StageLog.PDC_Member))
-                                    {
-                                        <textarea class="form-control" id="exampleFormControlTextarea1" disabled="disabled" rows="3"></textarea>
-                                    }
-                                    else
-                                    {
-                                        <textarea class="form-control" id="exampleFormControlTextarea1" disabled="disabled" rows="3">@((int)Model.m_PDC_Form_StageLog.Stage >= 4 ? Model.m_PDC_Form_StageLog.Result : "")</textarea>
-                                    }
-                                }
-                                else
-                                {
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" disabled="disabled" rows="3"></textarea>
-                                }
-                            </div>
-                            <div class="col-md-4">
-                                <label>附件</label>
-                                <ul>
+        @if (Model.m_PDC_Form.FormStatus != "未送件")
+        {
+            <!-- PDC 處理結果 -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-title">PDC 處理結果</p>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>處理人員</label>
                                     @if (Model.m_PDC_Form_StageLog != null)
                                     {
-                                        if ((int)Model.m_PDC_Form_StageLog.Stage >= 3)
+                                        <input type="text" class="form-control" value="@((int)Model.m_PDC_Form_StageLog.Stage >= 3 ? Model.m_PDC_Form_StageLog.PDC_Member : "")" disabled="disabled">
+                                    }
+                                    else
+                                    {
+                                        <input type="text" class="form-control" value="" disabled="disabled">
+                                    }
+                                </div>
+                                <div class="col-md-4">
+                                    <label>處理結果</label>
+                                    @if (Model.m_PDC_Form_StageLog != null)
+                                    {
+                                        @if ((int)Model.m_PDC_Form_StageLog.Stage == 4)
                                         {
-                                            foreach (var item in Model.PDC_Form_StageLogFileList.Where(x => x.SourceID == Model.m_PDC_Form_StageLog.StageLogID))
-                                            {
-                                                var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + item.FileID;
-                                                <li>
-                                                    <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@item.FileName</a>
-                                                    @*<a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>*@
-                                                </li>
-                                            }
+                                            <input type="text" class="form-control" value="Release" disabled="disabled">
+                                        }
+                                        else if ((int)Model.m_PDC_Form_StageLog.Stage == 5)
+                                        {
+                                            <input type="text" class="form-control" value="Reject" disabled="disabled">
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="form-control" value="" disabled="disabled">
                                         }
                                     }
-                                </ul>
+                                    else
+                                    {
+                                        <input type="text" class="form-control" value="" disabled="disabled">
+                                    }
+                                </div>
+                                <div class="col-md-4">
+                                    <label>簽核時間</label>
+                                    @if (Model.m_PDC_Form_StageLog != null)
+                                    {
+                                        if (string.IsNullOrWhiteSpace(Model.m_PDC_Form_StageLog.PDC_Member))
+                                        {
+                                            <input type="text" class="form-control" value="" disabled="disabled">
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="form-control" value="@((int)Model.m_PDC_Form_StageLog.Stage >= 4 ? Model.m_PDC_Form_StageLog.CreatorDate.ToString("yyyy/MM/dd HH:mm:ss") : "")" disabled="disabled">
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        <input type="text" class="form-control" value="" disabled="disabled">
+                                    }
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label>簽核意見</label>
+                                    @if (Model.m_PDC_Form_StageLog != null)
+                                    {
+                                        if (string.IsNullOrWhiteSpace(Model.m_PDC_Form_StageLog.PDC_Member))
+                                        {
+                                            <textarea class="form-control" id="exampleFormControlTextarea1" disabled="disabled" style="background-color:gray" rows="3"></textarea>
+                                        }
+                                        else
+                                        {
+                                            <textarea class="form-control" id="exampleFormControlTextarea1" disabled="disabled" style="background-color:gray" rows="3">@((int)Model.m_PDC_Form_StageLog.Stage >= 4 ? Model.m_PDC_Form_StageLog.Result : "")</textarea>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" disabled="disabled" style="background-color:gray" rows="3"></textarea>
+                                    }
+                                </div>
+                                <div class="col-md-4">
+                                    <label>附件</label>
+                                    <ul>
+                                        @if (Model.m_PDC_Form_StageLog != null)
+                                        {
+                                            if ((int)Model.m_PDC_Form_StageLog.Stage >= 3)
+                                            {
+                                                foreach (var item in Model.PDC_Form_StageLogFileList.Where(x => x.SourceID == Model.m_PDC_Form_StageLog.StageLogID))
+                                                {
+                                                    var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + item.FileID;
+                                                    <li>
+                                                        <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@item.FileName</a>
+                                                        @*<a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>*@
+                                                    </li>
+                                                }
+                                            }
+                                        }
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
+
         <!-- 表單紀錄 -->
         <div class="row">
             <div class="col-lg-12">
@@ -662,24 +672,24 @@
                                 <tbody class="thead-dark">
                                     @for (int i = Model.PDC_Form_StageLogList.Count; i > 0; i--)
                                     {
-                                    <tr>
-                                        <td>@i</td>
-                                        <td>@Model.PDC_Form_StageLogList[(i - 1)].CreatorName</td>
-                                        <td>@Model.PDC_Form_StageLogList[(i - 1)].StageName</td>
-                                        <td>@Model.PDC_Form_StageLogList[(i - 1)].Result</td>
-                                        <td>
-                                            <ul style="text-align: left;">
-                                                @foreach (PDC_File item in Model.PDC_Form_StageLogFileList.Where(x => x.SourceID == Model.PDC_Form_StageLogList[(i - 1)].StageLogID))
-                                                {
-                                                    var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + item.FileID;
-                                                    <li>
-                                                        <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@item.FileName</a>
-                                                    </li>
-                                                }
-                                            </ul>
-                                        </td>
-                                        <td>@Model.PDC_Form_StageLogList[(i-1)].CreatorDate.ToString("yyyy/MM/dd HH:mm:ss")</td>
-                                    </tr>
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@Model.PDC_Form_StageLogList[(i - 1)].CreatorName</td>
+                                            <td>@Model.PDC_Form_StageLogList[(i - 1)].StageName</td>
+                                            <td>@Model.PDC_Form_StageLogList[(i - 1)].Result</td>
+                                            <td>
+                                                <ul style="text-align: left;">
+                                                    @foreach (PDC_File item in Model.PDC_Form_StageLogFileList.Where(x => x.SourceID == Model.PDC_Form_StageLogList[(i - 1)].StageLogID))
+                                                    {
+                                                        var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + item.FileID;
+                                                        <li>
+                                                            <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@item.FileName</a>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </td>
+                                            <td>@Model.PDC_Form_StageLogList[(i - 1)].CreatorDate.ToString("yyyy/MM/dd HH:mm:ss")</td>
+                                        </tr>
                                     }
                                     @*<tr>
                                         <td>5</td>
@@ -882,6 +892,78 @@
 
         });
 
+        function ExcelEdit() {
+            var FileID = 0;
+            if ($('#UplpadExcelFileDiv').find('input:eq(0)').length) {
+                FileID = $('#UplpadExcelFileDiv').find('input:eq(0)').val();
+                var formData = new FormData();
+                formData.append('FileID', FileID);
+
+                var _url = '@Url.Action("FormExcelEdit", "Form")';
+
+                $.ajax({
+                    url: _url,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,  // tell jQuery not to process the data
+                    contentType: false,  // tell jQuery not to set contentType
+                    success: function (result) {
+                        if (result.status == "400") {
+                            alert(result.ErrorMessage);
+                        }
+                        else {
+                            window.open('@Url.Action("ExcelEdit", "Excel")');
+                        }
+                    },
+                    error: function (jqXHR) {
+                    },
+                    complete: function (jqXHR, status) {
+                        $('body').addClass('no-loader');
+                    }
+                });
+
+            }
+            else {
+                alert('請上傳Excel檔案');
+            }
+           
+        }
+
+        function ReLoadExcelFile() {
+            $('body').removeClass('no-loader');
+            var FileID = 0;
+            if ($('#UplpadExcelFileDiv').find('input:eq(0)').length)
+                FileID = $('#UplpadExcelFileDiv').find('input:eq(0)').val();
+
+            var formData = new FormData();
+            formData.append('FileID', FileID);
+
+            var _url = '@Url.Action("ReloadExcelFile", "Form")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (result) {
+                    if (result.status == "400") {
+                        alert(result.ErrorMessage);
+                    }
+                    else {
+                        var date = new Date(result.File.CreatorDate);
+                        SetDataTable(result.Excel);
+                    }
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                    $('body').addClass('no-loader');
+                }
+            });
+        }
+
+        //意見快捷鍵
         function SetResult(obj) {
             $('#StageResult').val($(obj).text());
             $('.list-group-item').removeClass('active');

@@ -143,14 +143,23 @@
                                                     <div class="col-md-6">
                                                         @*<a href="#" class="btn btn-success" style=" padding: 4px 25px;" id="mail-compose">線上修改</a>*@
                                                         @*<input type="button" onclick="AddRow()" id="uploadExcel" value="新增欄位" class="btn-success" />
-                                                        <input type="button" onclick="DeleteRow()" id="uploadExcel" value="刪除欄位" class="btn-success" />*@
+        <input type="button" onclick="DeleteRow()" id="uploadExcel" value="刪除欄位" class="btn-success" />*@
 
                                                         <a href="javascript:return false;" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose" onclick="SaveCheckFile()">執行檢測</a>
                                                         <br />
                                                         <br />
                                                         <a href="javascript:return false;" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="downloadError" onclick="DownloadError()">下載錯誤明細</a>
-                                                        <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="downloadCNS" onclick="DownloadCheckFile()">下載 CNS Excel</a>
-                                                        <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="downloadExp">下載 cns.exp</a>
+                                                        @if (Model.IsFormApplyEdit)
+                                                        {
+                                                            <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="SaveFile" onclick="SaveFile()">儲存檔案</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="downloadCNS" onclick="DownloadCheckFile()">下載 CNS Excel</a>
+                                                            <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" id="downloadExp">下載 cns.exp</a>
+                                                        }
+
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -209,6 +218,52 @@
                 }
             });
             $('#ThicknessTotal').text(Sum.toFixed(2));
+        }
+
+        function SaveFile() {
+
+            var data = new Array();
+
+            $.each($('#grid tbody tr'), function (index,row) {
+                $.each($(row).find('.data'), function (colIndex,col) {
+                    var StackupDetalList = {};
+                    StackupDetalList.IndexNo = index;
+                    StackupDetalList.ColumnValue = $(col).val();
+                    StackupDetalList.StackupColumnID = (colIndex + 1);
+                    data.push(StackupDetalList);
+                });
+            });
+
+            var ViewModel = { StackupDetalList: data };
+
+            var _url = '@Url.Action("SaveFormExcelFile", "Excel")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: JSON.stringify(ViewModel),  //JSON.stringify(model)
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    if (result.status == "400") {
+                        alert(result.ErrorMessage);
+                    }
+                    else {
+                        window.opener.ReLoadExcelFile();
+                        window.close();
+                    }
+                },
+                error: function (jqXHR) {
+                },
+                beforeSend: function () {
+                    //開啟遮罩
+                    $('body').removeClass('no-loader');
+                },
+                complete: function (jqXHR, status) {
+                    //關閉遮罩
+                    $('body').addClass('no-loader');
+                }
+            });
         }
 
         //檢查線寬線距
@@ -305,6 +360,7 @@
             $('#downloadError').hide();
             $('#downloadCNS').hide();
             $('#downloadExp').hide();
+            $('#SaveFile').hide();
 
             var data = new Array();
 
@@ -338,6 +394,7 @@
                         $('#ErrorMsg').text('驗證通過!');
                         $('#downloadExp').show();
                         $('#downloadCNS').show();
+                        $('#SaveFile').show();
                     }
                 },
                 error: function (jqXHR) {

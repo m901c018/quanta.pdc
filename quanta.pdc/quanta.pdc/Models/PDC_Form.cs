@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using static cns.Services.Enum.FormEnum;
 
 namespace cns.Models
 {
@@ -38,6 +39,15 @@ namespace cns.Models
         /// </summary>
         [MaxLength(32)]
         public string BUCode { get; set; }
+        /// <summary>
+        /// 意見
+        /// </summary>
+        public string Result { get; set; }
+        /// <summary>
+        /// 申請單狀態代碼
+        /// </summary>
+        [Required(ErrorMessage ="必填")]
+        public Form_Status FormStatusCode { get; set; }
         /// <summary>
         /// 申請者
         /// </summary>

@@ -1,6 +1,6 @@
 ﻿@model m_FormPartial
 @{
-    ViewData["Title"] = "表單資訊"; 
+    ViewData["Title"] = "表單資訊";
 }
 
 <div class="page-content">
@@ -36,7 +36,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>申請日期</label>
-                                        <input type="text" class="form-control" disabled="disabled" value="@DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")">
+                                        <input type="text" class="form-control" disabled="disabled" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -50,13 +50,13 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>公司別</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.CompCode" value="QCI">
+                                        <input type="text" class="form-control" asp-for="m_PDC_Form.CompCode" value="QCI" disabled="disabled">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>事業群</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.BUCode" value="BU_Test">
+                                        <label>部門</label>
+                                        <input type="text" class="form-control" asp-for="m_PDC_Form.BUCode" value="BU_Test" disabled="disabled">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -70,7 +70,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>PCB Layout Status</label>
-                                        <select class="select2 form-control" asp-for="m_PDC_Form.PCBLayoutStatus" >
+                                        <select class="select2 form-control" asp-for="m_PDC_Form.PCBLayoutStatus">
                                             <option value="New">New</option>
                                             <option value="RFQ">RFQ</option>
                                             <option value="Modify">Modify</option>
@@ -82,14 +82,14 @@
                                     <div class="form-group">
                                         <label>是否為MB</label>
                                         <div class="input-group">
-                                            <div class="custom-control custom-radio" >
-                                                <input class="custom-control-input" asp-for="m_PDC_Form.IsMB" id="IsMBYes" type="radio"  value="true" >
+                                            <div class="custom-control custom-radio">
+                                                <input class="custom-control-input" asp-for="m_PDC_Form.IsMB" id="IsMBYes" type="radio" value="true">
                                                 <label class="custom-control-label" for="exampleRadios3" style="padding-right: 10px;" onclick="ClickMB('IsMBYes')">
                                                     MB
                                                 </label>
                                             </div>
-                                            <div class="custom-control custom-radio" >
-                                                <input class="custom-control-input" asp-for="m_PDC_Form.IsMB" id="IsMBNo" type="radio"  value="false" >
+                                            <div class="custom-control custom-radio">
+                                                <input class="custom-control-input" asp-for="m_PDC_Form.IsMB" id="IsMBNo" type="radio" value="false">
                                                 <label class="custom-control-label" for="exampleRadios3" onclick="ClickMB('IsMBNo')">
                                                     其他
                                                 </label>
@@ -159,7 +159,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="custom-file mb-3">
-                                            <input type="file" asp-for="m_UplpadBRDFile" class="custom-file-input" id="UplpadBRDFile" accept=".zip" >
+                                            <input type="file" asp-for="m_UplpadBRDFile" class="custom-file-input" id="UplpadBRDFile" accept=".zip">
                                             <label id="UplpadBRDFileLabel" class="custom-file-label" for="UplpadBRDFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                         </div>
                                     </div>
@@ -195,7 +195,7 @@
                                         }
                                     </div>
                                     <div class="col-md-2">
-                                        <a href="javascript:window.open('@Url.Action("ExcelEdit", "Excel")?IsOnlyOnline=true')" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">另開無檔編輯</a>
+                                        @*<a href="javascript:window.open('@Url.Action("ExcelEdit", "Excel")?IsOnlyOnline=true')" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">另開無檔編輯</a>*@
                                     </div>
                                 </div>
                                 <div class="row">
@@ -235,7 +235,7 @@
                                             <label id="UplpadpstxnetFileLabel" class="custom-file-label" for="UplpadpstxnetFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-3"id="UplpadpstxnetFileDiv">
+                                    <div class="col-md-3" id="UplpadpstxnetFileDiv">
                                         @if (Model.m_pstxnetFile != null)
                                         {
                                             <a href="#">@Model.m_pstxnetFile.FileName (@Model.m_pstxnetFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
@@ -281,7 +281,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3" style="padding-bottom: 10px;" id="UplpadOtherFileDiv">
-                                       
+
                                     </div>
                                     <div class="col-md-2">
                                     </div>
@@ -291,7 +291,7 @@
                                         <span>意見</span>
                                     </div>
                                     <div class="col-md-4">
-                                        <textarea class="form-control" id="StageResult" asp-for="Result" rows="3"></textarea>
+                                        <textarea class="form-control" id="StageResult" asp-for="m_PDC_Form.Result" rows="3"></textarea>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="list-group">
@@ -310,7 +310,7 @@
                         </div>
                     </div>
                 </form>
-                
+
             </div>
         </div>
         <div class="row">
@@ -325,7 +325,7 @@
                             <div class="col-md-1" style="text-align: center;">
                                 <br>unit: mil
                             </div>
-                            <div class="col-md-1"  style="text-align: center;">
+                            <div class="col-md-1" style="text-align: center;">
                                 總板厚<br><label id="ThicknessTotal">0.00</label>
                             </div>
                         </div>
@@ -344,7 +344,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                   
                                 </tbody>
                             </table>
                         </div>
@@ -366,18 +365,18 @@
                             </div>
                         </div>
                         @*<div class="card-body">
-                            <p class="card-title">檢核結果</p>
-                            <div class="col-md-3">
-                                            <a href="javascript:return false;" onclick="window.location.href='/Form/Download/?FileID=42'">test.dat (2021/02/23)</a>
-                                            <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                            <input type="hidden" data-val="true" data-val-required="The FileID field is required." id="m_pstchipFile_FileID" name="m_pstchipFile.FileID" value="42">
-                            </div>
-                        </div>*@
+                                <p class="card-title">檢核結果</p>
+                                <div class="col-md-3">
+                                                <a href="javascript:return false;" onclick="window.location.href='/Form/Download/?FileID=42'">test.dat (2021/02/23)</a>
+                                                <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                                <input type="hidden" data-val="true" data-val-required="The FileID field is required." id="m_pstchipFile_FileID" name="m_pstchipFile.FileID" value="42">
+                                </div>
+                            </div>*@
                     </div>
                 </div>
             </div>
         </div>
-   
+
         <!-- End of Main -->
     </div>
 
@@ -386,6 +385,19 @@
 @section Styles{
     <!-- data tables css -->
     <link rel="stylesheet" href="~/assets/plugins/data-tables/css/datatables.min.css">
+    <style>
+        input[type="text"]:disabled {
+            background: gray;
+        }
+
+        input[type="radio"]:disabled {
+            background: gray;
+        }
+
+        select:disabled {
+            background: gray;
+        }
+    </style>
 }
 
 @section Scripts {
@@ -402,10 +414,10 @@
             //    bPaginate: false, // 顯示換頁
             //    ordering: false,  // 是否顯示header排序
             //});
-            
+
             $('input[id=UplpadBRDFile]').change(function () {
                 $('#showCover').text($(this).val());
-                
+
                 $('body').removeClass('no-loader');
                  var OldFileID = 0;
                 if ($('#UplpadBRDFileDiv').find('input:eq(0)').length)
@@ -416,7 +428,7 @@
 
             $('input[id=UplpadExcelFile]').change(function () {
                 $('#showCover').text($(this).val());
-                
+
                 $('body').removeClass('no-loader');
                 var OldFileID = 0;
                 if ($('#UplpadExcelFileDiv').find('input:eq(0)').length)
@@ -427,7 +439,7 @@
 
             $('input[id=UplpadpstchipFile]').change(function () {
                 $('#showCover').text($(this).val());
-                
+
                 $('body').removeClass('no-loader');
                 var OldFileID = 0;
                 if ($('#UplpadpstchipFileDiv').find('input:eq(0)').length)
@@ -438,7 +450,7 @@
 
             $('input[id=UplpadpstxnetFile]').change(function () {
                 $('#showCover').text($(this).val());
-                
+
                 $('body').removeClass('no-loader');
                 var OldFileID = 0;
                 if ($('#UplpadpstxnetFileDiv').find('input:eq(0)').length)
@@ -449,7 +461,7 @@
 
             $('input[id=UplpadpstxprtFile]').change(function () {
                 $('#showCover').text($(this).val());
-                
+
                 $('body').removeClass('no-loader');
                 var OldFileID = 0;
                 if ($('#UplpadpstxprtDiv').find('input:eq(0)').length)
@@ -460,7 +472,7 @@
 
             $('input[id=UplpadOtherFile]').change(function () {
                 $('#showCover').text($(this).val());
-                
+
                 $('body').removeClass('no-loader');
                 uploadFile("UplpadOtherFile","","m_OtherFileList", 0);
             });
@@ -472,11 +484,11 @@
             }
 
             var formData = new FormData();
-            formData.append('file', $('#' + type)[0].files[0]); 
-            formData.append('Extension', Extension); 
-            formData.append('type', type); 
-            formData.append('GUID', $('#GUID').val()); 
-            formData.append('OldFileID', OldFileID); 
+            formData.append('file', $('#' + type)[0].files[0]);
+            formData.append('Extension', Extension);
+            formData.append('type', type);
+            formData.append('GUID', $('#GUID').val());
+            formData.append('OldFileID', OldFileID);
 
             var _url = '@Url.Action("UploadFile", "Form")';
 
@@ -504,7 +516,7 @@
                             var date = new Date(result.File.CreatorDate);
 
                             SetDataTable(result.Excel);
-                            
+
 
                             var Html = "<div><a href=\"javascript:return false;\" onclick=\"window.location.href='/Form/Download/?FileID="+ result.File.FileID +"'\">"+result.File.FileName + " ("+ date.getFullYear().toString() + "/" + (date.getMonth() + 1).toString()  + "/" + date.getDate().toString() +")</a>";
                             Html += " <a href=\"javascript:return false;\" onclick=\"FileDelete(" + result.File.FileID + ",this)\" alt=\"刪除\"><i style=\"color: #f05154;\" class=\"fas fa-trash-alt\"></i></a>";
@@ -518,7 +530,7 @@
                             Html += "<input type=\"hidden\" data-val=\"true\" data-val-required=\"The FileID field is required.\" id=\""+ model +"_FileID\" name=\""+ model +".FileID\" value=\"" + result.FileID + "\"></div>";
                             $('#' + type + 'Div').html(Html);
                         }
-                        
+
                     }
                 },
                 error: function (jqXHR) {
@@ -577,6 +589,40 @@
                 $('#SendApply').hide();
                 $('#disApply').hide();
             }
+        }
+
+        function ReLoadExcelFile() {
+            $('body').removeClass('no-loader');
+            var FileID = 0;
+            if ($('#UplpadExcelFileDiv').find('input:eq(0)').length)
+                FileID = $('#UplpadExcelFileDiv').find('input:eq(0)').val();
+
+            var formData = new FormData();
+            formData.append('FileID', FileID);
+
+            var _url = '@Url.Action("ReloadExcelFile", "Form")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (result) {
+                    if (result.status == "400") {
+                        alert(result.ErrorMessage);
+                    }
+                    else {
+                        var date = new Date(result.File.CreatorDate);
+                        SetDataTable(result.Excel);
+                    }
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                    $('body').addClass('no-loader');
+                }
+            });
         }
 
         function SetResult(obj) {
@@ -652,7 +698,7 @@
                         $('#SendApply').show();
                         $('#downloadExp').show();
                     }
-                    
+
                     $('body').addClass('no-loader');
                 },
                 error: function (jqXHR) {

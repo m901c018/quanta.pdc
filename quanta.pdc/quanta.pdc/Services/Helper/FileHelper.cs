@@ -92,9 +92,10 @@ namespace cns.Services.Helper
                     sDetinationPath = Path.Combine(sFolderPath, sNewFileName);
                     try
                     {
-                        using (Stream fileStream = new FileStream(sDetinationPath, FileMode.CreateNew))
+                        using (Stream fileStream = new FileStream(sDetinationPath, FileMode.Create))
                         {
-                            file.CopyToAsync(fileStream);
+                            file.CopyTo(fileStream);
+                            fileStream.Position = 0;
                         }
                         bResult = true;
                     }

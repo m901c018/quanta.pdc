@@ -12,6 +12,7 @@ using cns.Services.Helper;
 using cns.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NPOI.SS.UserModel;
@@ -58,6 +59,9 @@ namespace cns.Controllers
             long FormID = 0;
             model.m_PDC_Form.AppliedFormNo = "CN";
             model.m_PDC_Form.ApplierID = "TestUser";
+            model.m_PDC_Form.BUCode = "BU_Test";
+            model.m_PDC_Form.CompCode = "QCI";
+            model.m_PDC_Form.FormStatusCode = model.IsSendApply ? Services.Enum.FormEnum.Form_Status.Apply : Services.Enum.FormEnum.Form_Status.NoApply;
             model.m_PDC_Form.FormStatus = model.IsSendApply ? "未派單" : "未送件";
             model.m_PDC_Form.ApplyDate = model.IsSendApply ? DateTime.Now : default(DateTime); ;
             model.m_PDC_Form.Creator = userId;
@@ -70,7 +74,8 @@ namespace cns.Controllers
             ALLFileList.Add(model.m_pstchipFile);
             ALLFileList.Add(model.m_pstxnetFile);
             ALLFileList.Add(model.m_pstxprtFile);
-            ALLFileList.AddRange(model.m_OtherFileList);
+            if(model.m_OtherFileList != null)
+                ALLFileList.AddRange(model.m_OtherFileList);
             
 
             if (formService.AddForm(model.m_PDC_Form, ALLFileList, ref ErrorMsg,out FormID))
@@ -80,7 +85,7 @@ namespace cns.Controllers
                 //是否直接送出申請
                 if (model.IsSendApply)
                 {
-                    formService.AddForm_StageLog(FormID, Services.Enum.FormEnum.Form_Stage.Apply, model.Result ?? "New", ALLFileList, out SourceID, ref ErrorMsg);
+                    formService.AddForm_StageLog(FormID, Services.Enum.FormEnum.Form_Stage.Apply, model.m_PDC_Form.Result ?? "New", ALLFileList, out SourceID, ref ErrorMsg);
                 }
 
                 return RedirectToAction("FormApplyEdit", new { FormID = FormID });
@@ -133,7 +138,10 @@ namespace cns.Controllers
             model.m_pstxprtFile = fileService.GetFileOne(FormID, "FormApplypstxprt");
 
             //取得範例
-            Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\FileUpload\\" + model.m_ExcelFile.FileFullName, FileMode.Open, FileAccess.Read);
+            Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\FileUpload\\" + model.m_ExcelFile.FileFullName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+           
+            stream.Position = 0; // <-- Add this, to make it work
+            //IFormFile File = new FormFile(stream,)
             //轉NPOI類型
             XSSFWorkbook ExcelFile = new XSSFWorkbook(stream);
 
@@ -156,6 +164,7 @@ namespace cns.Controllers
             string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
             string ErrorMsg = string.Empty;
             model.m_PDC_Form.ApplyDate = model.IsSendApply ? DateTime.Now : default(DateTime);
+            model.m_PDC_Form.FormStatusCode = model.IsSendApply ? Services.Enum.FormEnum.Form_Status.Apply : Services.Enum.FormEnum.Form_Status.NoApply;
             model.m_PDC_Form.FormStatus = model.IsSendApply ? "未派單" : "未送件";
             model.m_PDC_Form.ApplyDate = DateTime.Now;
             model.m_PDC_Form.Modifyer = userId;
@@ -170,14 +179,15 @@ namespace cns.Controllers
             ALLFileList.Add(model.m_pstchipFile);
             ALLFileList.Add(model.m_pstxnetFile);
             ALLFileList.Add(model.m_pstxprtFile);
-            ALLFileList.AddRange(model.m_OtherFileList);
+            if(model.m_OtherFileList != null)
+                ALLFileList.AddRange(model.m_OtherFileList);
 
             if (formService.UpdateForm(model.m_PDC_Form, ALLFileList, ref ErrorMsg))
             {
                 //是否直接送出申請
                 if (model.IsSendApply)
                 {
-                    formService.AddForm_StageLog(model.m_PDC_Form.FormID, Services.Enum.FormEnum.Form_Stage.Apply, model.m_Result ?? "New", ALLFileList, out SourceID, ref ErrorMsg);
+                    formService.AddForm_StageLog(model.m_PDC_Form.FormID, Services.Enum.FormEnum.Form_Stage.Apply, model.m_PDC_Form.Result ?? "New", ALLFileList, out SourceID, ref ErrorMsg);
                 }
 
                 return RedirectToAction("FormApplyEdit", new { FormID = model.m_PDC_Form.FormID });
@@ -205,12 +215,29 @@ namespace cns.Controllers
             functionName.Add("UplpadpstxnetFile", "FormApplypstxnet");
             functionName.Add("UplpadpstxprtFile", "FormApplypstxprt");
             functionName.Add("UplpadOtherFile", "FormApplyOther");
+            Dictionary<string, string> CheckFileName = new Dictionary<string, string>();
+            CheckFileName.Add("UplpadBRDFile", "");
+            CheckFileName.Add("UplpadExcelFile", "");
+            CheckFileName.Add("UplpadpstchipFile", "pstchip.dat");
+            CheckFileName.Add("UplpadpstxnetFile", "pstxnet.dat");
+            CheckFileName.Add("UplpadpstxprtFile", "pstxprt.dat");
+            CheckFileName.Add("UplpadOtherFile", "");
 
+            string FileCheckError = string.Empty;
             //驗證是否上傳正確檔案
             if (!string.IsNullOrWhiteSpace(Extension) && !Path.GetExtension(file.FileName).Contains(Extension))
             {
-                return Json(new { status = 400, ErrorMessage = "請上傳"+ Extension + "檔案" });
+                FileCheckError = "請上傳" + Extension + "檔案";
             }
+            if (!string.IsNullOrWhiteSpace(CheckFileName[type]) && !Path.GetFileName(file.FileName).Contains(CheckFileName[type]))
+            {
+                FileCheckError += string.IsNullOrWhiteSpace(FileCheckError) ? "檔名需為 :" + CheckFileName[type] : "，檔名需為 :" + CheckFileName[type];
+            }
+            if (!string.IsNullOrWhiteSpace(FileCheckError))
+            {
+                return Json(new { status = 400, ErrorMessage = FileCheckError });
+            }
+
             string FilePath = string.Empty;
             string ErrorMsg = string.Empty;
             PDC_File File = new PDC_File();
@@ -225,10 +252,7 @@ namespace cns.Controllers
                 if(OldFileID != 0)
                 {
                     PDC_File OldFile = fileService.GetFileOne(OldFileID);
-                    if(OldFile.SourceID == 0)
-                    {
-                        fileService.FileRemove(OldFileID);
-                    }
+                    fileService.FileRemove(OldFileID);
                 }
 
                 if(type == "UplpadExcelFile")
@@ -280,6 +304,87 @@ namespace cns.Controllers
             {
                 return Json(new { status = 0, ErrorMessage = "" });
             }
+        }
+
+        [HttpPost]
+        public IActionResult FormExcelEdit(Int64 FileID)
+        {
+            FileService FileService = new FileService(_hostingEnvironment, _context);
+            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
+
+            PDC_File File = FileService.GetFileOne(FileID);
+
+            
+            //取得範例
+            Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+
+            stream.Position = 0; // <-- Add this, to make it work
+            try
+            {
+                //IFormFile File = new FormFile(stream,)
+                //轉NPOI類型
+                XSSFWorkbook ExcelFile = new XSSFWorkbook(stream);
+
+                ISheet xSSFSheet = ExcelFile.GetSheet("Stackup");
+
+                //資料轉為Datatable
+                DataTable sheetDt = Helper.GetDataTableFromExcel(xSSFSheet, true);
+
+                Helper.ExcelStackupCheck(sheetDt);
+
+                //Session紀錄
+                HttpContext.Session.SetObjectAsJson("SessionExcelData", sheetDt);
+                HttpContext.Session.SetString("SessionFileID", FileID.ToString());
+                stream.Close();
+                stream.Dispose();
+            }
+            catch (Exception ex)
+            {
+                stream.Close();
+                stream.Dispose();
+            }
+            
+
+            return Json(new { status = 0, ErrorMessage = "" });
+        }
+
+        [HttpPost]
+        public IActionResult ReloadExcelFile(Int64 FileID)
+        {
+            FileService FileService = new FileService(_hostingEnvironment, _context);
+            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
+
+            PDC_File File = FileService.GetFileOne(FileID);
+
+
+            //取得範例
+            Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+
+            stream.Position = 0; // <-- Add this, to make it work
+            try
+            {
+                //IFormFile File = new FormFile(stream,)
+                //轉NPOI類型
+                XSSFWorkbook ExcelFile = new XSSFWorkbook(stream);
+
+                ISheet xSSFSheet = ExcelFile.GetSheet("Stackup");
+
+                //資料轉為Datatable
+                DataTable sheetDt = Helper.GetDataTableFromExcel(xSSFSheet, true);
+
+                stream.Close();
+                stream.Dispose();
+
+                return Json(new { status = 0, Excel = sheetDt, File = File });
+            }
+            catch (Exception ex)
+            {
+                stream.Close();
+                stream.Dispose();
+            }
+
+
+            return Json(new { status = 400, ErrorMessage = "讀取檔案失敗" });
         }
 
         [HttpGet]

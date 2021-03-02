@@ -53,9 +53,11 @@ namespace cns.Controllers
         public IActionResult UploadFile(IFormFile file)
         {
             m_ExcelPartial model = new m_ExcelPartial();
-            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment); 
+            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
+            //FormApply用，這邊要清掉
+            HttpContext.Session.SetString("SessionFileID", "");
 
-            if(file == null)
+            if (file == null)
             {
                 ISheet sheet = Helper.GetSheetSample();
                 //資料轉為Datatable
@@ -113,8 +115,57 @@ namespace cns.Controllers
 
             ViewModel.ExcelSheetDts.Add(StackupDetalDt);
 
+            long FileID = 0;
+            Int64.TryParse(HttpContext.Session.GetString("SessionFileID"), out FileID);
+
+            //if (string.IsNullOrWhiteSpace(ViewModel.Errmsg) && FileID > 0)
+            //{
+            //    FileService FileService = new FileService(_hostingEnvironment, _context);
+            //    PDC_File File = FileService.GetFileOne(FileID);
+
+            //    string FilePath = _hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName;
+            //    //取得範例
+            //    Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            //    stream.Position = 0; // <-- Add this, to make it work
+                
+
+            //    Helper.SaveExcel(stream, FilePath, ViewModel.StackupDetalList);
+
+                
+            //}
+
             return Json(ViewModel.Errmsg);
         }
+
+        [HttpPost]
+        public IActionResult SaveFormExcelFile([FromBody]object model)
+        {
+            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
+            var jsonString = JsonConvert.SerializeObject(model);
+            m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
+
+            long FileID = 0;
+            Int64.TryParse(HttpContext.Session.GetString("SessionFileID"), out FileID);
+
+            if (FileID > 0)
+            {
+                FileService FileService = new FileService(_hostingEnvironment, _context);
+                PDC_File File = FileService.GetFileOne(FileID);
+
+                string FilePath = _hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName;
+                //取得範例
+                Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                stream.Position = 0; // <-- Add this, to make it work
+
+
+                Helper.SaveExcel(stream, FilePath, ViewModel.StackupDetalList);
+
+                return Json(new { status = 0, ErrorMessage = "" });
+            }
+
+            return Json(new { status = 400, ErrorMessage = "存檔失敗" });
+        }
+
 
         [HttpGet]
         public IActionResult DownloadSample()
@@ -139,13 +190,6 @@ namespace cns.Controllers
 
                 return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);
             }
-            ////取得範例
-            //MemoryStream stream = Helper.ExportExcelSample();
-
-            //string sFileName = HttpUtility.UrlEncode("Sample.xlsx");
-
-
-            //return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);
         }
 
         [HttpPost]
@@ -184,6 +228,11 @@ namespace cns.Controllers
             ViewModel.m_ExcelRule = parameterService.GetParameterOne("ConfigurationFormApply");
             //Session紀錄
             DataTable ExcelDt = HttpContext.Session.GetObjectFromJson<DataTable>("SessionExcelData");
+
+            long FileID = 0;
+            Int64.TryParse(HttpContext.Session.GetString("SessionFileID"), out FileID);
+
+            ViewModel.IsFormApplyEdit = FileID > 0 ? true : false;
             //移除Session
             //HttpContext.Session.Remove("SessionExcelData");
             if (ExcelDt != null && IsOnlyOnline == false)

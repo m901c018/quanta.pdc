@@ -807,6 +807,150 @@ namespace cns.Services.Helper
             return ms;
         }
 
+        /// <summary>
+        /// Copies the contents of input to output. Doesn't close either stream.
+        /// </summary>
+        public static void CopyStream(Stream input, Stream output)
+        {
+            byte[] buffer = new byte[8 * 1024];
+            int len;
+            while ((len = input.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                output.Write(buffer, 0, len);
+            }
+        }
+
+        /// <summary> 匯出Excel範例
+        /// 
+        /// </summary>
+        /// <param name="ExcelSheets"></param>
+        /// <param name="headerCtyle"></param>
+        /// <param name="DataCtyle"></param>
+        /// <returns></returns>
+        public bool SaveExcel(Stream stream,string FilePath, List<PDC_StackupDetail> stackupDetalsList = null)
+        {
+
+            //轉NPOI類型
+            XSSFWorkbook workbookExport = new XSSFWorkbook(stream);
+
+            MemoryStream ms = new MemoryStream();
+
+            List<PDC_StackupDetail> PDC_StackupDetails = new List<PDC_StackupDetail>();
+            if (stackupDetalsList != null)
+                PDC_StackupDetails = stackupDetalsList;
+            else
+                PDC_StackupDetails = stackupDetals;
+
+            #region == 取得範例樣式style ==
+            //轉NPOI類型
+            XSSFWorkbook Sample = new XSSFWorkbook(SamplePath);
+
+            var StackupSheet = Sample.GetSheet("Stackup");
+            //紀錄範例檔案style
+            XSSFCellStyle StackupHeaderStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
+            StackupHeaderStyle.CloneStyleFrom(StackupSheet.GetRow(4).GetCell(1).CellStyle);
+            XSSFCellStyle ThicknessHeaderStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
+            ThicknessHeaderStyle.CloneStyleFrom(StackupSheet.GetRow(4).GetCell(7).CellStyle);
+            XSSFCellStyle ThicknessHeaderTotalStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
+            ThicknessHeaderTotalStyle.CloneStyleFrom(StackupSheet.GetRow(2).GetCell(8).CellStyle);
+            //一般欄位樣式
+            XSSFCellStyle DataStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
+            DataStyle.CloneStyleFrom(StackupSheet.GetRow(6).GetCell(1).CellStyle);
+            //數字欄位樣式
+            XSSFCellStyle NumberStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
+            NumberStyle.CloneStyleFrom(StackupSheet.GetRow(6).GetCell(1).CellStyle);
+            XSSFDataFormat format = (XSSFDataFormat)workbookExport.CreateDataFormat();
+            NumberStyle.SetDataFormat(format.GetFormat("0.00"));
+            //取得版厚欄位排序
+            Int32 ThicknessNum = StackupColumnList.Where(x => x.ColumnCode == "Col_08B").FirstOrDefault().OrderNo;
+            //取得Excel版厚欄位
+            string ThicknessCol = Char.ConvertFromUtf32(ThicknessNum + 64 + 1);
+            #endregion
+
+            // 新增試算表。
+            ISheet sheet = (XSSFSheet)workbookExport.GetSheet("Stackup");
+            ICell[] Thicknesscell = new ICell[StackupColumnList.Count];
+            ICell[] Thicknesscell2 = new ICell[StackupColumnList.Count];
+
+            //IRow ThicknessRow1 = sheet.CreateRow(2);
+            //Thicknesscell[ThicknessNum] = ThicknessRow1.CreateCell(ThicknessNum);
+            //Thicknesscell[ThicknessNum].CellStyle = ThicknessHeaderTotalStyle;
+            //Thicknesscell[ThicknessNum].SetCellValue("總板厚");
+
+
+            //取得有幾筆資料
+            int TotalCount = PDC_StackupDetails.Select(x => x.IndexNo).Max();
+
+            for (int i = 0; i <= TotalCount; i++)
+            {
+                IRow dataRow;
+                if (sheet.LastRowNum >= (i + 5))
+                    dataRow = sheet.GetRow(i + 5);
+                else
+                    dataRow = sheet.CreateRow(i + 5);
+
+                ICell[] Datacell = new ICell[StackupColumnList.Count];
+
+                for (int j = 0; j <= StackupColumnList.Count - 1; j++)
+                {
+                    Datacell[j] = dataRow.CreateCell(j);
+                    //設定資料樣式
+                    if (StackupColumnList[j].DataType == "int")
+                        Datacell[j].CellStyle = NumberStyle;
+                    else
+                        Datacell[j].CellStyle = DataStyle;
+
+                    Int64 StackupColumnID = StackupColumnList.Where(x => x.OrderNo == j).Select(x => x.StackupColumnID).First();
+
+                    if (PDC_StackupDetails.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID).Any())
+                    {
+                        string stackupData = PDC_StackupDetails.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID)
+                                                               .Select(x => x.ColumnValue)
+                                                               .FirstOrDefault();
+                        Datacell[j].SetCellValue(stackupData);
+                    }
+                }
+            }
+
+            //IRow ThicknessRow2 = sheet.GetRow(3);
+            //Thicknesscell2[ThicknessNum] = ThicknessRow2.CreateCell(ThicknessNum);
+            //Thicknesscell2[ThicknessNum].CellStyle = ThicknessHeaderTotalStyle;
+            //Thicknesscell2[ThicknessNum].CellFormula = $"ROUND(SUM({ThicknessCol}6:{ThicknessCol}{6 + PDC_StackupDetails.Select(x => x.IndexNo).Max()}),2)";
+            
+
+            sheet.HorizontallyCenter = true;
+            //更新有公式的欄位
+            sheet.ForceFormulaRecalculation = true;
+
+            try
+            {
+                stream.Close();
+                stream.Dispose();
+                workbookExport.Write(ms);
+
+                if(FileHelper.DeleteFile(FilePath))
+                {
+                    using (Stream fileStream = new FileStream(FilePath, FileMode.CreateNew))
+                    {
+                        //file.CopyToAsync(fileStream);
+                        fileStream.Write(ms.ToArray(), 0, ms.ToArray().Length);
+                    }
+                }
+                //CopyStream(ms, stream);
+                
+
+                ms.Close();
+                ms.Dispose();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ms.Close();
+                ms.Dispose();
+                return false;
+            }
+        }
+
         /// <summary> 匯出Excel
         /// 
         /// </summary>
