@@ -15,6 +15,7 @@ using cns.Data;
 using cns.Models;
 using cns.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using cns.Services.App;
 
 namespace cns.Controllers
 {
@@ -27,21 +28,27 @@ namespace cns.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         
 
+        [ActionCheck]
         public IActionResult Permission()
         {
             return View();
         }
 
+        [ActionCheck]
         public IActionResult DownloadCNS()
         {
             return View();
         }
         //consume custom security service to get all roles
+        [ActionCheck]
         public IActionResult Index()
         {
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
             m_ConfigurationPartial model = new m_ConfigurationPartial();
-            ParameterService parameterService = new ParameterService(_context);
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
 
             var user = _userManager.GetUserId(HttpContext.User);
 
@@ -87,13 +94,15 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult HomeLinkAdd(IFormFile file, string ParameterText, int IsSync, string Link, int HomeLinkOrderNo)
         {
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
-            ParameterService parameterService = new ParameterService(_context);
-            FileService FileService = new FileService(_hostingEnvironment, _context);
-            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
-            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
 
             m_ConfigurationPartial ViewModel = new m_ConfigurationPartial();
             if (!string.IsNullOrEmpty(Link))
@@ -105,9 +114,6 @@ namespace cns.Controllers
                 NewParameter.OrderNo = HomeLinkOrderNo;
                 NewParameter.ParameterText = ParameterText;
                 NewParameter.ParameterGroup = "Configuration_HomeLink";
-                NewParameter.Creator = userId;
-                NewParameter.CreatorName = userName;
-                NewParameter.CreatorDate = DateTime.Now;
 
 
                 if (parameterService.AddParameter(ref NewParameter, ref ErrorMsg))
@@ -118,9 +124,6 @@ namespace cns.Controllers
                     NewFile.FileType = 5;
                     NewFile.FileName = Link;
                     NewFile.FileCategory = 2;
-                    NewFile.Creator = userId;
-                    NewFile.CreatorName = userName;
-                    NewFile.CreatorDate = DateTime.Now;
                     FileService.FileAdd(ref NewFile);
 
                     ViewModel.m_HomeLink = NewParameter;
@@ -134,34 +137,28 @@ namespace cns.Controllers
                 string FilePath = Helper.SaveAndGetExcelPath(file);
                 if (FilePath != "Error")
                 {
-                    ViewModel.m_HomeLink.IsSync = IsSync == 1 ? true : false;
-                    ViewModel.m_HomeLink.OrderNo = HomeLinkOrderNo;
-                    ViewModel.m_HomeLink.ParameterText = ParameterText;
-                    ViewModel.m_HomeLink.ParameterGroup = "Configuration_HomeLink";
-                    ViewModel.m_HomeLink.Creator = "m901c018";
-                    ViewModel.m_HomeLink.CreatorDate = DateTime.Now;
-                    ViewModel.m_HomeLink.CreatorName = "Mike";
-                    _context.PDC_Parameter.Add(ViewModel.m_HomeLink);
-                    _context.SaveChanges();
+                    string ErrorMsg = string.Empty;
+                    PDC_Parameter NewParameter = new PDC_Parameter();
 
-                    ViewModel.m_HomeLinkFile.SourceID = ViewModel.m_HomeLink.ParameterID;
-                    ViewModel.m_HomeLinkFile.FunctionName = "Configuration_HomeLink";
-                    ViewModel.m_HomeLinkFile.FileFullName = Path.GetFileName(FilePath);
-                    ViewModel.m_HomeLinkFile.FileName = file.FileName;
-                    ViewModel.m_HomeLinkFile.FileExtension = Path.GetExtension(FilePath);
-                    ViewModel.m_HomeLinkFile.FileType = 2;
-                    ViewModel.m_HomeLinkFile.FileCategory = 1;
-                    ViewModel.m_HomeLinkFile.FileSize = file.Length;
-                    ViewModel.m_HomeLinkFile.Creator = "m901c018";
-                    ViewModel.m_HomeLinkFile.CreatorDate = DateTime.Now;
-                    ViewModel.m_HomeLinkFile.CreatorName = "Mike";
+                    NewParameter.IsSync = IsSync == 1 ? true : false;
+                    NewParameter.OrderNo = HomeLinkOrderNo;
+                    NewParameter.ParameterText = ParameterText;
+                    NewParameter.ParameterGroup = "Configuration_HomeLink";
 
-                    _context.PDC_File.Add(ViewModel.m_HomeLinkFile);
-                    _context.SaveChanges();
+                    if (parameterService.AddParameter(ref NewParameter, ref ErrorMsg))
+                    {
+                        PDC_File NewFile = new PDC_File();
+                        NewFile.SourceID = NewParameter.ParameterID;
+                        NewFile.FunctionName = "Configuration_HomeLink";
+                        NewFile.FileFullName = Path.GetFileName(FilePath);
+                        NewFile.FileName = file.FileName;
+                        NewFile.FileExtension = Path.GetExtension(FilePath);
+                        NewFile.FileType = 2;
+                        NewFile.FileCategory = 1;
+                        NewFile.FileSize = file.Length;
+                        FileService.FileAdd(ref NewFile);
+                    }
                 }
-
-
-
             }
             //存檔並返回檔案路徑UserManager<IdentityUser>
             //string FilePath = Helper.SaveAndGetExcelPath(file);
@@ -172,14 +169,16 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult ParameterChangeOrderNo(Int64 ParameterID1, Int64 ParameterID2, int OrderNo1, int OrderNo2)
         {
-            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
-            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
-            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
 
-            ParameterService parameterService = new ParameterService(_context);
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
+
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
 
             PDC_Parameter item1 = parameterService.GetParameterOne(ParameterID1);
             PDC_Parameter item2 = parameterService.GetParameterOne(ParameterID2);
@@ -187,16 +186,10 @@ namespace cns.Controllers
             string ErrorMsg = string.Empty;
 
             item1.OrderNo = OrderNo1;
-            item1.Modifyer = userId;
-            item1.ModifyerName = userName;
-            item1.ModifyerDate = DateTime.Now;
             parameterService.UpdateParameter(item1, ref ErrorMsg);
 
 
             item2.OrderNo = OrderNo2;
-            item2.Modifyer = userId;
-            item2.ModifyerName = userName;
-            item2.ModifyerDate = DateTime.Now;
             parameterService.UpdateParameter(item2, ref ErrorMsg);
 
 
@@ -205,6 +198,7 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult HomeLinkDelete(Int64 ParameterID)
         {
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
@@ -224,6 +218,7 @@ namespace cns.Controllers
             return Json("刪除成功");
         }
         [HttpPost]
+        [ActionCheck]
         public IActionResult PCBFileRemove(Int64 FileID)
         {
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
@@ -239,9 +234,13 @@ namespace cns.Controllers
 
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult PCBChangeItem(Int64 ParameterID)
         {
-            ParameterService parameterService = new ParameterService(_context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
 
 
             List<SelectListItem> PCBItemList = parameterService.GetSelectList(ParameterID);
@@ -250,10 +249,14 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult SearchPCB(Int64 ParameterID)
         {
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
             m_ConfigurationPartial model = new m_ConfigurationPartial();
-            ParameterService parameterService = new ParameterService(_context);
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
 
 
             model.m_PCBParameter = parameterService.GetParameterOne(ParameterID);
@@ -263,28 +266,31 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult SavePCB(Int64 ParameterID, string ParameterDesc)
         {
-            ParameterService parameterService = new ParameterService(_context);
-            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
-            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
 
             PDC_Parameter m_PCBParameter = parameterService.GetParameterOne(ParameterID);
 
             string ErrorMsg = string.Empty;
             m_PCBParameter.ParameterDesc = ParameterDesc;
-            m_PCBParameter.Modifyer = userId;
-            m_PCBParameter.ModifyerName = userName;
-            m_PCBParameter.ModifyerDate = DateTime.Now;
             parameterService.UpdateParameter(m_PCBParameter, ref ErrorMsg);
 
             return Json(ErrorMsg);
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult PCBFileAdd(IFormFile file, string FileDescription, Int64 ParameterID)
         {
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
             string FileExtension = Path.GetExtension(file.FileName).ToUpper().Replace(".", "");
             List<string> CheckExtension = new List<string>();
             CheckExtension.Add("PNG");
@@ -296,13 +302,10 @@ namespace cns.Controllers
             }
 
 
-            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
-            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
-
             PDC_File m_PCBFile = new PDC_File();
             string ErrorMsg = string.Empty;
 
-            if (FileService.FileAdd(file, "Configuration_PCBFile", userId, userName, out m_PCBFile,"FileUpload", ParameterID, FileDescription))
+            if (FileService.FileAdd(file, "Configuration_PCBFile", out m_PCBFile,"FileUpload", ParameterID, FileDescription))
             {
                 return Json(m_PCBFile);
             }
@@ -312,9 +315,13 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult SearchPCBParameter(Int64 ParameterID)
         {
-            ParameterService parameterService = new ParameterService(_context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
 
             List<PDC_Parameter> model = new List<PDC_Parameter>();
             model = parameterService.GetParameterList(ParameterID);
@@ -323,6 +330,7 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult PCBParameterDelete(Int64 ParameterID)
         {
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
@@ -339,40 +347,42 @@ namespace cns.Controllers
 
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult PCBParameterAdd(string ParameterText, Int64 ParameterID, int OrderNo)
         {
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             PDC_Parameter item = new PDC_Parameter();
 
+            string ErrorMsg = string.Empty;
             item.IsSync = false;
             item.OrderNo = OrderNo;
             item.ParameterText = ParameterText;
             item.ParameterGroup = "PCBTypeList_Item";
             item.ParameterParentID = ParameterID;
-            item.Creator = "c5805dbf-dac5-41e6-bb72-5eb0b449134d";
-            item.CreatorDate = DateTime.Now;
-            item.CreatorName = "super@admin.com";
-            _context.PDC_Parameter.Add(item);
-            _context.SaveChanges();
+
+            parameterService.AddParameter(ref item, ref ErrorMsg);
 
             return Json(item);
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult UploadAnnouncement(string ParameterText)
         {
-            ParameterService parameterService = new ParameterService(_context);
-            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
-            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
 
             string ErrorMsg = string.Empty;
 
 
             PDC_Parameter item = parameterService.GetParameterOne("ConfigurationAnnouncement");
             item.ParameterText = ParameterText;
-            item.Modifyer = userId;
-            item.ModifyerName = userName;
-            item.ModifyerDate = DateTime.Now;
 
             parameterService.UpdateParameter(item, ref ErrorMsg);
 
@@ -380,20 +390,18 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult UploadDescription(string ParameterText)
         {
-            ParameterService parameterService = new ParameterService(_context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
 
-            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
-            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
 
             string ErrorMsg = string.Empty;
 
             PDC_Parameter item = parameterService.GetParameterOne("ConfigurationDescription");
             item.ParameterText = ParameterText;
-            item.Modifyer = userId;
-            item.ModifyerName = userName;
-            item.ModifyerDate = DateTime.Now;
 
             parameterService.UpdateParameter(item, ref ErrorMsg);
 
@@ -401,37 +409,27 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult UploadProjectTime(string ApplyDrawText, string SendReturnText, string ReleaseText, string RejectText)
         {
-            ParameterService parameterService = new ParameterService(_context);
-            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
-            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
 
             string ErrorMsg = string.Empty;
 
             PDC_Parameter ApplyDrawitem = parameterService.GetParameterOne("ConfigurationApplyDraw");
             ApplyDrawitem.ParameterText = ApplyDrawText;
-            ApplyDrawitem.Modifyer = userId;
-            ApplyDrawitem.ModifyerName = userName;
-            ApplyDrawitem.ModifyerDate = DateTime.Now;
 
             PDC_Parameter SendReturnitem = parameterService.GetParameterOne("ConfigurationSendReturn");
             SendReturnitem.ParameterText = SendReturnText;
-            SendReturnitem.Modifyer = userId;
-            SendReturnitem.ModifyerName = userName;
-            SendReturnitem.ModifyerDate = DateTime.Now;
 
             PDC_Parameter Releaseitem = parameterService.GetParameterOne("ConfigurationRelease");
             Releaseitem.ParameterText = ReleaseText;
-            Releaseitem.Modifyer = userId;
-            Releaseitem.ModifyerName = userName;
-            Releaseitem.ModifyerDate = DateTime.Now;
 
             PDC_Parameter Rejectitem = parameterService.GetParameterOne("ConfigurationReject");
             Rejectitem.ParameterText = RejectText;
-            Rejectitem.Modifyer = userId;
-            Rejectitem.ModifyerName = userName;
-            Rejectitem.ModifyerDate = DateTime.Now;
 
             parameterService.UpdateParameter(ApplyDrawitem, ref ErrorMsg);
             parameterService.UpdateParameter(SendReturnitem, ref ErrorMsg);
@@ -442,11 +440,13 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult UploadFormApply(string ParameterText, string ParameterValue, string ParameterDesc)
         {
-            ParameterService parameterService = new ParameterService(_context);
-            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
-            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
 
             string ErrorMsg = string.Empty;
 
@@ -454,9 +454,6 @@ namespace cns.Controllers
             item.ParameterText = ParameterText;
             item.ParameterValue = ParameterValue;
             item.ParameterDesc = ParameterDesc;
-            item.Modifyer = userId;
-            item.ModifyerName = userName;
-            item.ModifyerDate = DateTime.Now;
 
             parameterService.UpdateParameter(item, ref ErrorMsg);
 
@@ -464,13 +461,15 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult UploadWorkDetail(string ParameterText, string ParameterValue, IFormFile file)
         {
-            ParameterService parameterService = new ParameterService(_context);
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
             string ErrorMsg = string.Empty;
-            string userId = _userManager.GetUserId(HttpContext.User);
-            string userName = HttpContext.User.Identity.Name;
 
             PDC_File newFile = new PDC_File();
             PDC_Parameter item = parameterService.GetParameterOne("ConfigurationWorkDetail");
@@ -483,14 +482,11 @@ namespace cns.Controllers
                     FileService.FileRemove(WorkDetail_File.FileID);
                 }
 
-                FileService.FileAdd(file, "ConfigurationWorkDetail", userId, userName, out newFile, "FileUpload", item.ParameterID);
+                FileService.FileAdd(file, "ConfigurationWorkDetail", out newFile, "FileUpload", item.ParameterID);
             }
 
             item.ParameterText = ParameterText;
             item.ParameterValue = ParameterValue;
-            item.Modifyer = userId;
-            item.ModifyerName = userName;
-            item.ModifyerDate = DateTime.Now;
 
             parameterService.UpdateParameter(item, ref ErrorMsg);
 
@@ -498,10 +494,13 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult DeleteWorkDetailFile(Int64 FileID)
         {
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
 
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
             string ErrorMsg = string.Empty;
 
             PDC_File WorkDetail_File = FileService.GetFileOne(FileID);
@@ -517,14 +516,15 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult UploadFile(IFormFile file)
         {
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
 
             m_ConfigurationPartial model = new m_ConfigurationPartial();
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
-            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
-            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
 
             Stream stream = file.OpenReadStream();
             //轉NPOI類型
@@ -532,26 +532,9 @@ namespace cns.Controllers
 
             if (Helper.ExcelSampleCheck(ExcelFile))
             {
-                ////存檔並返回檔案路徑
-                //string FilePath = Helper.SaveAndGetExcelPath(file);
-
-                //if (FilePath != "Error")
-                //{
-                //    model.CNS_Sample.FileFullName = Path.GetFileName(FilePath);
-                //    model.CNS_Sample.FileName = file.FileName;
-                //    model.CNS_Sample.FileExtension = Path.GetExtension(FilePath);
-                //    model.CNS_Sample.FileType = 2;
-                //    model.CNS_Sample.FileCategory = 1;
-                //    model.CNS_Sample.FileSize = file.Length;
-                //    model.CNS_Sample.FunctionName = "ConfigurationSample";
-                //    model.CNS_Sample.Creator = "c5805dbf-dac5-41e6-bb72-5eb0b449134d";
-                //    model.CNS_Sample.CreatorDate = DateTime.Now;
-                //    model.CNS_Sample.CreatorName = "super@admin.com";
-                //    _context.PDC_File.Add(model.CNS_Sample);
-                //    _context.SaveChanges();
-                //}
+                
                 PDC_File item = new PDC_File();
-                if (!FileService.FileAdd(file, "ConfigurationSample", userId, userName, out item))
+                if (!FileService.FileAdd(file, "ConfigurationSample", out item))
                 {
                     model.ErrorMsg = "檔案儲存失敗";
                 }

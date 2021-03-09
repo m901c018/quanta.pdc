@@ -23,16 +23,19 @@ namespace cns.Services
 
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public FormService(ApplicationDbContext context)
+        private readonly PDC_Member _Member;
+
+        public FormService(ApplicationDbContext context, PDC_Member Member)
         {
             _context = context;
-            
+            _Member = Member;
         }
 
-        public FormService(IHostingEnvironment hostingEnvironment, ApplicationDbContext context)
+        public FormService(IHostingEnvironment hostingEnvironment, ApplicationDbContext context,PDC_Member Member)
         {
             _hostingEnvironment = hostingEnvironment;
             _context = context;
+            _Member = Member;
         }
 
         /// <summary> 取得申請單紀錄
@@ -61,6 +64,20 @@ namespace cns.Services
             PDC_Form item = new PDC_Form();
 
             item = _context.PDC_Form.Where(x => x.FormID == FormID).SingleOrDefault();
+
+            return item;
+        }
+
+        /// <summary> 取得申請單
+        /// 
+        /// </summary>
+        /// <param name="FormNo">申請單編號</param>
+        /// <returns></returns>
+        public PDC_Form GetFormOne(String FormNo)
+        {
+            PDC_Form item = new PDC_Form();
+
+            item = _context.PDC_Form.Where(x => x.AppliedFormNo == FormNo).SingleOrDefault();
 
             return item;
         }
@@ -155,9 +172,9 @@ namespace cns.Services
                 OldForm.Revision = NewForm.Revision;
                 OldForm.FormStatusCode = NewForm.FormStatusCode;
                 OldForm.Result = NewForm.Result;
-                OldForm.Modifyer = NewForm.Modifyer;
-                OldForm.ModifyerName = NewForm.ModifyerName;
-                OldForm.ModifyerDate = NewForm.ModifyerDate;
+                OldForm.Modifyer = _Member.MemberID.ToString();
+                OldForm.ModifyerName = _Member.UserEngName;
+                OldForm.ModifyerDate = DateTime.Now;
 
                 List<PDC_File> NewFileList = new List<PDC_File>();
 
@@ -200,6 +217,10 @@ namespace cns.Services
             ErrorMsg = string.Empty;
             try
             {
+                NewForm.Modifyer = _Member.MemberID.ToString();
+                NewForm.ModifyerName = _Member.UserEngName;
+                NewForm.ModifyerDate = DateTime.Now;
+
                 _context.PDC_Form.Add(NewForm);
                 _context.SaveChanges();
 
@@ -215,7 +236,7 @@ namespace cns.Services
                     NewFileList.Add(File);
                 }
 
-                NewForm.AppliedFormNo = "CN" + NewForm.FormID.ToString().PadLeft(6, '0');
+                NewForm.AppliedFormNo = "C" + NewForm.FormID.ToString().PadLeft(7, '0');
                 _context.SaveChanges();
                 //把檔案從Temp移到FileUpload
                 foreach (PDC_File item in NewFileList)
@@ -238,7 +259,7 @@ namespace cns.Services
         public decimal GetWorkHour(Enum.FormEnum.Form_Stage form_Stage)
         {
             PDC_Parameter pDC_Parameter = new PDC_Parameter();
-            ParameterService parameterService = new ParameterService(_context);
+            ParameterService parameterService = new ParameterService(_context,_Member);
 
             if((int)form_Stage == 1)
             {
@@ -273,8 +294,8 @@ namespace cns.Services
                 FormStage.Stage = Enum.FormEnum.Form_Stage.Apply;
                 FormStage.StageName = FormEnum.GetForm_StageName(Enum.FormEnum.Form_Stage.Apply);
                 FormStage.WorkHour = 0;
-                FormStage.Creator = "super@admin.com";
-                FormStage.CreatorName = "Roger Chao (趙偉智)";
+                FormStage.Creator = _Member.MemberID.ToString();
+                FormStage.CreatorName = _Member.UserEngName.ToString();
                 FormStage.CreatorDate = DateTime.Now;
                 _context.PDC_Form_StageLog.Add(FormStage);
                 _context.SaveChanges();
@@ -315,6 +336,72 @@ namespace cns.Services
             return true;
         }
 
+        /// <summary> 新增表單紀錄
+        /// 
+        /// </summary>
+        /// <param name="FormID">表單ID</param>
+        /// <param name="form_Stage">關卡</param>
+        /// <param name="result">意見</param>
+        /// <param name="PDC_Member">負責人</param>
+        /// <param name="FormStageID">表單紀錄ID</param>
+        /// <param name="ErrorMsg">錯誤訊息</param>
+        /// <returns></returns>
+        public bool AddForm_StageLog(long FormID, Enum.FormEnum.Form_Stage form_Stage, string result,string PDC_Member, out long FormStageID, ref string ErrorMsg)
+        {
+            PDC_Form_StageLog FormStage = new PDC_Form_StageLog();
+            ErrorMsg = string.Empty;
+            try
+            {
+                PDC_Form pDC_Form = _context.PDC_Form.Where(x => x.FormID == FormID).SingleOrDefault();
+                switch(form_Stage)
+                {
+                    case FormEnum.Form_Stage.Apply:
+                        pDC_Form.FormStatusCode = FormEnum.Form_Status.Apply;
+                        break;
+                    case FormEnum.Form_Stage.Assign:
+                        pDC_Form.FormStatusCode = FormEnum.Form_Status.Work;
+                        break;
+                    case FormEnum.Form_Stage.End:
+                        pDC_Form.FormStatusCode = FormEnum.Form_Status.End;
+                        break;
+                    case FormEnum.Form_Stage.Reject:
+                        pDC_Form.FormStatusCode = FormEnum.Form_Status.Reject;
+                        break;
+                    case FormEnum.Form_Stage.Release:
+                        pDC_Form.FormStatusCode = FormEnum.Form_Status.Release;
+                        break;
+                    case FormEnum.Form_Stage.Work:
+                        pDC_Form.FormStatusCode = FormEnum.Form_Status.Work;
+                        break;
+                }
+                pDC_Form.FormStatus = FormEnum.GetForm_StatusDic()[(int)pDC_Form.FormStatusCode];
+
+                FormStage.FormID = FormID;
+                FormStage.Result = result;
+                FormStage.Stage = form_Stage;
+                FormStage.StageName = FormEnum.GetForm_StageName(form_Stage);
+                FormStage.WorkHour = 0;
+                FormStage.Creator = _Member.MemberID.ToString();
+                FormStage.CreatorName = _Member.UserEngName.ToString();
+                FormStage.CreatorDate = DateTime.Now;
+                FormStage.PDC_Member = PDC_Member;
+                _context.PDC_Form_StageLog.Add(FormStage);
+                _context.SaveChanges();
+
+                FormStageID = FormStage.StageLogID;
+
+             
+            }
+            catch (Exception ex)
+            {
+                ErrorMsg = "儲存失敗";
+                FormStageID = 0;
+                return false;
+            }
+
+            return true;
+        }
+
         public bool CloseFormApply(long FormID, ref string ErrorMsg)
         {
             ErrorMsg = string.Empty;
@@ -325,9 +412,10 @@ namespace cns.Services
                 {
                     Form.FormStatus = FormEnum.GetForm_StatusDic()[(int)FormEnum.Form_Status.End];
                     Form.FormStatusCode = FormEnum.Form_Status.End;
-                    Form.Modifyer = "super@admin.com";
-                    Form.ModifyerName = "Roger Chao (趙偉智)";
+                    Form.Modifyer = _Member.MemberID.ToString();
+                    Form.ModifyerName = _Member.UserEngName;
                     Form.ModifyerDate = DateTime.Now;
+                    
 
                     PDC_Form_StageLog FormStage = new PDC_Form_StageLog();
                     FormStage.FormID = FormID;
@@ -335,8 +423,8 @@ namespace cns.Services
                     FormStage.Stage = Enum.FormEnum.Form_Stage.End;
                     FormStage.StageName = FormEnum.GetForm_StageName(Enum.FormEnum.Form_Stage.End);
                     FormStage.WorkHour = GetWorkHour(FormEnum.Form_Stage.End);
-                    FormStage.Creator = "super@admin.com";
-                    FormStage.CreatorName = "Roger Chao (趙偉智)";
+                    FormStage.Creator = _Member.MemberID.ToString();
+                    FormStage.CreatorName = _Member.UserEngName;
                     FormStage.CreatorDate = DateTime.Now;
                     _context.PDC_Form_StageLog.Add(FormStage);
 

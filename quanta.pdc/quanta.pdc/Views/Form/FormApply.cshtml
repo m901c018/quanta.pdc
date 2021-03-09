@@ -50,19 +50,19 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>公司別</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.CompCode" value="QCI" disabled="disabled">
+                                        <input type="text" class="form-control" asp-for="m_PDC_Form.CompCode" value="@Model.Member.CompCode" disabled="disabled">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>部門</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.BUCode" value="BU_Test" disabled="disabled">
+                                        <input type="text" class="form-control" asp-for="m_PDC_Form.BUCode" value="@Model.Member.BUName" disabled="disabled">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>申請者</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.ApplierID" value="TestUser" disabled="disabled">
+                                        <input type="text" class="form-control" asp-for="m_PDC_Form.ApplierID" value="@Model.Member.UserEngName" disabled="disabled">
                                     </div>
                                 </div>
                             </div>
@@ -71,9 +71,13 @@
                                     <div class="form-group">
                                         <label>PCB Layout Status</label>
                                         <select class="select2 form-control" asp-for="m_PDC_Form.PCBLayoutStatus">
-                                            <option value="New">New</option>
+                                            @foreach (var item in Model.PCBLayoutStatusList)
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+                                            @*<option value="New">New</option>
                                             <option value="RFQ">RFQ</option>
-                                            <option value="Modify">Modify</option>
+                                            <option value="Modify">Modify</option>*@
                                         </select>
                                         @*<input type="email" class="form-control" value="New" placeholder="New/RFQ/Modify" disabled="disabled">*@
                                     </div>
@@ -104,13 +108,17 @@
                                     <div class="form-group">
                                         <label>PCB Type</label>
                                         @*<input type="email" class="form-control" placeholder="Non-HDI/HDI/Anylayer/FPC/Rigid-flex" disabled="disabled">*@
-                                        <select class="select2 form-control" asp-for="m_PDC_Form.PCBType">
-                                            <option value="Non-HDI">Non-HDI</option>
-                                            <option value="HDI">HDI</option>
-                                            <option value="Anylayer">Anylayer</option>
-                                            <option value="FPC">FPC</option>
-                                            <option value="Rigid-flex">Rigid-flex</option>
-                                        </select>
+                                    <select class="select2 form-control" asp-for="m_PDC_Form.PCBType">
+                                        @foreach (var item in Model.PCBTypeList)
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                        @*<option value="Non-HDI">Non-HDI</option>
+                                        <option value="HDI">HDI</option>
+                                        <option value="Anylayer">Anylayer</option>
+                                        <option value="FPC">FPC</option>
+                                        <option value="Rigid-flex">Rigid-flex</option>*@
+                                    </select>
                                         <div class="input-group">
                                             <span asp-validation-for="m_PDC_Form.PCBType" class="text-danger"></span>
                                         </div>
@@ -159,7 +167,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="custom-file mb-3">
-                                            <input type="file" asp-for="m_UplpadBRDFile" class="custom-file-input" id="UplpadBRDFile" accept=".zip">
+                                            <input type="file" asp-for="m_UplpadBRDFile" class="custom-file-input" id="UplpadBRDFile">
                                             <label id="UplpadBRDFileLabel" class="custom-file-label" for="UplpadBRDFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                         </div>
                                     </div>
@@ -295,9 +303,13 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="list-group">
-                                            <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action active" aria-current="true">增加減 Region</a>
+                                            @foreach (var item in Model.FormApplyResultList)
+                                            {
+                                                <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action active" aria-current="true">@item.ParameterText</a>
+                                            }
+                                            @*<a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action active" aria-current="true">增加減 Region</a>
                                             <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
-                                            <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action">其他</a>
+                                            <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action">其他</a>*@
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -321,6 +333,7 @@
                         <div class="row align-items-end">
                             <div class="col-md-10">
                                 <span style="color: #ffc107;">*請務必使用最新版範本</span>
+                                <button class="btn btn-outline-success" id="showLayer" onclick="GridShow(this)">顯示疊構</button>
                             </div>
                             <div class="col-md-1" style="text-align: center;">
                                 <br>unit: mil
@@ -333,14 +346,14 @@
                             <table class="table table-hover" id="grid">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th scope="col" style="width: 5%;">Layer</th>
-                                        <th scope="col" style="width: 15%;">疊構類別</th>
-                                        <th scope="col" style="width: 10%;">Name</th>
-                                        <th scope="col" style="width: 20%;">HIGH SPEED GROUP NAME</th>
-                                        <th scope="col" style="width: 10%;">線寬</th>
-                                        <th scope="col" style="width: 10%;">間距</th>
-                                        <th scope="col" style="width: 15%;">疊構</th>
-                                        <th scope="col" style="width: 10%;">板厚</th>
+                                        <th scope="col" style="width: 5%;">層別<br />(LAYER)</th>
+                                        <th scope="col" style="width: 15%;">LAYOUT疊構<br />(Stack up Type)</th>
+                                        <th scope="col" style="width: 10%;">名稱<br />（NAME）</th>
+                                        <th scope="col" style="width: 20%;">代碼<br /> (NAME CODE)</th>
+                                        <th scope="col" style="width: 10%;">線寬<br />(LINE WIDTH)</th>
+                                        <th scope="col" style="width: 10%;">間距<br />(SPACING)</th>
+                                        <th scope="col" style="width: 15%;">PCB疊構<br />(Stack up)</th>
+                                        <th scope="col" style="width: 10%;">板厚<br />(Thickness)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -354,7 +367,7 @@
                                     <textarea class="form-control" id="ErrorMsg" rows="3" disabled="disabled"></textarea>
                                 </div>
                                 <div class="col-md-4">
-                                    <a href="javascript:window.open('@Url.Action("ExcelEdit", "Excel")')" class="btn btn-outline-success" style=" padding: 4px 25px; display:none" id="OpenOnlineEdit">開啟線上編輯</a>
+                                    <a href="javascript:return false;" onclick="ExcelEdit()" class="btn btn-outline-success" style=" padding: 4px 25px; display:none" id="OpenOnlineEdit">開啟線上編輯</a>
                                     @*<a href="#" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose">執行檢測</a>*@
                                     <br />
                                     <br />
@@ -522,6 +535,8 @@
                             Html += " <a href=\"javascript:return false;\" onclick=\"FileDelete(" + result.File.FileID + ",this)\" alt=\"刪除\"><i style=\"color: #f05154;\" class=\"fas fa-trash-alt\"></i></a>";
                             Html += "<input type=\"hidden\" data-val=\"true\" data-val-required=\"The FileID field is required.\" id=\""+ model +"_FileID\" name=\""+ model +".FileID\" value=\"" + result.File.FileID + "\"></div>";
                             $('#' + type + 'Div').html(Html);
+
+
                         }
                         else {
                             var date = new Date(result.CreatorDate);
@@ -542,12 +557,34 @@
                 }
             });
         }
+
+        var IsShow = false;
+        function GridShow(obj) {
+            if (IsShow) {
+                $(obj).text('顯示疊構');
+                $('.SecondRow').hide();
+                IsShow = false;
+            }
+            else {
+                $(obj).text('隱藏疊構');
+                $('.SecondRow').show();
+                IsShow = true;
+            }
+        }
+
         //載入Excel資料
         function SetDataTable(dt) {
             $('#grid > tbody').html('');
             var ErrorMsg = "";
             $.each(dt, function (index, row) {
                 var Html = "<tr>";
+                if (row[1] == "Dielectric") {
+                    if(IsShow)
+                        Html = "<tr class=\"SecondRow\">";
+                    else
+                        Html = "<tr class=\"SecondRow\" style=\"display:none\">";
+                }
+
                 Html += "<td>" + row[0] + "</td>";
                 Html += "<td>" + row[1] + "</td>";
                 if (row[2] != "BOT" && row[2] != "" && dt[index + 1][2] != "") {
@@ -589,6 +626,43 @@
                 $('#SendApply').hide();
                 $('#disApply').hide();
             }
+        }
+
+        function ExcelEdit() {
+            var FileID = 0;
+            if ($('#UplpadExcelFileDiv').find('input:eq(0)').length) {
+                FileID = $('#UplpadExcelFileDiv').find('input:eq(0)').val();
+                var formData = new FormData();
+                formData.append('FileID', FileID);
+
+                var _url = '@Url.Action("FormExcelEdit", "Form")';
+
+                $.ajax({
+                    url: _url,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,  // tell jQuery not to process the data
+                    contentType: false,  // tell jQuery not to set contentType
+                    success: function (result) {
+                        if (result.status == "400") {
+                            alert(result.ErrorMessage);
+                        }
+                        else {
+                            window.open('@Url.Action("ExcelEdit", "Excel")');
+                        }
+                    },
+                    error: function (jqXHR) {
+                    },
+                    complete: function (jqXHR, status) {
+                        $('body').addClass('no-loader');
+                    }
+                });
+
+            }
+            else {
+                alert('請上傳Excel檔案');
+            }
+           
         }
 
         function ReLoadExcelFile() {

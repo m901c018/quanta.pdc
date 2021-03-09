@@ -19,6 +19,7 @@ using cns.Models;
 using Newtonsoft.Json;
 using cns.Services;
 using cns.Data;
+using cns.Services.App;
 
 namespace cns.Controllers
 {
@@ -27,11 +28,15 @@ namespace cns.Controllers
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly ApplicationDbContext _context;
-        //consume custom security service to get all roles
+
+        [ActionCheck]
         public IActionResult Index()
         {
-            FileService FileService = new FileService(_hostingEnvironment, _context);
-            ParameterService ParameterService = new ParameterService(_context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
+            ParameterService ParameterService = new ParameterService(_context, UserInfo.User);
             m_ExcelPartial model = new m_ExcelPartial();
             //取得要同步驗證的資料
             model.FastLinkList = ParameterService.GetParameterList("Configuration_HomeLink").Where(x => x.IsSync == true).OrderBy(x => x.OrderNo).ToList();
@@ -50,6 +55,7 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult UploadFile(IFormFile file)
         {
             m_ExcelPartial model = new m_ExcelPartial();
@@ -102,6 +108,7 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult SaveCheckFile([FromBody]object model)
         {
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
@@ -138,8 +145,12 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult SaveFormExcelFile([FromBody]object model)
         {
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             var jsonString = JsonConvert.SerializeObject(model);
             m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
@@ -149,7 +160,7 @@ namespace cns.Controllers
 
             if (FileID > 0)
             {
-                FileService FileService = new FileService(_hostingEnvironment, _context);
+                FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
                 PDC_File File = FileService.GetFileOne(FileID);
 
                 string FilePath = _hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName;
@@ -168,10 +179,14 @@ namespace cns.Controllers
 
 
         [HttpGet]
+        [ActionCheck]
         public IActionResult DownloadSample()
         {
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
 
             if(FileService.GetFileList("ConfigurationSample").Any())
             {
@@ -193,12 +208,16 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult DownloadCheckFile([FromBody]object model)
         {
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            FileService FileService = new FileService(_hostingEnvironment, _context,UserInfo.User);
             string SampleFilePath = "";
             if (FileService.GetFileList("ConfigurationSample").Any())
-                SampleFilePath = FileService.GetFileList("ConfigurationSample").FirstOrDefault().FileFullName;
+                SampleFilePath = FileService.GetFileList("ConfigurationSample").OrderByDescending(x=>x.CreatorDate).FirstOrDefault().FileFullName;
 
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment, SampleFilePath);
 
@@ -215,14 +234,16 @@ namespace cns.Controllers
         }
 
         [HttpGet]
+        [ActionCheck]
         public IActionResult ExcelEdit(Boolean IsOnlyOnline = false)
         {
-            
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
 
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            FileService FileService = new FileService(_hostingEnvironment, _context,UserInfo.User);
             m_ExcelPartial ViewModel = new m_ExcelPartial();
-            ParameterService parameterService = new ParameterService(_context);
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
 
             //組態設定線寬線距規則
             ViewModel.m_ExcelRule = parameterService.GetParameterOne("ConfigurationFormApply");
@@ -256,10 +277,14 @@ namespace cns.Controllers
         
 
         [HttpGet]
+        [ActionCheck]
         public IActionResult Download(string fileName)
         {
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
 
             string RealFileName = HttpContext.Session.GetString("SessionFileName");
 
@@ -276,9 +301,13 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult DownloadError([FromBody]object model)
         {
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             var jsonString = JsonConvert.SerializeObject(model);
             m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
@@ -305,26 +334,30 @@ namespace cns.Controllers
         }
 
         [HttpGet]
+        [ActionCheck]
         public IActionResult DownloadErrorFile(string FileName)
         {
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
             string OutFileName = string.Empty;
 
             var RealFileName = HttpContext.Session.GetString("SessionFileName");
 
             if (string.IsNullOrWhiteSpace(RealFileName))
             {
-                OutFileName = "Error" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".csv";
+                OutFileName = "Error" + DateTime.Now.ToString("yyyyMMddHHmmss") + Path.GetExtension(FileName);
             }
             else
             {
-                OutFileName = Path.GetFileNameWithoutExtension(RealFileName) + "Error" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".csv";
+                OutFileName = Path.GetFileNameWithoutExtension(RealFileName) + "Error" + DateTime.Now.ToString("yyyyMMddHHmmss") + Path.GetExtension(FileName);
             }
 
             //取得範例
             MemoryStream stream = FileService.DownloadFile(FileName);
 
-            return File(stream.ToArray(), "text/csv", OutFileName);
+            return File(stream.ToArray(), "text/plain", OutFileName);
         }
     }
 

@@ -17,10 +17,12 @@ namespace cns.Services
 
         private readonly ApplicationDbContext _context;
 
+        private readonly PDC_Member _Member;
 
-        public ParameterService(ApplicationDbContext context)
+        public ParameterService(ApplicationDbContext context, PDC_Member Member)
         {
             _context = context;
+            _Member = Member;
         }
 
 
@@ -106,9 +108,10 @@ namespace cns.Services
                 OldParameter.ParameterName = NewParameter.ParameterName;
                 OldParameter.ParameterGroup = NewParameter.ParameterGroup;
                 OldParameter.ParameterDesc = NewParameter.ParameterDesc;
-                OldParameter.Modifyer = NewParameter.Modifyer;
-                OldParameter.ModifyerName = NewParameter.ModifyerName;
-                OldParameter.ModifyerDate = NewParameter.ModifyerDate;
+                OldParameter.OrderNo = NewParameter.OrderNo;
+                OldParameter.Modifyer = _Member.MemberID.ToString();
+                OldParameter.ModifyerName = _Member.UserEngName;
+                OldParameter.ModifyerDate = DateTime.Now;
                 _context.SaveChanges();
 
                 ErrorMsg = "儲存成功";
@@ -126,6 +129,9 @@ namespace cns.Services
             ErrorMsg = string.Empty;
             try
             {
+                NewParameter.Creator = _Member.MemberID.ToString();
+                NewParameter.CreatorName = _Member.UserEngName;
+                NewParameter.CreatorDate = DateTime.Now;
                 _context.PDC_Parameter.Add(NewParameter);
                 _context.SaveChanges();
 

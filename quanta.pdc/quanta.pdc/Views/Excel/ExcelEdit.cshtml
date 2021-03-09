@@ -42,14 +42,14 @@
                                                     <thead class="thead-dark">
                                                         <tr>
                                                             <th scope="col" style="width: 2%;"></th>
-                                                            <th scope="col" style="width: 7%;">Layer</th>
-                                                            <th scope="col" style="width: 15%;">疊構類別</th>
-                                                            <th scope="col" style="width: 10%;">Name</th>
-                                                            <th scope="col" style="width: 17%;">HIGH SPEED GROUP NAME</th>
-                                                            <th scope="col" style="width: 10%;">線寬</th>
-                                                            <th scope="col" style="width: 10%;">間距</th>
-                                                            <th scope="col" style="width: 15%;">疊構</th>
-                                                            <th scope="col" style="width: 7%;">板厚</th>
+                                                            <th scope="col" style="width: 7%;">層別<br />(LAYER)</th>
+                                                            <th scope="col" style="width: 15%;">LAYOUT疊構<br />(Stack up Type)</th>
+                                                            <th scope="col" style="width: 10%;">名稱<br />（NAME）</th>
+                                                            <th scope="col" style="width: 17%;">代碼<br /> (NAME CODE)</th>
+                                                            <th scope="col" style="width: 10%;">線寬<br />(LINE WIDTH)</th>
+                                                            <th scope="col" style="width: 10%;">間距<br />(SPACING)</th>
+                                                            <th scope="col" style="width: 15%;">PCB疊構<br />(Stack up)</th>
+                                                            <th scope="col" style="width: 7%;">板厚<br />(Thickness)</th>
                                                             <th scope="col" style="width: 2%;"></th>
                                                         </tr>
                                                     </thead>
@@ -306,10 +306,13 @@
         }
 
         function SetGroupName(obj) {
+            //先轉大寫
+            $(obj).val($(obj).val().toUpperCase());
+
             var GetNum = $(obj).val().replace(/[^0-9]/ig, "");
             var GroupName = $(obj).val().replace(/[0-9]/ig, "");
             //如果為IN，第四欄帶入數字、第二欄帶入Conductor
-            if (GroupName.startsWith("IN")) {
+            if (GroupName.indexOf("IN") == 0) {
                 if ($.isNumeric(GetNum)) {
                     $(obj).parent().next().find('input').eq(0).val(GetNum);
                 }
@@ -321,7 +324,7 @@
             }
 
             //如果為VCC，第二欄帶入Conductor
-            if (GroupName.startsWith("VCC")) {
+            if (GroupName.indexOf("VCC") == 0) {
                 $(obj).parent().next().find('input').eq(0).val('');
                 $(obj).parent().prev().find('input').eq(0).val('Conductor');
                 $(obj).parent().next().next().find('input').eq(0).prop('disabled',false);
@@ -331,7 +334,7 @@
             }
 
             //如果為GND，第二欄帶入Conductor
-            if (GroupName.startsWith("GND")) {
+            if (GroupName.indexOf("GND") == 0) {
                 $(obj).parent().next().find('input').eq(0).val('');
                 $(obj).parent().prev().find('input').eq(0).val('Conductor');
                 $(obj).parent().next().next().find('input').eq(0).prop('disabled',false);
@@ -341,7 +344,7 @@
             }
 
             //如果為S開頭，第二欄帶入Plane、四五六不填值
-            if (GroupName.startsWith("S")) {
+            if (GroupName.indexOf("S") == 0) {
                 $(obj).parent().next().find('input').eq(0).val('');
                 $(obj).parent().next().next().find('input').eq(0).val('');
                 $(obj).parent().next().next().find('input').eq(0).prop('disabled',true);

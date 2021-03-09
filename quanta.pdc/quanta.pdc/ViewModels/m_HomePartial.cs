@@ -34,6 +34,21 @@ namespace cns.ViewModels
         /// </summary>
         public PDC_Parameter Announcement { get; set; }
 
+        /// <summary> 選單
+        /// 
+        /// </summary>
+        public List<Menu> MenuList { get; set; }
+
+        /// <summary> 登入者
+        /// 
+        /// </summary>
+        public PDC_Member User { get; set; }
+
+        /// <summary> 所有會員資料
+        /// 
+        /// </summary>
+        public List<PDC_Member> MemberList { get; set; }
+
         public m_HomePartial()
         {
             

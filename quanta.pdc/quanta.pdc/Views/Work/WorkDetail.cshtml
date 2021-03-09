@@ -1,4 +1,4 @@
-﻿@*@model m_FormPartial*@
+﻿@model m_FormPartial
 @{
     ViewData["Title"] = "Work Detail 工作明細";
 }
@@ -30,13 +30,13 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>申請單編號</label>
-                                    <input type="email" class="form-control" placeholder="(系統自動產生)" disabled="disabled">
+                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.AppliedFormNo" disabled="disabled">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>申請日期</label>
-                                    <input type="email" class="form-control" placeholder="2020/10/23 12:00:00" disabled="disabled">
+                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.ApplyDate" disabled="disabled">
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -46,19 +46,19 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>公司別</label>
-                                    <input type="email" class="form-control" placeholder="QCI" disabled="disabled">
+                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.CompCode" disabled="disabled">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>事業群</label>
-                                    <input type="email" class="form-control" placeholder="PDC" disabled="disabled">
+                                    <label>部門</label>
+                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.BUCode" disabled="disabled">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>申請者</label>
-                                    <input type="email" class="form-control" placeholder="Roger Chao(趙偉智)/ #10370" disabled="disabled">
+                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.CreatorName" disabled="disabled">
                                 </div>
                             </div>
                         </div>
@@ -66,13 +66,13 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>PCB Layout Status</label>
-                                    <input type="email" class="form-control" placeholder="New/RFQ/Modify" disabled="disabled">
+                                    <input type="text" class="form-control" value="@Model.PCBLayoutStatusList.Where(x=>x.Value == Model.m_PDC_Form.PCBLayoutStatus).FirstOrDefault().Text" disabled="disabled">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>PCB Type</label>
-                                    <input type="email" class="form-control" placeholder="Non-HDI/HDI/Anylayer/FPC/Rigid-flex" disabled="disabled">
+                                    <input type="text" class="form-control" value="@Model.PCBTypeList.Where(x=>x.Value == Model.m_PDC_Form.PCBType).SingleOrDefault().Text" disabled="disabled">
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -82,19 +82,19 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Project</label>
-                                    <input type="email" class="form-control" placeholder="XV1U" disabled="disabled">
+                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.ProjectName" disabled="disabled">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Board Type</label>
-                                    <input type="email" class="form-control" placeholder="MB" disabled="disabled">
+                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.BoardTypeName" disabled="disabled">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Rev.</label>
-                                    <input type="email" class="form-control" placeholder="A" disabled="disabled">
+                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.Revision" disabled="disabled">
                                 </div>
                             </div>
                         </div>
@@ -107,8 +107,12 @@
                                     <span>1. BRD 壓縮檔(限制Zip格式)</span>
                                 </div>
                                 <div class="col-md-3">
-                                    <a href="#">XV1U-brd.zip (2020/10/23)</a>
-
+                                    @*<a href="#">XV1U-brd.zip (2020/10/23)</a>*@
+                                    @if (Model.m_BRDFile != null)
+                                    {
+                                        var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_BRDFile.FileID;
+                                        <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_BRDFile.FileName (@Model.m_BRDFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                    }
                                 </div>
                                 <div class="col-md-2">
 
@@ -119,8 +123,12 @@
                                     <span>2. Constraint Excel</span>
                                 </div>
                                 <div class="col-md-3">
-                                    <a href="#">XV1U-cns.xlsx (2020/10/23)</a>
-
+                                    @*<a href="#">XV1U-cns.xlsx (2020/10/23)</a>*@
+                                    @if (Model.m_ExcelFile != null)
+                                    {
+                                        var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_ExcelFile.FileID;
+                                        <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_ExcelFile.FileName (@Model.m_ExcelFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                    }
                                 </div>
                                 <div class="col-md-2">
                                 </div>
@@ -130,8 +138,12 @@
                                     <span>3. pstchip.dat</span>
                                 </div>
                                 <div class="col-md-3">
-                                    <a href="#">pstchip.dat (2020/10/23)</a>
-
+                                    @*<a href="#">pstchip.dat (2020/10/23)</a>*@
+                                    @if (Model.m_pstchipFile != null)
+                                    {
+                                        var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_pstchipFile.FileID;
+                                        <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstchipFile.FileName (@Model.m_pstchipFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                    }
                                 </div>
                                 <div class="col-md-2">
 
@@ -142,8 +154,12 @@
                                     <span>4. pstxnet.dat</span>
                                 </div>
                                 <div class="col-md-3">
-                                    <a href="#">pstxnet.dat (2020/10/23)</a>
-
+                                    @*<a href="#">pstxnet.dat (2020/10/23)</a>*@
+                                    @if (Model.m_pstxnetFile != null)
+                                    {
+                                        var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_pstxnetFile.FileID;
+                                        <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstxnetFile.FileName (@Model.m_pstxnetFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                    }
                                 </div>
                                 <div class="col-md-2">
 
@@ -154,8 +170,12 @@
                                     <span>5. pstxprt.dat</span>
                                 </div>
                                 <div class="col-md-3">
-                                    <a href="#">pstxprt.dat (2020/10/23)</a>
-
+                                    @*<a href="#">pstxprt.dat (2020/10/23)</a>*@
+                                    @if (Model.m_pstxprtFile != null)
+                                    {
+                                        var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_pstxprtFile.FileID;
+                                        <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstxprtFile.FileName (@Model.m_pstxprtFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                    }
                                 </div>
                                 <div class="col-md-2">
 
@@ -166,20 +186,30 @@
                                     <span>6. 其他檔案</span>
                                 </div>
                                 <div class="col-md-3" style="padding-bottom: 10px;">
-                                    <li>
+                                    @*<li>
                                         <a href="#">ChangeLog.xlsx (2020/10/23)</a>
 
                                     </li>
                                     <li>
                                         <a href="#">Kickoff.msg (2020/10/23)</a>
 
-                                    </li>
+                                    </li>*@
+                                    @if (Model.m_OtherFileList != null)
+                                    {
+                                        for (int i = 0; i <= Model.m_OtherFileList.Count - 1; i++)
+                                        {
+                                            var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_OtherFileList[i].FileID;
+                                            <li>
+                                                <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_OtherFileList[i].FileName (@Model.m_OtherFileList[i].CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                            </li>
+                                        }
+                                    }
                                 </div>
                                 <div class="col-md-2">
-                                    <a href="#" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose">全部下載</a>
+                                    <a href="javascript:return false;" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose">全部下載</a>
                                 </div>
                             </div>
-                            <div class="row">
+                            @*<div class="row">
                                 <div class="col-md-3">
                                     <span>意見</span>
                                 </div>
@@ -198,7 +228,7 @@
                                 <div class="col-md-2">
                                     <a href="#" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">暫存</a>
                                 </div>
-                            </div>
+                            </div>*@
                         </div>
                     </div>
                 </div>
@@ -211,100 +241,44 @@
                         <p class="card-title">Stackup</p>
                         <div class="row align-items-end">
                             <div class="col-md-10">
-
+                                <button class="btn btn-outline-success" onclick="GridShow(this)" id="showLayer">隱藏疊構</button>
                             </div>
                             <div class="col-md-1" style="text-align: center;">
                                 <br>unit: mil
                             </div>
                             <div class="col-md-1" style="text-align: center;">
-                                總板厚<br>0.00
+                                總板厚<br><label id="ThicknessTotal">0.00</label>
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover" id="grid">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th scope="col" style="width: 5%;">Layer</th>
-                                        <th scope="col" style="width: 15%;">疊構類別</th>
-                                        <th scope="col" style="width: 10%;">Name</th>
-                                        <th scope="col" style="width: 20%;">HIGH SPEED GROUP NAME</th>
-                                        <th scope="col" style="width: 10%;">線寬</th>
-                                        <th scope="col" style="width: 10%;">間距</th>
-                                        <th scope="col" style="width: 15%;">疊構</th>
-                                        <th scope="col" style="width: 10%;">板厚</th>
+                                        <th scope="col" style="width: 5%;">層別<br />(LAYER)</th>
+                                        <th scope="col" style="width: 15%;">LAYOUT疊構<br />(Stack up Type)</th>
+                                        <th scope="col" style="width: 10%;">名稱<br />（NAME）</th>
+                                        <th scope="col" style="width: 20%;">代碼<br /> (NAME CODE)</th>
+                                        <th scope="col" style="width: 10%;">線寬<br />(LINE WIDTH)</th>
+                                        <th scope="col" style="width: 10%;">間距<br />(SPACING)</th>
+                                        <th scope="col" style="width: 15%;">PCB疊構<br />(Stack up)</th>
+                                        <th scope="col" style="width: 10%;">板厚<br />(Thickness)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>Solder Mask</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>L1</td>
-                                        <td>Conductor</td>
-                                        <td>TOP</td>
-                                        <td>T</td>
-                                        <td>5.00</td>
-                                        <td>5.00</td>
-                                        <td>Cu + Plating</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>Dielectric</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>L2</td>
-                                        <td>Plane</td>
-                                        <td>SVCC</td>
-                                        <td></td>
-                                        <td>5.00</td>
-                                        <td>5.00</td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>Dielectric</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>L3</td>
-                                        <td>Conductor</td>
-                                        <td>BOT</td>
-                                        <td>B</td>
-                                        <td>5.00</td>
-                                        <td>5.00</td>
-                                        <td>Cu + Plating</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>Solder Mask</td>
-                                        <td></td>
-                                    </tr>
+                                    @for (int i = 0; i <= Model.ExcelDt.Rows.Count - 1; i++)
+                                    {
+
+                                        <tr @(Model.ExcelDt.Rows[i][1].ToString() == "Dielectric" ? "class=SecondRow" : "")>
+                                            <td>@Model.ExcelDt.Rows[i][0]</td>
+                                            <td>@Model.ExcelDt.Rows[i][1]</td>
+                                            <td>@Model.ExcelDt.Rows[i][2]</td>
+                                            <td>@Model.ExcelDt.Rows[i][3]</td>
+                                            <td>@Model.ExcelDt.Rows[i][4]</td>
+                                            <td>@Model.ExcelDt.Rows[i][5]</td>
+                                            <td>@Model.ExcelDt.Rows[i][6]</td>
+                                            <td>@Model.ExcelDt.Rows[i][7]</td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -329,171 +303,174 @@
             </div>
         </div>
         <!-- 表單紀錄 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="card-title">審查作業</p>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <ul class="nav nav-pills card-header-tabs " role="tablist">
-                                            <li class="nav-item">
-                                                <a class="nav-link active" data-toggle="tab" href="#tab-release" role="tab">Release</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" data-toggle="tab" href="#tab-reject" role="tab">Reject</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="tab-content" id="myTabContent">
-                                            <!-- Release -->
-                                            <div class="tab-pane fade show active" id="tab-release" role="tabpanel" aria-labelledby="home-tab">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <!-- <p class="card-title">新增人員</p> -->
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label>處理人員</label>
-                                                                    <input type="email" class="form-control" placeholder="Roger Chao (趙偉智)">
+        @if (!Model.IsReadOnly)
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-title">審查作業</p>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <ul class="nav nav-pills card-header-tabs " role="tablist">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" data-toggle="tab" href="#tab-release" role="tab">Release</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#tab-reject" role="tab">Reject</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="tab-content" id="myTabContent">
+                                                <!-- Release -->
+                                                <div class="tab-pane fade show active" id="tab-release" role="tabpanel" aria-labelledby="home-tab">
+                                                    <div class="card">
+                                                        <div class="card-body">
+                                                            <!-- <p class="card-title">新增人員</p> -->
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>處理人員</label>
+                                                                        <input type="email" class="form-control" placeholder="Roger Chao (趙偉智)">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>*紀錄工時</label>
+                                                                        <input type="email" class="form-control" placeholder="0.5" disabled="disabled">
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label>*紀錄工時</label>
-                                                                    <input type="email" class="form-control" placeholder="0.5" disabled="disabled">
+                                                            <br>
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <span>1. 上傳 *.dcfx</span>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                        <br>
-                                                        <div class="row">
-                                                            <div class="col-md-3">
-                                                                <span>1. 上傳 *.dcfx</span>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="custom-file mb-3">
-                                                                    <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                                                    <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                                <div class="col-md-4">
+                                                                    <div class="custom-file mb-3">
+                                                                        <input type="file" class="custom-file-input" id="customFile" name="filename">
+                                                                        <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <a href="#">pstxnet.dat (2020/10/23)</a>
-                                                                <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                                            </div>
-                                                            <div class="col-md-2">
+                                                                <div class="col-md-3">
+                                                                    <a href="#">pstxnet.dat (2020/10/23)</a>
+                                                                    <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                                                </div>
+                                                                <div class="col-md-2">
 
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-3">
-                                                                <span>2. 其它</span>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="custom-file mb-3">
-                                                                    <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                                                    <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-3" style="padding-bottom: 10px;">
-                                                                <li>
-                                                                    <a href="#">ChangeLog.xlsx (2020/10/23)</a>
-                                                                    <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">Kickoff.msg (2020/10/23)</a>
-                                                                    <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                                                </li>
-                                                            </div>
-                                                            <div class="col-md-2">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-3">
-                                                                <span>意見</span>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">增加減 Region</textarea>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="list-group">
-                                                                    <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-                                                                        增加減 Region
-                                                                    </a>
-                                                                    <a href="#" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
-                                                                    <a href="#" class="list-group-item list-group-item-action">其他</a>
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <span>2. 其它</span>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="custom-file mb-3">
+                                                                        <input type="file" class="custom-file-input" id="customFile" name="filename">
+                                                                        <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3" style="padding-bottom: 10px;">
+                                                                    <li>
+                                                                        <a href="#">ChangeLog.xlsx (2020/10/23)</a>
+                                                                        <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="#">Kickoff.msg (2020/10/23)</a>
+                                                                        <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                                                    </li>
+                                                                </div>
+                                                                <div class="col-md-2">
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-2">
-                                                                <a href="#" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">Release</a>
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <span>意見</span>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">增加減 Region</textarea>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <div class="list-group">
+                                                                        <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                                                                            增加減 Region
+                                                                        </a>
+                                                                        <a href="#" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
+                                                                        <a href="#" class="list-group-item list-group-item-action">其他</a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <a href="#" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">Release</a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <!-- Reject -->
-                                            <div class="tab-pane fade" id="tab-reject" role="tabpanel" aria-labelledby="contact-tab">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <!-- <p class="card-title">新增人員</p> -->
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label>處理人員</label>
-                                                                    <input type="email" class="form-control" placeholder="Roger Chao (趙偉智)">
+                                                <!-- Reject -->
+                                                <div class="tab-pane fade" id="tab-reject" role="tabpanel" aria-labelledby="contact-tab">
+                                                    <div class="card">
+                                                        <div class="card-body">
+                                                            <!-- <p class="card-title">新增人員</p> -->
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>處理人員</label>
+                                                                        <input type="email" class="form-control" placeholder="Roger Chao (趙偉智)">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>*紀錄工時</label>
+                                                                        <input type="email" class="form-control" placeholder="0.5" disabled="disabled">
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label>*紀錄工時</label>
-                                                                    <input type="email" class="form-control" placeholder="0.5" disabled="disabled">
+                                                            <br>
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <span>1. Reject Files</span>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="custom-file mb-3">
+                                                                        <input type="file" class="custom-file-input" id="customFile" name="filename">
+                                                                        <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-3" style="padding-bottom: 10px;">
+                                                                    <li>
+                                                                        <a href="#">ChangeLog.xlsx (2020/10/23)</a>
+                                                                        <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="#">Kickoff.msg (2020/10/23)</a>
+                                                                        <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                                                    </li>
+                                                                </div>
+                                                                <div class="col-md-2">
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <br>
-                                                        <div class="row">
-                                                            <div class="col-md-3">
-                                                                <span>1. Reject Files</span>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="custom-file mb-3">
-                                                                    <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                                                    <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <span>意見</span>
                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-3" style="padding-bottom: 10px;">
-                                                                <li>
-                                                                    <a href="#">ChangeLog.xlsx (2020/10/23)</a>
-                                                                    <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">Kickoff.msg (2020/10/23)</a>
-                                                                    <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                                                </li>
-                                                            </div>
-                                                            <div class="col-md-2">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-3">
-                                                                <span>意見</span>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">增加減 Region</textarea>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="list-group">
-                                                                    <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-                                                                        增加減 Region
-                                                                    </a>
-                                                                    <a href="#" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
-                                                                    <a href="#" class="list-group-item list-group-item-action">其他</a>
+                                                                <div class="col-md-4">
+                                                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">增加減 Region</textarea>
                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-2">
-                                                                <a href="#" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose">Reject</a>
+                                                                <div class="col-md-3">
+                                                                    <div class="list-group">
+                                                                        <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                                                                            增加減 Region
+                                                                        </a>
+                                                                        <a href="#" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
+                                                                        <a href="#" class="list-group-item list-group-item-action">其他</a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <a href="#" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose">Reject</a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -503,12 +480,13 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
+
         <!-- End of Main -->
     </div>
 
@@ -525,7 +503,21 @@
     <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            $('#showLayer').trigger('click');
+        });
 
-
+        var IsShow = true;
+        function GridShow(obj) {
+            if (IsShow) {
+                $(obj).text('顯示疊構');
+                $('.SecondRow').hide();
+                IsShow = false;
+            }
+            else {
+                $(obj).text('隱藏疊構');
+                $('.SecondRow').show();
+                IsShow = true;
+            }
+        }
     </script>
 }

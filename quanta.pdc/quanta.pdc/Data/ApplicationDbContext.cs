@@ -30,6 +30,8 @@ namespace cns.Data
         public DbSet<PDC_Form> PDC_Form { get; set; }
         //表單紀錄表
         public DbSet<PDC_Form_StageLog> PDC_Form_StageLog { get; set; }
+        //會員表
+        public DbSet<PDC_Member> PDC_Member { get; set; }
 
         //表單查詢表
         public DbSet<vw_FormQuery> vw_FormQuery { get; set; }

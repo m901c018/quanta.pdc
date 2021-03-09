@@ -1,4 +1,4 @@
-﻿@model m_FormPartial
+﻿@model m_FormQueryPartial
 @{
     ViewData["Title"] = "表單查詢";
 }
@@ -18,8 +18,8 @@
 
     </div>
     <div class="main-wrapper container">
-        <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm">
+        <div class="modal fade bd-example-modal-sm" id="ModalDiv" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm" >
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title" id="exampleModalCenterTitle"><i class="fas fa-info-circle" style="color: #36A1EA;"></i> 資訊說明</h1>
@@ -27,14 +27,30 @@
                             <i class="material-icons">close</i>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        欄位注意事項及內容說明
+                    <div class="modal-body" id="modalbody">
+                        @*欄位注意事項及內容說明*@
                     </div>
-                    <div class="modal-footer">
+
+                    <div class="modal-footer" id="modalfooter">
                         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div style="display:none">
+            @foreach(PDC_Parameter item in Model.PicDescriptionList)
+            {
+            <div id="@item.ParameterValue">
+                @Html.Raw(string.IsNullOrWhiteSpace(item.ParameterDesc) ? "" : item.ParameterDesc.Replace("\n", "<br>"))
+                <br />
+                @foreach (var File in Model.PicDescriptionFileList.Where(x => x.SourceID == item.ParameterID))
+                {
+                    string Path = "~/FileUpload/" + File.FileFullName;
+                    <a href="@Url.Content(Path)" data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4 mb-4"> <img src="@Url.Content(Path)" width="40" class="img-fluid" asp-append-version="true"> </a>
+                }
+            </div>
+            }
         </div>
 
 
@@ -54,7 +70,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>部門</label>
-                                        <input type="text" class="form-control" asp-for="QueryParam.BUCode" disabled="disabled">
+                                        <input type="text" class="form-control" asp-for="QueryParam.BUName" disabled="disabled">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -67,13 +83,13 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>申請單編號 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <label>申請單編號 <a href="javascript:return false;" data-toggle="modal" onclick="ShowModal('AppliedFormNo')" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
                                         <input type="text" class="form-control" asp-for="QueryParam.AppliedFormNo">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>申請者狀態 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <label>申請單狀態 <a href="javascript:return false;" data-toggle="modal" onclick="ShowModal('FormStatus')" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
                                         <select class="select2 form-control" asp-for="QueryParam.FormStatus">
                                             <option value=""></option>
                                             <option value="未送件">未送件</option>
@@ -87,7 +103,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label>查詢日期 <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <label>查詢日期 <a href="javascript:return false;" data-toggle="modal" onclick="ShowModal('AppliedDate')" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
                                         <input type="text" class="form-control" id="SearchDate_Start" asp-for="QueryParam.SearchDate_Start">
                                     </div>
 
@@ -103,25 +119,25 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>PCB Layout Status <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <label>PCB Layout Status <a href="javascript:return false;" data-toggle="modal" onclick="ShowModal('PCBLayoutStatus')" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
                                         <select class="select2 form-control" asp-for="QueryParam.PCBLayoutStatus">
                                             <option value=""></option>
-                                            <option value="New">New</option>
-                                            <option value="RFQ">RFQ</option>
-                                            <option value="Modify">Modify</option>
+                                            @foreach (var item in Model.PCBLayoutStatusList)
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>PCB Type <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <label>PCB Type <a href="javascript:return false;" data-toggle="modal" onclick="ShowModal('PCBType')" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
                                         <select class="select2 form-control" asp-for="QueryParam.PCBType">
                                             <option value=""></option>
-                                            <option value="Non-HDI">Non-HDI</option>
-                                            <option value="HDI">HDI</option>
-                                            <option value="Anylayer">Anylayer</option>
-                                            <option value="FPC">FPC</option>
-                                            <option value="Rigid-flex">Rigid-flex</option>
+                                            @foreach (var item in Model.PCBTypeList)
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
                                         </select>
                                     </div>
                                 </div>
@@ -129,19 +145,19 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Project <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <label>Project <a href="javascript:return false;" data-toggle="modal" onclick="ShowModal('ProjectName')" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
                                         <input type="text" asp-for="QueryParam.ProjectName" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Board Type <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <label>Board Type <a href="javascript:return false;" data-toggle="modal" onclick="ShowModal('BoardTypeName')" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
                                         <input type="text" asp-for="QueryParam.BoardTypeName" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Rev. <a href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
+                                        <label>Rev. <a href="javascript:return false;" data-toggle="modal" onclick="ShowModal('Rev')" data-target=".bd-example-modal-sm"><i class="fas fa-info-circle"></i></a></label>
                                         <input type="text" asp-for="QueryParam.Revision" class="form-control">
                                     </div>
                                 </div>
@@ -189,37 +205,46 @@
                                         @for (int i = 0; i <= Model.vw_FormQueryList.Count - 1; i++)
                                         {
                                             var Path = Url.Action("FormApplyEdit", "Form") + "/?FormID=" + @Model.vw_FormQueryList[i].FormID;
-                                            <tr>
-                                                <td>
-                                                    <a href="@Path" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">@Model.vw_FormQueryList[i].AppliedFormNo</a>
-                                                </td>
-                                                <td>@Model.vw_FormQueryList[i].ApplyOrder</td>
-                                                <td>@Model.vw_FormQueryList[i].FormStatus</td>
-                                                <td>
-                                                    @if (Model.vw_FormQueryList[i].ApplyDate.Year != 1)
-                                                    {
-                                                        @Model.vw_FormQueryList[i].ApplyDate.ToString("yyyy/MM/dd")<br>
-                                                        @Model.vw_FormQueryList[i].ApplyDate.ToString("HH:mm:ss")
-                                                    }
+                                        <tr>
+                                            <td>
+                                                <a href="@Path" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">@Model.vw_FormQueryList[i].AppliedFormNo</a>
+                                            </td>
+                                            <td>@Model.vw_FormQueryList[i].ApplyOrder</td>
+                                            <td>@Model.vw_FormQueryList[i].FormStatus</td>
+                                            <td>
+                                                @if (Model.vw_FormQueryList[i].ApplyDate.Year != 1)
+                                                {
+                                                    @Model.vw_FormQueryList[i].ApplyDate.ToString("yyyy/MM/dd")<br>
+                                                    @Model.vw_FormQueryList[i].ApplyDate.ToString("HH:mm:ss")
+                                                }
 
-                                                </td>
-                                                <td>@Model.vw_FormQueryList[i].CreatorName</td>
-                                                <td>@Model.vw_FormQueryList[i].PCBLayoutStatus</td>
-                                                <td>@Model.vw_FormQueryList[i].ProjectName</td>
-                                                <td>@Model.vw_FormQueryList[i].BoardTypeName</td>
-                                                <td>@Model.vw_FormQueryList[i].Revision</td>
-                                                <td>
-                                                    @*Roger Chao<br>
-                                                    (趙偉智)/#10370*@
-                                                    @Model.vw_FormQueryList[i].PDC_Member
-                                                </td>
+                                            </td>
+                                            <td>@Model.vw_FormQueryList[i].CreatorName</td>
+                                            <td>@Model.vw_FormQueryList[i].PCBLayoutStatus</td>
+                                            <td>@Model.vw_FormQueryList[i].ProjectName</td>
+                                            <td>@Model.vw_FormQueryList[i].BoardTypeName</td>
+                                            <td>@Model.vw_FormQueryList[i].Revision</td>
+                                            <td>
+                                                @*Roger Chao<br>
+            (趙偉智)/#10370*@
+                                                @Model.vw_FormQueryList[i].PDC_MemberName
+                                            </td>
+                                            @if (Model.vw_FormQueryList[i].FormStatusCode == cns.Services.Enum.FormEnum.Form_Status.Release)
+                                            {
                                                 <td>@Model.vw_FormQueryList[i].StageName</td>
                                                 <td>
                                                     @(Model.vw_FormQueryList[i].StageDate.HasValue ? Model.vw_FormQueryList[i].StageDate.Value.ToString("yyyy/MM/dd") : "")
                                                     <br />
                                                     @(Model.vw_FormQueryList[i].StageDate.HasValue ? Model.vw_FormQueryList[i].StageDate.Value.ToString("HH:mm:ss") : "")
                                                 </td>
-                                            </tr>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                                <td></td>
+                                            }
+                                            
+                                        </tr>
                                         }
 
 
@@ -258,6 +283,7 @@
     <!-- datatable Js -->
     <script src="~/assets/plugins/data-tables/js/datatables.min.js"></script>
     <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
+    <script src="~/assets/js/ekko-lightbox.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
 
@@ -267,7 +293,14 @@
 
         });
 
+        $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+            event.preventDefault();
+            $(this).ekkoLightbox();
+        });
 
-
+        function ShowModal(id) {
+            $('#modalbody').html($('#' + id).html());
+            $('#ModalDiv').modal('show');
+        }
     </script>
 }

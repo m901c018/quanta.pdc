@@ -4,92 +4,80 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using static cns.Services.Enum.FormEnum;
+using static cns.Services.Enum.MemberEnum;
 
 namespace cns.Models
 {
-    [Table("PDC_Form")]
-    public class PDC_Form
+    [Table("PDC_Member")]
+    public class PDC_Member
     {
         /// <summary>
         /// 主鍵
         /// </summary>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Int64 FormID { get; set; }
-        /// <summary>
-        /// 申請者編號
-        /// </summary>
-        [Required(ErrorMessage = "必填")]
-        [MaxLength(64)]
-        public string AppliedFormNo { get; set; }
-        /// <summary>
-        /// 申請單狀態
-        /// </summary>
-        [Required(ErrorMessage ="必填")]
-        [MaxLength(10)]
-        public string FormStatus { get; set; }
+        public Guid MemberID { get; set; }
         /// <summary>
         /// 公司別
         /// </summary>
-        [MaxLength(32)]
+        [Required(ErrorMessage = "必填")]
+        [MaxLength(64)]
         public string CompCode { get; set; }
         /// <summary>
-        /// 部門
-        /// </summary>
-        [MaxLength(32)]
-        public string BUCode { get; set; }
-        /// <summary>
-        /// 意見
-        /// </summary>
-        public string Result { get; set; }
-        /// <summary>
-        /// 申請單狀態代碼
+        /// 公司名稱
         /// </summary>
         [Required(ErrorMessage ="必填")]
-        public Form_Status FormStatusCode { get; set; }
+        public string CompName { get; set; }
         /// <summary>
-        /// 申請者
+        /// 部門代碼
         /// </summary>
         [Required(ErrorMessage = "必填")]
-        public string ApplierID { get; set; }
+        [MaxLength(64)]
+        public string BUCode { get; set; }
         /// <summary>
-        /// 申請日期
+        /// 部門名稱
         /// </summary>
         [Required(ErrorMessage = "必填")]
-        public DateTime ApplyDate { get; set; }
+        public string BUName { get; set; }
         /// <summary>
-        /// PCBLayoutStatus
+        /// 信箱
         /// </summary>
-        [MaxLength(32)]
-        public string PCBLayoutStatus { get; set; }
+        public string Email { get; set; }
         /// <summary>
-        /// 是否為MB
+        /// 角色代碼
         /// </summary>
-        [Required(ErrorMessage = "必填")]
-        public Boolean IsMB { get; set; }
+        [Required(ErrorMessage ="必填")]
+        public Role RoleID { get; set; }
+        /// <summary>
+        /// 名字
+        /// </summary>
+        public string UserName { get; set; }
+        /// <summary>
+        /// 英文名字
+        /// </summary>
+        public string UserEngName { get; set; }
+        /// <summary>
+        /// 分機
+        /// </summary>
+        public string Extension { get; set; }
         /// <summary>
         /// PCBType
         /// </summary>
         public string PCBType { get; set; }
         /// <summary>
-        /// 專案名稱
+        /// 工號
         /// </summary>
-        [MaxLength(64)]
         [Required(ErrorMessage = "必填")]
-        public string ProjectName { get; set; }
+        public string EmpNumber { get; set; }
         /// <summary>
-        /// BoardTypeName
+        /// 電話
         /// </summary>
-        [MaxLength(64)]
-        [Required(ErrorMessage = "必填")]
-        public string BoardTypeName { get; set; }
+        public string Phone { get; set; }
         /// <summary>
-        /// Rev
+        /// 是否註銷
         /// </summary>
-        [MaxLength(256)]
         [Required(ErrorMessage = "必填")]
-        public string Revision { get; set; }
+        public Boolean IsEnabled { get; set; }
         /// <summary>
         /// 建立者
         /// </summary>

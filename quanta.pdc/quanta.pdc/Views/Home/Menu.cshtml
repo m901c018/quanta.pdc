@@ -1,0 +1,21 @@
+﻿@model m_HomePartial
+
+
+    <div class="horizontal-bar-menu">
+        <ul>
+            @foreach (var item in Model.MenuList.Where(x => x.ParentMenuID == 0).OrderBy(z => z.Order))
+            {
+                <li>
+                    <a href="#">@item.MenuName<i class="material-icons">keyboard_arrow_down</i></a>
+                    <ul style="display: none;">
+                        @foreach (Menu detail in Model.MenuList.Where(x => x.ParentMenuID == item.MenuID).OrderBy(z => z.Order))
+                        {
+                            <li>
+                                <a href="@Url.Action(detail.Action, detail.Controller)">@detail.MenuName</a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
+    </div>

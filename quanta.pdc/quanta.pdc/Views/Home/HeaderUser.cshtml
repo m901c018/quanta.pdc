@@ -1,0 +1,18 @@
+﻿@model m_HomePartial
+
+ 
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            @Model.User.UserEngName
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            @foreach (PDC_Member item in Model.MemberList.Where(x => x.EmpNumber != Model.User.EmpNumber))
+            {
+                var Path = "/Home/Login/?EmpNumber=" + item.EmpNumber;
+                <a class="dropdown-item" href="javascript:return false;" onclick="window.location.href='@Path'">@item.UserEngName</a>
+            }
+            @*<a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>*@
+        </div>
+    </div>

@@ -22,11 +22,14 @@ namespace cns.Services
 
         public static string rootPath;
 
-        public FileService(IHostingEnvironment hostingEnvironment, ApplicationDbContext context)
+        private readonly PDC_Member _Member;
+
+        public FileService(IHostingEnvironment hostingEnvironment, ApplicationDbContext context, PDC_Member Member)
         {
             _hostingEnvironment = hostingEnvironment;
             _context = context;
             rootPath = _hostingEnvironment.WebRootPath;
+            _Member = Member;
         }
 
         /// <summary> 儲存檔案並返回檔案路徑
@@ -165,6 +168,18 @@ namespace cns.Services
             return result;
         }
 
+        public List<PDC_File> GetParameterFileList(List<PDC_Parameter> ParameterList,string FunctionName)
+        {
+            List<PDC_File> result = new List<PDC_File>();
+
+            foreach (PDC_Parameter item in ParameterList)
+            {
+                result.AddRange(_context.PDC_File.Where(x => x.FunctionName == FunctionName && x.SourceID == item.ParameterID).ToList());
+            }
+
+            return result;
+        }
+
         public List<PDC_File> GetFileList(string FunctionName)
         {
             List<PDC_File> FileList = new List<PDC_File>();
@@ -174,7 +189,7 @@ namespace cns.Services
             return FileList;
         }
 
-        public Boolean FileAdd(IFormFile file, string FunctionName, string userId, string userName, out PDC_File item, string Folder = "FileUpload", Int64 SourceID = 0, string FileDescription = "")
+        public Boolean FileAdd(IFormFile file, string FunctionName, out PDC_File item, string Folder = "FileUpload", Int64 SourceID = 0, string FileDescription = "")
         {
             item = new PDC_File();
             string FilePath = string.Empty;
@@ -193,9 +208,9 @@ namespace cns.Services
                     item.FunctionName = FunctionName;
                     item.FileDescription = FileDescription;
                     item.SourceID = SourceID;
-                    item.Creator = userId;
+                    item.Creator = _Member.MemberID.ToString();
                     item.CreatorDate = DateTime.Now;
-                    item.CreatorName = userName;
+                    item.CreatorName = _Member.UserEngName;
                     _context.PDC_File.Add(item);
                     _context.SaveChanges();
                 }
@@ -212,6 +227,9 @@ namespace cns.Services
         {
             try
             {
+                item.Creator = _Member.MemberID.ToString();
+                item.CreatorDate = DateTime.Now;
+                item.CreatorName = _Member.UserEngName;
                 _context.PDC_File.Add(item);
                 _context.SaveChanges();
             }

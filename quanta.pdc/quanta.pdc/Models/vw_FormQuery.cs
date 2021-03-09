@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using static cns.Services.Enum.FormEnum;
 
 namespace cns.Models
 {
@@ -22,7 +23,11 @@ namespace cns.Models
         /// <summary>
         /// 單號順序
         /// </summary>
-        public string ApplyOrder { get; set; }
+        public Int64? ApplyOrder { get; set; }
+        /// <summary>
+        /// 申請單狀態代碼
+        /// </summary>
+        public Form_Status? FormStatusCode { get; set; }
         /// <summary>
         /// 申請單狀態
         /// </summary>
@@ -32,7 +37,7 @@ namespace cns.Models
         /// </summary>
         public string CompCode { get; set; }
         /// <summary>
-        /// 事業群
+        /// 部門
         /// </summary>
         public string BUCode { get; set; }
         /// <summary>
@@ -102,8 +107,23 @@ namespace cns.Models
         public string StageName { get; set; }
 
         /// <summary>
+        /// 關卡
+        /// </summary>
+        public Form_Stage? Stage { get; set; }
+
+        /// <summary>
         /// PDC負責人
         /// </summary>
         public string PDC_Member { get; set; }
+
+        /// <summary>
+        /// PDC負責人名稱
+        /// </summary>
+        public string PDC_MemberName { get; set; }
+
+        /// <summary> 部門名稱
+        /// 
+        /// </summary>
+        public string BUName { get; set; }
     }
 }

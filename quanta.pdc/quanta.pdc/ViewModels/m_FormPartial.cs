@@ -41,6 +41,21 @@ namespace cns.ViewModels
         /// </summary>
         public PDC_Form_StageLog m_PDC_Form_StageLog { get; set; }
 
+        /// <summary> PCBType-欄位下拉
+        /// 
+        /// </summary>
+        public List<SelectListItem> PCBTypeList { get; set; }
+
+        /// <summary> PCB Layout Status-欄位下拉
+        /// 
+        /// </summary>
+        public List<SelectListItem> PCBLayoutStatusList { get; set; }
+
+        /// <summary> 申請單意見罐頭
+        /// 
+        /// </summary>
+        public List<PDC_Parameter> FormApplyResultList { get; set; }
+
         /// <summary> BRD壓縮檔
         /// 
         /// </summary>
@@ -156,6 +171,11 @@ namespace cns.ViewModels
         /// </summary>
         public List<vw_FormQuery> vw_FormQueryList { get; set; }
 
+        /// <summary> 查詢資料
+        /// 
+        /// </summary>
+        public vw_FormQuery vw_FormQuery { get; set; }
+
         /// <summary> 查詢用
         /// 
         /// </summary>
@@ -166,49 +186,23 @@ namespace cns.ViewModels
         /// </summary>
         public string GUID { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsReadOnly { get; set; }
 
-        public string AppliedFormNo { get; set; }
-        public string FormStatus { get; set; }
-        public string PCBLayoutStatus { get; set; }
-        public string PCBType { get; set; }
-        public string ProjectName { get; set; }
-        public string BoardTypeName { get; set; }
-        public string Revision { get; set; }
-        public string CompCode { get; set; }
-        public string BUCode { get; set; }
-        public string CreatorName { get; set; }
-
-        public QueryParam QueryParam { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public PDC_Member Member { get; set; }
 
         public m_FormPartial()
         {
             m_PDC_Form = new PDC_Form();
             vw_FormQueryList = new List<vw_FormQuery>();
-            QueryParam = new QueryParam();
+            Member = new PDC_Member();
         }
     }
 
-    public class QueryParam
-    {
-        public string ApplierID { get; set; }
-        public string AppliedFormNo { get; set; }
-        public string FormStatus { get; set; }
-        public string PCBLayoutStatus { get; set; }
-        public string PCBType { get; set; }
-        public string ProjectName { get; set; }
-        public string BoardTypeName { get; set; }
-        public string Revision { get; set; }
-        public string CompCode { get; set; }
-        public string BUCode { get; set; }
-        public string CreatorName { get; set; }
-        /// <summary> 查詢用
-        /// 
-        /// </summary>
-        public DateTime? SearchDate_Start { get; set; }
-
-        /// <summary> 查詢用
-        /// 
-        /// </summary>
-        public DateTime? SearchDate_End { get; set; }
-    }
+    
 }

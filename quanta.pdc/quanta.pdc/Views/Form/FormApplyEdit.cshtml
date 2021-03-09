@@ -58,13 +58,13 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>部門</label>
-                                        <input type="text" class="form-control" value="@Model.m_PDC_Form.BUCode" disabled="disabled">
+                                        <input type="text" class="form-control" value="@Model.vw_FormQuery.BUName" disabled="disabled">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>申請者</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.ApplierID" disabled="disabled">
+                                        <input type="text" class="form-control" asp-for="m_PDC_Form.CreatorName" disabled="disabled">
                                     </div>
                                 </div>
                             </div>
@@ -72,16 +72,17 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>PCB Layout Status</label>
-                                        @if (Model.IsSendApply)
+                                        @if (Model.IsSendApply || Model.IsReadOnly)
                                         {
-                                            <input type="text" class="form-control" value="@Model.m_PDC_Form.PCBLayoutStatus" disabled="disabled">
+                                            <input type="text" class="form-control" value="@Model.PCBLayoutStatusList.Where(x=>x.Value == Model.m_PDC_Form.PCBLayoutStatus).FirstOrDefault().Text" disabled="disabled">
                                         }
                                         else
                                         {
                                             <select class="select2 form-control" asp-for="m_PDC_Form.PCBLayoutStatus">
-                                                <option value="New">New</option>
-                                                <option value="RFQ">RFQ</option>
-                                                <option value="Modify">Modify</option>
+                                                @foreach (var item in Model.PCBLayoutStatusList)
+                                                {
+                                                    <option value="@item.Value">@item.Text</option>
+                                                }
                                             </select>
                                         }
 
@@ -92,7 +93,7 @@
                                     <div class="form-group">
                                         <label>是否為MB</label>
                                         <div class="input-group">
-                                            @if (Model.IsSendApply)
+                                            @if (Model.IsSendApply || Model.IsReadOnly)
                                             {
                                                 <div class="custom-control custom-radio">
                                                     <input class="custom-control-input" @(Model.m_PDC_Form.IsMB ? "checked=\"checked\"" : "") id="IsMBYes" type="radio" value="true">
@@ -132,18 +133,17 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>PCB Type</label>
-                                        @if (Model.IsSendApply)
+                                        @if (Model.IsSendApply || Model.IsReadOnly)
                                         {
-                                            <input type="text" class="form-control" value="@Model.m_PDC_Form.PCBType" disabled="disabled">
+                                            <input type="text" class="form-control" value="@Model.PCBTypeList.Where(x=>x.Value == Model.m_PDC_Form.PCBType).SingleOrDefault().Text" disabled="disabled">
                                         }
                                         else
                                         {
                                             <select class="select2 form-control" asp-for="m_PDC_Form.PCBType">
-                                                <option value="Non-HDI">Non-HDI</option>
-                                                <option value="HDI">HDI</option>
-                                                <option value="Anylayer">Anylayer</option>
-                                                <option value="FPC">FPC</option>
-                                                <option value="Rigid-flex">Rigid-flex</option>
+                                                @foreach (var item in Model.PCBTypeList)
+                                                {
+                                                    <option value="@item.Value">@item.Text</option>
+                                                }
                                             </select>
                                         }
                                         @*<input type="email" class="form-control" placeholder="Non-HDI/HDI/Anylayer/FPC/Rigid-flex" disabled="disabled">*@
@@ -158,7 +158,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Project</label>
-                                        @if (Model.IsSendApply)
+                                        @if (Model.IsSendApply || Model.IsReadOnly)
                                         {
                                             <input type="text" value="@Model.m_PDC_Form.ProjectName" class="form-control" disabled="disabled">
                                         }
@@ -174,7 +174,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Board Type</label>
-                                        @if (Model.IsSendApply)
+                                        @if (Model.IsSendApply || Model.IsReadOnly)
                                         {
                                             <input type="text" value="@Model.m_PDC_Form.BoardTypeName" class="form-control" disabled="disabled">
                                         }
@@ -190,7 +190,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Rev.</label>
-                                        @if (Model.IsSendApply)
+                                        @if (Model.IsSendApply || Model.IsReadOnly)
                                         {
                                             <input type="text" value="@Model.m_PDC_Form.Revision" class="form-control" disabled="disabled">
 
@@ -218,7 +218,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="custom-file mb-3">
-                                            <input type="@(Model.IsSendApply ? "text" : "file")" @(Model.IsSendApply ? "checked=\"checked\"" : "") class="custom-file-input" id="UplpadBRDFile" accept=".zip">
+                                            <input type="@(Model.IsSendApply  || Model.IsReadOnly ? "text" : "file")" @(Model.IsSendApply  || Model.IsReadOnly ? "checked=\"checked\"" : "") class="custom-file-input" id="UplpadBRDFile">
                                             <label id="UplpadBRDFileLabel" class="custom-file-label" for="UplpadBRDFile" style="background-color: @(Model.IsSendApply ? "gray" : "#1F2128"); color: #adb5bd;">Choose file</label>
                                         </div>
                                     </div>
@@ -228,7 +228,7 @@
                                             var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_BRDFile.FileID;
                                             <div>
                                                 <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_BRDFile.FileName (@Model.m_BRDFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                                @if (!Model.IsSendApply)
+                                                @if (!Model.IsSendApply && !Model.IsReadOnly)
                                                 {
                                                     <a href="javascript:return false;" onclick="FileDelete(@Model.m_BRDFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
 
@@ -250,7 +250,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="custom-file mb-3">
-                                            <input type="@(Model.IsSendApply ? "text" : "file")" @(Model.IsSendApply ? "checked=\"checked\"" : "") class="custom-file-input" id="UplpadExcelFile" accept=".xlsx">
+                                            <input type="@(Model.IsSendApply || Model.IsReadOnly ? "text" : "file")" @(Model.IsSendApply || Model.IsReadOnly ? "checked=\"checked\"" : "") class="custom-file-input" id="UplpadExcelFile" accept=".xlsx">
                                             <label id="UplpadExcelFileLabel" class="custom-file-label" for="UplpadExcelFile" style="background-color: @(Model.IsSendApply ? "gray" : "#1F2128"); color: #adb5bd;">Choose file</label>
                                         </div>
                                     </div>
@@ -260,7 +260,7 @@
                                             var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_ExcelFile.FileID;
                                             <div>
                                                 <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_ExcelFile.FileName (@Model.m_ExcelFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                                @if (!Model.IsSendApply)
+                                                @if (!Model.IsSendApply && !Model.IsReadOnly)
                                                 {
                                                     <a href="javascript:return false;" onclick="FileDelete(@Model.m_ExcelFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
 
@@ -270,10 +270,7 @@
                                         }
                                     </div>
                                     <div class="col-md-2">
-                                        @if (!Model.IsSendApply)
-                                        {
-                                            @*<a href="javascript:window.open('@Url.Action("ExcelEdit", "Excel")?IsOnlyOnline=true')" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">另開無檔編輯</a>*@
-                                        }
+                                        
                                     </div>
                                 </div>
                                 <div class="row">
@@ -285,7 +282,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="custom-file mb-3">
-                                            <input type="@(Model.IsSendApply ? "text" : "file")" @(Model.IsSendApply ? "checked=\"checked\"" : "") class="custom-file-input" id="UplpadpstchipFile" accept=".dat">
+                                            <input type="@(Model.IsSendApply || Model.IsReadOnly ? "text" : "file")" @(Model.IsSendApply || Model.IsReadOnly ? "checked=\"checked\"" : "") class="custom-file-input" id="UplpadpstchipFile" accept=".dat">
                                             <label id="UplpadpstchipFileLabel" class="custom-file-label" for="UplpadpstchipFile" style="background-color: @(Model.IsSendApply ? "gray" : "#1F2128"); color: #adb5bd;">Choose file</label>
                                         </div>
                                     </div>
@@ -295,7 +292,7 @@
                                             var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_pstchipFile.FileID;
                                             <div>
                                                 <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstchipFile.FileName (@Model.m_pstchipFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                                @if (!Model.IsSendApply)
+                                                @if (!Model.IsSendApply && !Model.IsReadOnly)
                                                 {
                                                     <a href="javascript:return false;" onclick="FileDelete(@Model.m_pstchipFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
 
@@ -317,7 +314,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="custom-file mb-3">
-                                            <input type="@(Model.IsSendApply ? "text" : "file")" @(Model.IsSendApply ? "checked=\"checked\"" : "") class="custom-file-input" id="UplpadpstxnetFile" accept=".dat">
+                                            <input type="@(Model.IsSendApply || Model.IsReadOnly ? "text" : "file")" @(Model.IsSendApply || Model.IsReadOnly ? "checked=\"checked\"" : "") class="custom-file-input" id="UplpadpstxnetFile" accept=".dat">
                                             <label id="UplpadpstxnetFileLabel" class="custom-file-label" for="UplpadpstxnetFile" style="background-color: @(Model.IsSendApply ? "gray" : "#1F2128"); color: #adb5bd;">Choose file</label>
                                         </div>
                                     </div>
@@ -327,7 +324,7 @@
                                             var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_pstxnetFile.FileID;
                                             <div>
                                                 <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstxnetFile.FileName (@Model.m_pstxnetFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                                @if (!Model.IsSendApply)
+                                                @if (!Model.IsSendApply && !Model.IsReadOnly)
                                                 {
                                                     <a href="javascript:return false;" onclick="FileDelete(@Model.m_pstxnetFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
 
@@ -349,7 +346,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="custom-file mb-3">
-                                            <input type="@(Model.IsSendApply ? "text" : "file")" @(Model.IsSendApply ? "checked=\"checked\"" : "") class="custom-file-input" id="UplpadpstxprtFile" accept=".dat">
+                                            <input type="@(Model.IsSendApply || Model.IsReadOnly ? "text" : "file")" @(Model.IsSendApply || Model.IsReadOnly ? "checked=\"checked\"" : "") class="custom-file-input" id="UplpadpstxprtFile" accept=".dat">
                                             <label id="UplpadpstxprtFileLabel" class="custom-file-label" for="UplpadpstxprtFile" style="background-color: @(Model.IsSendApply ? "gray" : "#1F2128"); color: #adb5bd;">Choose file</label>
                                         </div>
                                     </div>
@@ -359,7 +356,7 @@
                                             var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_pstxprtFile.FileID;
                                             <div>
                                                 <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_pstxprtFile.FileName (@Model.m_pstxprtFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                                @if (!Model.IsSendApply)
+                                                @if (!Model.IsSendApply && !Model.IsReadOnly)
                                                 {
                                                     <a href="javascript:return false;" onclick="FileDelete(@Model.m_pstxprtFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
 
@@ -378,7 +375,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="custom-file mb-3">
-                                            <input type="@(Model.IsSendApply ? "text" : "file")" @(Model.IsSendApply ? "checked=\"checked\"" : "") class="custom-file-input" id="UplpadOtherFile">
+                                            <input type="@(Model.IsSendApply || Model.IsReadOnly ? "text" : "file")" @(Model.IsSendApply || Model.IsReadOnly ? "checked=\"checked\"" : "") class="custom-file-input" id="UplpadOtherFile">
                                             <label id="UplpadOtherFileLabel" class="custom-file-label" for="UplpadOtherFile" style="background-color: @(Model.IsSendApply ? "gray" : "#1F2128"); color: #adb5bd;">Choose file</label>
                                         </div>
                                     </div>
@@ -390,7 +387,7 @@
                                                 var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_OtherFileList[i].FileID;
                                                 <div>
                                                     <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_OtherFileList[i].FileName (@Model.m_OtherFileList[i].CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                                    @if (!Model.IsSendApply)
+                                                    @if (!Model.IsSendApply && !Model.IsReadOnly)
                                                     {
                                                         <a href="javascript:return false;" onclick="FileDelete(@Model.m_OtherFileList[i].FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
 
@@ -422,15 +419,16 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="list-group">
-                                                <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action active" aria-current="true">增加減 Region</a>
-                                                <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
-                                                <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action">其他</a>
+                                                @foreach (var item in Model.FormApplyResultList)
+                                                {
+                                                    <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action active" aria-current="true">@item.ParameterText</a>
+                                                }
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <input type="hidden" asp-for="IsSendApply" id="IsSeedApply" />
                                             @*<a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">暫存</a>*@
-                                            @if (!Model.IsSendApply)
+                                            @if (!Model.IsSendApply && !Model.IsReadOnly)
                                             {
                                                 <button type="button" class="btn btn-outline-success" onclick="SaveTemp()" style=" padding: 4px 25px;">暫存</button>
                                                 <button type="submit" class="btn btn-outline-success" id="SaveApply" style=" padding: 4px 25px; display:none"></button>
@@ -454,6 +452,7 @@
                         <div class="row align-items-end">
                             <div class="col-md-10">
                                 <span style="color: #ffc107;">*請務必使用最新版範本</span>
+                                <button class="btn btn-outline-success" id="showLayer" onclick="GridShow(this)">隱藏疊構</button>
                             </div>
                             <div class="col-md-1" style="text-align: center;">
                                 <br>unit: mil
@@ -466,20 +465,21 @@
                             <table class="table table-hover" id="grid">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th scope="col" style="width: 5%;">Layer</th>
-                                        <th scope="col" style="width: 15%;">疊構類別</th>
-                                        <th scope="col" style="width: 10%;">Name</th>
-                                        <th scope="col" style="width: 20%;">HIGH SPEED GROUP NAME</th>
-                                        <th scope="col" style="width: 10%;">線寬</th>
-                                        <th scope="col" style="width: 10%;">間距</th>
-                                        <th scope="col" style="width: 15%;">疊構</th>
-                                        <th scope="col" style="width: 10%;">板厚</th>
+                                        <th scope="col" style="width: 5%;">層別<br />(LAYER)</th>
+                                        <th scope="col" style="width: 15%;">LAYOUT疊構<br />(Stack up Type)</th>
+                                        <th scope="col" style="width: 10%;">名稱<br />（NAME）</th>
+                                        <th scope="col" style="width: 20%;">代碼<br /> (NAME CODE)</th>
+                                        <th scope="col" style="width: 10%;">線寬<br />(LINE WIDTH)</th>
+                                        <th scope="col" style="width: 10%;">間距<br />(SPACING)</th>
+                                        <th scope="col" style="width: 15%;">PCB疊構<br />(Stack up)</th>
+                                        <th scope="col" style="width: 10%;">板厚<br />(Thickness)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @for (int i = 0; i <= Model.ExcelDt.Rows.Count - 1; i++)
                                     {
-                                        <tr>
+                                        
+                                        <tr @(Model.ExcelDt.Rows[i][1].ToString() == "Dielectric" ? "class=SecondRow" : "")>
                                             <td>@Model.ExcelDt.Rows[i][0]</td>
                                             <td>@Model.ExcelDt.Rows[i][1]</td>
                                             <td>@Model.ExcelDt.Rows[i][2]</td>
@@ -500,7 +500,7 @@
                                     <textarea class="form-control" id="ErrorMsg" rows="3" disabled="disabled">@(string.IsNullOrWhiteSpace(Model.ErrorMsg) ? "驗證成功!" : Model.ErrorMsg)</textarea>
                                 </div>
                                 <div class="col-md-4">
-                                    @if (!Model.IsSendApply)
+                                    @if (!Model.IsSendApply && !Model.IsReadOnly)
                                     {
                                         <a href="javascript:return false;" onclick="ExcelEdit()" class="btn btn-outline-success" style=" padding: 4px 25px; @(string.IsNullOrWhiteSpace(Model.ErrorMsg) ? "display:none" : "")" id="OpenOnlineEdit">線上修改</a>
                                         <br />
@@ -518,7 +518,7 @@
                                     }
                                     else
                                     {
-                                        if (Model.m_PDC_Form.FormStatus == "未派單" || Model.m_PDC_Form.FormStatus == "處理中")
+                                        if ((Model.m_PDC_Form.FormStatus == "未派單" || Model.m_PDC_Form.FormStatus == "處理中") && !Model.IsReadOnly)
                                         {
                                             <a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;" onclick="CloseApply(@Model.m_PDC_Form.FormID)" id="disApply">抽單</a>
                                         }
@@ -827,6 +827,8 @@
             //    bPaginate: false, // 顯示換頁
             //    ordering: false,  // 是否顯示header排序
             //});
+            $('#showLayer').trigger('click');
+
             $('input[id=UplpadBRDFile]').change(function () {
                 $('#showCover').text($(this).val());
 
@@ -1039,6 +1041,20 @@
 
         }
 
+        var IsShow = true;
+        function GridShow(obj) {
+            if (IsShow) {
+                $(obj).text('顯示疊構');
+                $('.SecondRow').hide();
+                IsShow = false;
+            }
+            else {
+                $(obj).text('隱藏疊構');
+                $('.SecondRow').show();
+                IsShow = true;
+            }
+        }
+
         //送出申請單
         function SeedApply() {
             $('#UplpadBRDFileError').hide();
@@ -1186,6 +1202,9 @@
             var ErrorMsg = "";
             $.each(dt, function (index, row) {
                 var Html = "<tr>";
+                if (row[1] == "Dielectric")
+                    Html = "<tr class=\"SecondRow\">";
+
                 Html += "<td>" + row[0] + "</td>";
                 Html += "<td>" + row[1] + "</td>";
                 if (row[2] != "BOT" && row[2] != "" && dt[index + 1][2] != "") {

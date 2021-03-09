@@ -179,36 +179,61 @@ namespace cns.Services.Helper
                 {
                     dtExcelRecords.Columns.Add(StackupColumnList.IndexOf(StackupColumn).ToString());
                 }
-                for (int i = 5; i <= xSSFSheet.LastRowNum - 1; i++)
+
+                XSSFRow FirstRow = (XSSFRow)xSSFSheet.GetRow(4);
+                int index = 5;
+                //判斷第一筆資料是不是TOP
+                if(string.IsNullOrWhiteSpace(GetCellValue(FirstRow, StackupColumnList.Where(x => x.ColumnCode == "Col_03A").FirstOrDefault().OrderNo)))
+                {
+                    DataRow FirstDataRow = dtExcelRecords.NewRow();
+                    for (int j = 0; j <= StackupColumnList.Count - 1; j++) //對工作表每一列 
+                    {
+                        string cellValue = GetCellValue(FirstRow, j); //獲取i行j列數據 
+                        FirstDataRow[j] = cellValue;
+                    }
+                    dtExcelRecords.Rows.Add(FirstDataRow);
+                }
+                else
+                {
+                    index = 4;
+                }
+                for (int i = index; i <= xSSFSheet.LastRowNum - 1; i+= 2)
                 {
                     bool IsEnd = false;
                     //每筆有兩列
                     XSSFRow Row = (XSSFRow)xSSFSheet.GetRow(i);
-                    
+                    XSSFRow Row2 = (XSSFRow)xSSFSheet.GetRow(i + 1);
+
 
                     DataRow dr = dtExcelRecords.NewRow();
+                    DataRow dr2 = dtExcelRecords.NewRow();
                     for (int j = 0; j <= StackupColumnList.Count - 1; j++) //對工作表每一列 
                     {
                         string cellValue = GetCellValue(Row, j); //獲取i行j列數據 
                         dr[j] = cellValue;
+                        string cellValue2 = GetCellValue(Row2, j); //獲取i行j列數據 
+                        dr2[j] = cellValue2;
+
+                        string NameValue = GetCellValue(Row, StackupColumnList.Where(x => x.ColumnCode == "Col_03A").FirstOrDefault().OrderNo);
 
                         //判斷資料是否為最後一筆
-                        if (i > 5 && !string.IsNullOrWhiteSpace(cellValue) && cellValue == "BOT")
+                        if (string.IsNullOrWhiteSpace(NameValue) || NameValue == "BOT")
                             IsEnd = true;
                     }
 
                     dtExcelRecords.Rows.Add(dr);
+                    dtExcelRecords.Rows.Add(dr2);
                     //資料取到BOT + 1行
                     if (IsEnd)
                     {
-                        XSSFRow Row2 = (XSSFRow)xSSFSheet.GetRow(i + 1);
-                        DataRow dr2 = dtExcelRecords.NewRow();
-                        for (int j = 0; j <= StackupColumnList.Count - 1; j++) //對工作表每一列 
-                        {
-                            string cellValue = GetCellValue(Row2, j); //獲取i行j列數據 
-                            dr2[j] = cellValue;
-                        }
-                        dtExcelRecords.Rows.Add(dr2);
+                        //XSSFRow Row2 = (XSSFRow)xSSFSheet.GetRow(i + 1);
+                        //DataRow dr2 = dtExcelRecords.NewRow();
+                        //for (int j = 0; j <= StackupColumnList.Count - 1; j++) //對工作表每一列 
+                        //{
+                        //    string cellValue = GetCellValue(Row2, j); //獲取i行j列數據 
+                        //    dr2[j] = cellValue;
+                        //}
+                        //dtExcelRecords.Rows.Add(dr2);
 
                         return dtExcelRecords;
                     }
@@ -255,18 +280,12 @@ namespace cns.Services.Helper
             bool VCCCheck = false;
             //GND檢查結果
             bool GNDCheck = false;
-            //SVCC檢查結果
-            bool SVCCCheck = false;
-            //SGND檢查結果
-            bool SGNDCheck = false;
             //INx檢查結果
             bool INxCheck = false;
             //INxNum檢查結果
             bool INxNumCheck = false;
             //End檢查結果
             bool EndCheck = false;
-            //GroupName檢查結果
-            bool GroupNameCheck = false;
 
             decimal ThicknessTotal = 0;
 
@@ -285,10 +304,12 @@ namespace cns.Services.Helper
                 if(Decimal.TryParse(ColFirst[7].ToString(),out Thickness1))
                 {
                     ThicknessTotal += Thickness1;
+                    ColFirst[7] = Thickness1.ToString("N2");
                 }
 
                 //設定Layer欄位
                 ColFirst[0] = "L" + ColIndex;
+                ColFirst[2] = ColFirst[2].ToString().ToUpper();
 
                 //最後BOT代表結束
                 if (ColFirst[2].ToString() == "BOT" || ColSecond[2].ToString() == "BOT")
@@ -618,17 +639,17 @@ namespace cns.Services.Helper
             var StackupSheet = Sample.GetSheet("Stackup");
             //紀錄範例檔案style
             XSSFCellStyle StackupHeaderStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            StackupHeaderStyle.CloneStyleFrom(StackupSheet.GetRow(4).GetCell(1).CellStyle);
+            StackupHeaderStyle.CloneStyleFrom(StackupSheet.GetRow(3).GetCell(1).CellStyle);
             XSSFCellStyle ThicknessHeaderStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            ThicknessHeaderStyle.CloneStyleFrom(StackupSheet.GetRow(4).GetCell(7).CellStyle);
+            ThicknessHeaderStyle.CloneStyleFrom(StackupSheet.GetRow(3).GetCell(7).CellStyle);
             XSSFCellStyle ThicknessHeaderTotalStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            ThicknessHeaderTotalStyle.CloneStyleFrom(StackupSheet.GetRow(2).GetCell(8).CellStyle);
+            ThicknessHeaderTotalStyle.CloneStyleFrom(StackupSheet.GetRow(1).GetCell(8).CellStyle);
             //一般欄位樣式
             XSSFCellStyle DataStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            DataStyle.CloneStyleFrom(StackupSheet.GetRow(6).GetCell(1).CellStyle);
+            DataStyle.CloneStyleFrom(StackupSheet.GetRow(5).GetCell(1).CellStyle);
             //數字欄位樣式
             XSSFCellStyle NumberStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            NumberStyle.CloneStyleFrom(StackupSheet.GetRow(6).GetCell(1).CellStyle);
+            NumberStyle.CloneStyleFrom(StackupSheet.GetRow(5).GetCell(1).CellStyle);
             //NumberStyle.DataFormat = XSSFDataFormat.GetBuiltinFormat("0.00");
             XSSFDataFormat format = (XSSFDataFormat)workbookExport.CreateDataFormat();
             NumberStyle.SetDataFormat(format.GetFormat("0.00"));
@@ -641,30 +662,7 @@ namespace cns.Services.Helper
 
             // 新增試算表。
             ISheet sheet = workbookExport.GetSheet("Stackup");
-            ICell[] Thicknesscell = new ICell[StackupColumnList.Count];
-            ICell[] Thicknesscell2 = new ICell[StackupColumnList.Count];
-
-            IRow ThicknessRow1 = sheet.CreateRow(2);
-            Thicknesscell[ThicknessNum] = ThicknessRow1.CreateCell(ThicknessNum);
-            Thicknesscell[ThicknessNum].CellStyle = ThicknessHeaderTotalStyle;
-            Thicknesscell[ThicknessNum].SetCellValue("總板厚");
-
-            IRow ThicknessRow2 = sheet.CreateRow(3);
-            Thicknesscell2[ThicknessNum] = ThicknessRow2.CreateCell(ThicknessNum);
-            Thicknesscell2[ThicknessNum].CellStyle = ThicknessHeaderTotalStyle;
-            Thicknesscell2[ThicknessNum].CellFormula = $"ROUND(SUM({ThicknessCol}6:{ThicknessCol}{6 + PDC_StackupDetails.Select(x => x.IndexNo).Max()}),2)";
-
-            IRow headerRow = sheet.CreateRow(4);
-
-            ICell[] headercell = new ICell[StackupColumnList.Count];
-            for (int i = 0; i <= StackupColumnList.Count - 1; i++)
-            {
-                headercell[i] = headerRow.CreateCell(i);
-                headercell[i].CellStyle = StackupColumnList[i].ColumnCode.Contains("B") ? ThicknessHeaderStyle : StackupHeaderStyle;  //  設定標題樣式
-                headercell[i].SetCellValue(StackupColumnList[i].ColumnName);
-                //設定欄位寬度
-                sheet.SetColumnWidth(i, StackupSheet.GetColumnWidth(4));
-            }
+            
             sheet.HorizontallyCenter = true;
             //更新有公式的欄位
             sheet.ForceFormulaRecalculation = true;
@@ -673,7 +671,7 @@ namespace cns.Services.Helper
 
             for (int i = 0; i <= TotalCount; i++)
             {
-                IRow dataRow = sheet.CreateRow(i + 5);
+                IRow dataRow = sheet.CreateRow(i + 4);
                 ICell[] Datacell = new ICell[StackupColumnList.Count];
 
                 for (int j = 0; j <= StackupColumnList.Count - 1; j++)
@@ -723,25 +721,7 @@ namespace cns.Services.Helper
             XSSFWorkbook Sample = new XSSFWorkbook(SamplePath);
 
             var StackupSheet = Sample.GetSheet("Stackup");
-            //紀錄範例檔案style
-            XSSFCellStyle StackupHeaderStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            StackupHeaderStyle.CloneStyleFrom(StackupSheet.GetRow(4).GetCell(1).CellStyle);
-            XSSFCellStyle ThicknessHeaderStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            ThicknessHeaderStyle.CloneStyleFrom(StackupSheet.GetRow(4).GetCell(7).CellStyle);
-            XSSFCellStyle ThicknessHeaderTotalStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            ThicknessHeaderTotalStyle.CloneStyleFrom(StackupSheet.GetRow(2).GetCell(8).CellStyle);
-            //一般欄位樣式
-            XSSFCellStyle DataStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            DataStyle.CloneStyleFrom(StackupSheet.GetRow(6).GetCell(1).CellStyle);
-            //數字欄位樣式
-            XSSFCellStyle NumberStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            NumberStyle.CloneStyleFrom(StackupSheet.GetRow(6).GetCell(1).CellStyle);
-            XSSFDataFormat format = (XSSFDataFormat)workbookExport.CreateDataFormat();
-            NumberStyle.SetDataFormat(format.GetFormat("0.00"));
-            //取得版厚欄位排序
-            Int32 ThicknessNum = StackupColumnList.Where(x => x.ColumnCode == "Col_08B").FirstOrDefault().OrderNo;
-            //取得Excel版厚欄位
-            string ThicknessCol = Char.ConvertFromUtf32(ThicknessNum + 64 + 1);
+            
             #endregion
 
             // 新增試算表。
@@ -761,21 +741,24 @@ namespace cns.Services.Helper
             for (int i = 0; i <= TotalCount; i++)
             {
                 IRow dataRow;
-                if (sheet.LastRowNum >= (i + 5))
-                    dataRow = sheet.GetRow(i + 5);
+                if (sheet.LastRowNum >= (i + 4))
+                    dataRow = sheet.GetRow(i + 4);
                 else
-                    dataRow = sheet.CreateRow(i + 5);
+                    dataRow = sheet.CreateRow(i + 4);
 
                 ICell[] Datacell = new ICell[StackupColumnList.Count];
 
                 for (int j = 0; j <= StackupColumnList.Count - 1; j++)
                 {
-                    Datacell[j] = dataRow.CreateCell(j);
-                    //設定資料樣式
-                    if (StackupColumnList[j].DataType == "int")
-                        Datacell[j].CellStyle = NumberStyle;
+                    if(dataRow.GetCell(j) == null)
+                        Datacell[j] = dataRow.CreateCell(j);
                     else
-                        Datacell[j].CellStyle = DataStyle;
+                        Datacell[j] = dataRow.GetCell(j);
+                    //設定資料樣式
+                    //if (StackupColumnList[j].DataType == "int")
+                    //    Datacell[j].CellStyle = NumberStyle;
+                    //else
+                    //    Datacell[j].CellStyle = DataStyle;
 
                     Int64 StackupColumnID = StackupColumnList.Where(x => x.OrderNo == j).Select(x => x.StackupColumnID).First();
 
@@ -784,20 +767,19 @@ namespace cns.Services.Helper
                         string stackupData = PDC_StackupDetails.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID)
                                                                .Select(x => x.ColumnValue)
                                                                .FirstOrDefault();
+                        if (StackupColumnList[j].ColumnCode == "Col_08B" || StackupColumnList[j].ColumnCode == "Col_05A" || StackupColumnList[j].ColumnCode == "Col_06A")
+                        {
+                            decimal value = 0;
+                            if(decimal.TryParse(stackupData, out value))
+                            {
+                                Datacell[j].SetCellValue(value.ToString("N2"));
+                                continue;
+                            }
+                        }
                         Datacell[j].SetCellValue(stackupData);
                     }
                 }
             }
-
-            //IRow ThicknessRow2 = sheet.GetRow(3);
-            //Thicknesscell2[ThicknessNum] = ThicknessRow2.CreateCell(ThicknessNum);
-            //Thicknesscell2[ThicknessNum].CellStyle = ThicknessHeaderTotalStyle;
-            //Thicknesscell2[ThicknessNum].CellFormula = $"ROUND(SUM({ThicknessCol}6:{ThicknessCol}{6 + PDC_StackupDetails.Select(x => x.IndexNo).Max()}),2)";
-
-            
-            //sheet.HorizontallyCenter = true;
-            ////更新有公式的欄位
-            //sheet.ForceFormulaRecalculation = true;
 
             workbookExport.Write(ms);
 
@@ -846,36 +828,12 @@ namespace cns.Services.Helper
             XSSFWorkbook Sample = new XSSFWorkbook(SamplePath);
 
             var StackupSheet = Sample.GetSheet("Stackup");
-            //紀錄範例檔案style
-            XSSFCellStyle StackupHeaderStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            StackupHeaderStyle.CloneStyleFrom(StackupSheet.GetRow(4).GetCell(1).CellStyle);
-            XSSFCellStyle ThicknessHeaderStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            ThicknessHeaderStyle.CloneStyleFrom(StackupSheet.GetRow(4).GetCell(7).CellStyle);
-            XSSFCellStyle ThicknessHeaderTotalStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            ThicknessHeaderTotalStyle.CloneStyleFrom(StackupSheet.GetRow(2).GetCell(8).CellStyle);
-            //一般欄位樣式
-            XSSFCellStyle DataStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            DataStyle.CloneStyleFrom(StackupSheet.GetRow(6).GetCell(1).CellStyle);
-            //數字欄位樣式
-            XSSFCellStyle NumberStyle = (XSSFCellStyle)workbookExport.CreateCellStyle();
-            NumberStyle.CloneStyleFrom(StackupSheet.GetRow(6).GetCell(1).CellStyle);
-            XSSFDataFormat format = (XSSFDataFormat)workbookExport.CreateDataFormat();
-            NumberStyle.SetDataFormat(format.GetFormat("0.00"));
-            //取得版厚欄位排序
-            Int32 ThicknessNum = StackupColumnList.Where(x => x.ColumnCode == "Col_08B").FirstOrDefault().OrderNo;
-            //取得Excel版厚欄位
-            string ThicknessCol = Char.ConvertFromUtf32(ThicknessNum + 64 + 1);
+            
+          
             #endregion
 
             // 新增試算表。
             ISheet sheet = (XSSFSheet)workbookExport.GetSheet("Stackup");
-            ICell[] Thicknesscell = new ICell[StackupColumnList.Count];
-            ICell[] Thicknesscell2 = new ICell[StackupColumnList.Count];
-
-            //IRow ThicknessRow1 = sheet.CreateRow(2);
-            //Thicknesscell[ThicknessNum] = ThicknessRow1.CreateCell(ThicknessNum);
-            //Thicknesscell[ThicknessNum].CellStyle = ThicknessHeaderTotalStyle;
-            //Thicknesscell[ThicknessNum].SetCellValue("總板厚");
 
 
             //取得有幾筆資料
@@ -884,21 +842,24 @@ namespace cns.Services.Helper
             for (int i = 0; i <= TotalCount; i++)
             {
                 IRow dataRow;
-                if (sheet.LastRowNum >= (i + 5))
-                    dataRow = sheet.GetRow(i + 5);
+                if (sheet.LastRowNum >= (i + 4))
+                    dataRow = sheet.GetRow(i + 4);
                 else
-                    dataRow = sheet.CreateRow(i + 5);
+                    dataRow = sheet.CreateRow(i + 4);
 
                 ICell[] Datacell = new ICell[StackupColumnList.Count];
 
                 for (int j = 0; j <= StackupColumnList.Count - 1; j++)
                 {
-                    Datacell[j] = dataRow.CreateCell(j);
-                    //設定資料樣式
-                    if (StackupColumnList[j].DataType == "int")
-                        Datacell[j].CellStyle = NumberStyle;
+                    if (dataRow.GetCell(j) == null)
+                        Datacell[j] = dataRow.CreateCell(j);
                     else
-                        Datacell[j].CellStyle = DataStyle;
+                        Datacell[j] = dataRow.GetCell(j);
+                    //設定資料樣式
+                    //if (StackupColumnList[j].DataType == "int")
+                    //    Datacell[j].CellStyle = NumberStyle;
+                    //else
+                    //    Datacell[j].CellStyle = DataStyle;
 
                     Int64 StackupColumnID = StackupColumnList.Where(x => x.OrderNo == j).Select(x => x.StackupColumnID).First();
 
@@ -907,16 +868,20 @@ namespace cns.Services.Helper
                         string stackupData = PDC_StackupDetails.Where(x => x.IndexNo == i && x.StackupColumnID == StackupColumnID)
                                                                .Select(x => x.ColumnValue)
                                                                .FirstOrDefault();
+                        if (StackupColumnList[j].ColumnCode == "Col_08B" || StackupColumnList[j].ColumnCode == "Col_05A" || StackupColumnList[j].ColumnCode == "Col_06A")
+                        {
+                            decimal value = 0;
+                            if (decimal.TryParse(stackupData, out value))
+                            {
+                                Datacell[j].SetCellValue(value.ToString("N2"));
+                                continue;
+                            }
+                        }
                         Datacell[j].SetCellValue(stackupData);
                     }
                 }
             }
 
-            //IRow ThicknessRow2 = sheet.GetRow(3);
-            //Thicknesscell2[ThicknessNum] = ThicknessRow2.CreateCell(ThicknessNum);
-            //Thicknesscell2[ThicknessNum].CellStyle = ThicknessHeaderTotalStyle;
-            //Thicknesscell2[ThicknessNum].CellFormula = $"ROUND(SUM({ThicknessCol}6:{ThicknessCol}{6 + PDC_StackupDetails.Select(x => x.IndexNo).Max()}),2)";
-            
 
             sheet.HorizontallyCenter = true;
             //更新有公式的欄位

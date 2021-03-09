@@ -8,6 +8,7 @@ using System.Web;
 using cns.Data;
 using cns.Models;
 using cns.Services;
+using cns.Services.App;
 using cns.Services.Helper;
 using cns.ViewModels;
 using Microsoft.AspNetCore.Hosting;
@@ -37,36 +38,51 @@ namespace cns.Controllers
         }
 
         [HttpGet]
+        [ActionCheck]
         public IActionResult FormApply()
         {
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
             m_FormPartial model = new m_FormPartial();
+            List<PDC_Parameter> data = parameterService.GetParameterList("PCBTypeList");
+            model.Member = UserInfo.User;
+            model.PCBTypeList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBType").FirstOrDefault().ParameterID);
+            model.PCBLayoutStatusList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBLayoutStatus").FirstOrDefault().ParameterID);
+            model.FormApplyResultList = parameterService.GetParameterList(data.Where(x => x.ParameterValue == "FormApplyResult").FirstOrDefault().ParameterID);
+
             model.m_PDC_Form.IsMB = true;
+            model.m_PDC_Form.ApplierID = UserInfo.User.MemberID.ToString();
+            model.m_PDC_Form.BUCode = UserInfo.User.BUName;
+            model.m_PDC_Form.CompCode = UserInfo.User.CompCode;
+
             model.GUID = Guid.NewGuid().ToString("N");
+            
 
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ActionCheck]
         public IActionResult FormApply(m_FormPartial model)
         {
-            FormService formService = new FormService(_hostingEnvironment, _context);
-            FileService fileService = new FileService(_hostingEnvironment, _context);
-            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
-            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            FormService formService = new FormService(_hostingEnvironment, _context, UserInfo.User);
+            FileService fileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
 
             string ErrorMsg = string.Empty;
             long FormID = 0;
             model.m_PDC_Form.AppliedFormNo = "CN";
-            model.m_PDC_Form.ApplierID = "TestUser";
-            model.m_PDC_Form.BUCode = "BU_Test";
-            model.m_PDC_Form.CompCode = "QCI";
+            model.m_PDC_Form.ApplierID = UserInfo.User.MemberID.ToString();
+            model.m_PDC_Form.BUCode = UserInfo.User.BUCode;
+            model.m_PDC_Form.CompCode = UserInfo.User.CompCode;
             model.m_PDC_Form.FormStatusCode = model.IsSendApply ? Services.Enum.FormEnum.Form_Status.Apply : Services.Enum.FormEnum.Form_Status.NoApply;
             model.m_PDC_Form.FormStatus = model.IsSendApply ? "未派單" : "未送件";
-            model.m_PDC_Form.ApplyDate = model.IsSendApply ? DateTime.Now : default(DateTime); ;
-            model.m_PDC_Form.Creator = userId;
-            model.m_PDC_Form.CreatorName = userName;
-            model.m_PDC_Form.CreatorDate = DateTime.Now;
+            model.m_PDC_Form.ApplyDate = model.IsSendApply ? DateTime.Now : default(DateTime);
 
             List<PDC_File> ALLFileList = new List<PDC_File>();
             ALLFileList.Add(model.m_BRDFile);
@@ -108,26 +124,47 @@ namespace cns.Controllers
 
 
         [HttpGet]
+        [ActionCheck]
         public IActionResult FormApplyEdit(long FormID)
         {
-            FormService formService = new FormService(_context);
-            FileService fileService = new FileService(_hostingEnvironment, _context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            FormService formService = new FormService(_context, UserInfo.User);
+            FileService fileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
             ExcelHepler excelHepler = new ExcelHepler(_hostingEnvironment);
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
             m_FormPartial model = new m_FormPartial();
 
             model.m_PDC_Form = formService.GetFormOne(FormID);
+            model.vw_FormQuery = formService.GetFilterFormList(new QueryParam() { AppliedFormNo = model.m_PDC_Form.AppliedFormNo }).FirstOrDefault();
             model.PDC_Form_StageLogList = formService.GetForm_StageLogList(FormID);
             model.PDC_Form_StageLogFileList = fileService.GetForm_StageFileList(model.PDC_Form_StageLogList);
             model.m_PDC_Form_StageLog = model.PDC_Form_StageLogList.OrderByDescending(x => x.CreatorDate).FirstOrDefault();
 
+            List<PDC_Parameter> data = parameterService.GetParameterList("PCBTypeList");
+
+            model.PCBTypeList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBType").FirstOrDefault().ParameterID);
+            model.PCBLayoutStatusList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBLayoutStatus").FirstOrDefault().ParameterID);
+            model.FormApplyResultList = parameterService.GetParameterList(data.Where(x => x.ParameterValue == "FormApplyResult").FirstOrDefault().ParameterID);
+
             long sourceID = FormID;
-            if (model.m_PDC_Form.FormStatus != "未送件")
+            if (model.m_PDC_Form.FormStatusCode == Services.Enum.FormEnum.Form_Status.NoApply || model.m_PDC_Form.FormStatusCode == Services.Enum.FormEnum.Form_Status.Reject)
             {
-                model.IsSendApply = true;
+                model.IsSendApply = false;
             }
             else
             {
-                model.IsSendApply = false;
+                model.IsSendApply = true;
+            }
+
+            if (model.m_PDC_Form.Creator == UserInfo.User.MemberID.ToString().ToUpper())
+            {
+                model.IsReadOnly = false;
+            }
+            else
+            {
+                model.IsReadOnly = true;
             }
 
             model.m_BRDFile = fileService.GetFileOne(FormID, "FormApplyBRD");
@@ -155,21 +192,20 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult FormApplyEdit(m_FormPartial model)
         {
-            FormService formService = new FormService(_hostingEnvironment, _context);
-            FileService fileService = new FileService(_hostingEnvironment, _context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            FormService formService = new FormService(_hostingEnvironment, _context, UserInfo.User);
+            FileService fileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
             ExcelHepler excelHepler = new ExcelHepler(_hostingEnvironment);
-            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
-            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
             string ErrorMsg = string.Empty;
             model.m_PDC_Form.ApplyDate = model.IsSendApply ? DateTime.Now : default(DateTime);
             model.m_PDC_Form.FormStatusCode = model.IsSendApply ? Services.Enum.FormEnum.Form_Status.Apply : Services.Enum.FormEnum.Form_Status.NoApply;
             model.m_PDC_Form.FormStatus = model.IsSendApply ? "未派單" : "未送件";
-            model.m_PDC_Form.ApplyDate = DateTime.Now;
-            model.m_PDC_Form.Modifyer = userId;
-            model.m_PDC_Form.ModifyerName = userName;
-            model.m_PDC_Form.ModifyerDate = DateTime.Now;
+            model.m_PDC_Form.ApplyDate = model.IsSendApply ? DateTime.Now : default(DateTime);
 
             long SourceID = model.m_PDC_Form.FormID;
 
@@ -201,13 +237,16 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult UploadFile(IFormFile file,string Extension,string GUID,string type,long OldFileID = 0)
         {
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
             m_ExcelPartial model = new m_ExcelPartial();
-            FileService fileService = new FileService(_hostingEnvironment, _context);
+            FileService fileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
-            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
-            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
+
             Dictionary<string, string> functionName = new Dictionary<string, string>();
             functionName.Add("UplpadBRDFile", "FormApplyBRD");
             functionName.Add("UplpadExcelFile", "FormApplyExcel");
@@ -242,7 +281,7 @@ namespace cns.Controllers
             string ErrorMsg = string.Empty;
             PDC_File File = new PDC_File();
 
-            if (!fileService.FileAdd(file, functionName[type], userId, userName, out File, "Temp", 0, GUID)) 
+            if (!fileService.FileAdd(file, functionName[type], out File, "Temp", 0, GUID)) 
             {
                 return Json(new { status = 400, ErrorMessage = ErrorMsg });
             }
@@ -262,6 +301,8 @@ namespace cns.Controllers
                     XSSFWorkbook ExcelFile = new XSSFWorkbook(stream);
 
                     ISheet xSSFSheet = ExcelFile.GetSheet("Stackup");
+                    stream.Dispose();
+                    stream.Close();
                     //資料轉為Datatable
                     DataTable ExcelDt = Helper.GetDataTableFromExcel(xSSFSheet, true);
 
@@ -275,9 +316,13 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult FileDelete(Int64 FileID)
         {
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
 
             //取得檔案
             if(!FileService.FileRemove(FileID))
@@ -291,9 +336,13 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult CloseApply(Int64 FormID)
         {
-            FormService formService = new FormService(_hostingEnvironment, _context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            FormService formService = new FormService(_hostingEnvironment, _context, UserInfo.User);
             string ErrorMsg = "";
             //取得檔案
             if (!formService.CloseFormApply(FormID,ref ErrorMsg))
@@ -307,16 +356,20 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult FormExcelEdit(Int64 FileID)
         {
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
 
             PDC_File File = FileService.GetFileOne(FileID);
 
             
             //取得範例
-            Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName, FileMode.Open, FileAccess.Read);
 
             stream.Position = 0; // <-- Add this, to make it work
             try
@@ -349,9 +402,13 @@ namespace cns.Controllers
         }
 
         [HttpPost]
+        [ActionCheck]
         public IActionResult ReloadExcelFile(Int64 FileID)
         {
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
 
             PDC_File File = FileService.GetFileOne(FileID);
@@ -388,9 +445,13 @@ namespace cns.Controllers
         }
 
         [HttpGet]
+        [ActionCheck]
         public IActionResult Download(Int64 FileID)
         {
-            FileService FileService = new FileService(_hostingEnvironment, _context);
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
 
             PDC_File PDC_File = FileService.GetFileOne(FileID);
             bool IsTemp = false;
@@ -406,32 +467,52 @@ namespace cns.Controllers
         }
 
         [HttpGet]
+        [ActionCheck]
         public IActionResult FormQuery()
         {
-            m_FormPartial model = new m_FormPartial();
-            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
 
-            //暫時寫死，後續帶對方資料
-            model.QueryParam.BUCode = "BU_Test";
-            model.QueryParam.CompCode = "QCI";
-            model.QueryParam.CreatorName = userName;
+            m_FormQueryPartial model = new m_FormQueryPartial();
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
+
+            model.QueryParam.BUCode = UserInfo.User.BUCode;
+            model.QueryParam.BUName = UserInfo.User.BUName;
+            model.QueryParam.CompCode = UserInfo.User.CompCode;
+            model.QueryParam.CreatorName = UserInfo.User.UserEngName;
+
+            model.PicDescriptionList = parameterService.GetParameterList("PCBLayoutConstraint_query_Col");
+            model.PicDescriptionFileList = FileService.GetParameterFileList(model.PicDescriptionList, "Configuration_PCBFile");
+
+            List<PDC_Parameter> data = parameterService.GetParameterList("PCBTypeList");
+
+            model.PCBTypeList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBType").FirstOrDefault().ParameterID);
+            model.PCBLayoutStatusList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBLayoutStatus").FirstOrDefault().ParameterID);
 
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult FormQuery([FromForm]m_FormPartial m_FormPartial)
+        [ActionCheck]
+        public IActionResult FormQuery([FromForm]m_FormQueryPartial m_FormPartial)
         {
-            FormService formService = new FormService(_context);
-            string userName = "Roger Chao (趙偉智)"; //HttpContext.User.Identity.Name
-            string userId = "super@admin.com"; //_userManager.GetUserId(HttpContext.User)
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
 
-            m_FormPartial.QueryParam.BUCode = "BU_Test";
-            m_FormPartial.QueryParam.CompCode = "QCI";
-            m_FormPartial.QueryParam.CreatorName = userName;
-            m_FormPartial.QueryParam.ApplierID = "TestUser";
+            FormService formService = new FormService(_context, UserInfo.User);
+            ParameterService parameterService = new ParameterService(_context, UserInfo.User);
 
-          
+            m_FormPartial.QueryParam.BUCode = UserInfo.User.BUCode;
+            m_FormPartial.QueryParam.BUName = UserInfo.User.BUName;
+            m_FormPartial.QueryParam.CompCode = UserInfo.User.CompCode;
+            m_FormPartial.QueryParam.CreatorName = UserInfo.User.UserEngName;
+            m_FormPartial.QueryParam.ApplierID = UserInfo.User.MemberID.ToString();
+
+            List<PDC_Parameter> data = parameterService.GetParameterList("PCBTypeList");
+
+            m_FormPartial.PCBTypeList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBType").FirstOrDefault().ParameterID);
+            m_FormPartial.PCBLayoutStatusList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBLayoutStatus").FirstOrDefault().ParameterID);
 
             m_FormPartial.vw_FormQueryList = formService.GetFilterFormList(m_FormPartial.QueryParam);
 

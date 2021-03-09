@@ -42,7 +42,7 @@
                                                             </div>
 
                                                             <div style=" text-align: right; display: inline-block; ">
-                                                                <a href="javascript:return false;" onclick="window.location.href='@Path'" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                                                <a href="javascript:return false;" onclick="window.location.href='@Path'" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">下載</a>
                                                             </div>
                                                         </div>
 
@@ -73,7 +73,7 @@
                                                     </div>
 
                                                     <div style=" text-align: right; display: inline-block; ">
-                                                        <a href="javascript:return false;" class="btn btn-outline-info" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" style=" padding: 4px 25px;" id="mail-compose">開啟</a>
+                                                        <a href="javascript:return false;" class="btn btn-outline-info" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" style=" padding: 4px 25px;" id="mail-compose">下載</a>
                                                     </div>
                                                 </div>
 
@@ -160,14 +160,14 @@
                                             <table class="table table-hover" id="grid">
                                                 <thead class="thead-dark">
                                                     <tr>
-                                                        <th scope="col" style="width: 8%;">Layer</th>
-                                                        <th scope="col" style="width: 15%;">疊構類別</th>
-                                                        <th scope="col" style="width: 10%;">Name</th>
-                                                        <th scope="col" style="width: 20%;">HIGH SPEED GROUP NAME</th>
-                                                        <th scope="col" style="width: 10%;">線寬</th>
-                                                        <th scope="col" style="width: 10%;">間距</th>
-                                                        <th scope="col" style="width: 15%;">疊構</th>
-                                                        <th scope="col" style="width: 7%;">板厚</th>
+                                                        <th scope="col" style="width: 5%;">層別<br />(LAYER)</th>
+                                                        <th scope="col" style="width: 15%;">LAYOUT疊構<br />(Stack up Type)</th>
+                                                        <th scope="col" style="width: 10%;">名稱<br />（NAME）</th>
+                                                        <th scope="col" style="width: 20%;">代碼<br /> (NAME CODE)</th>
+                                                        <th scope="col" style="width: 10%;">線寬<br />(LINE WIDTH)</th>
+                                                        <th scope="col" style="width: 10%;">間距<br />(SPACING)</th>
+                                                        <th scope="col" style="width: 15%;">PCB疊構<br />(Stack up)</th>
+                                                        <th scope="col" style="width: 10%;">板厚<br />(Thickness)</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
