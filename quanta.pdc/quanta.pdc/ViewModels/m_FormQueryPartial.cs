@@ -55,7 +55,6 @@ namespace cns.ViewModels
 
         public m_FormQueryPartial()
         {
-            vw_FormQueryList = new List<vw_FormQuery>();
             QueryParam = new QueryParam();
             PicDescriptionList = new List<PDC_Parameter>();
             PicDescriptionFileList = new List<PDC_File>();
@@ -76,8 +75,20 @@ namespace cns.ViewModels
         public string BUCode { get; set; }
         public string BUName { get; set; }
         public string CreatorName { get; set; }
+        /// <summary> 負責人
+        /// 
+        /// </summary>
+        public string PDC_Member { get; set; }
         public Boolean? IsMB { get; set; }
+        /// <summary> 目前關卡
+        /// 
+        /// </summary>
         public Form_Stage? FormStage { get; set; }
+
+        /// <summary> 表單狀態
+        /// 
+        /// </summary>
+        public Form_Status? Form_Status { get; set; }
 
         /// <summary> 查詢用
         /// 

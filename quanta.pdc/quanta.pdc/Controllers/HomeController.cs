@@ -40,6 +40,7 @@ namespace cns.Controllers
         public IActionResult Login(string EmpNumber = "")
         {
             AuthenticationService authenticationService = new AuthenticationService(_context);
+            PrivilegeService privilegeService = new PrivilegeService(_context);
 
             bool IsDemo = _config.GetValue<bool>("IdentityDefaultOptions:IsDemo");
             if(IsDemo)
@@ -49,10 +50,12 @@ namespace cns.Controllers
 
                 if (authenticationService.GetAccountDemo(EmpNumber, ref User))
                 {
-                    User.MenuList = authenticationService.GetMenuList(User.User.RoleID);
+
+                    User.PrivilegeList = privilegeService.GetPrivilegeList(User.User.MemberID);
+
+                    User.MenuList = authenticationService.GetMenuList(User.PrivilegeList);
                     //Session紀錄
                     HttpContext.Session.SetObjectAsJson(SessionKey.usrInfo, User);
-
                 }
                 
             }
@@ -63,7 +66,9 @@ namespace cns.Controllers
                 CurrentUser User = new CurrentUser();
                 if (authenticationService.GetAccount(UserDomainName, ref User))
                 {
-                    User.MenuList = authenticationService.GetMenuList(User.User.RoleID);
+                    User.PrivilegeList = privilegeService.GetPrivilegeList(User.User.MemberID);
+
+                    User.MenuList = authenticationService.GetMenuList(User.PrivilegeList);
                     //Session紀錄
                     HttpContext.Session.SetObjectAsJson(SessionKey.usrInfo, User);
                 }

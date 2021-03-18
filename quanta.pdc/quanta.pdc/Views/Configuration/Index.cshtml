@@ -45,6 +45,9 @@
                                                     <a class="nav-link" data-toggle="tab" href="#list" role="tab">清單與罐頭</a>
                                                 </li>
                                                 <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#Dept" role="tab">部門對照表</a>
+                                                </li>
+                                                <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab" href="#other" role="tab">其他</a>
                                                 </li>
                                             </ul>
@@ -172,24 +175,24 @@
                                                                     </thead>
                                                                     <tbody>
                                                                         @foreach (PDC_Parameter item in Model.HomeLinkList)
-                                                                                {
-                                                                                    PDC_File Fileitem = Model.HomeLinkFileList.Where(x => x.SourceID == item.ParameterID).FirstOrDefault();
-                                                                        <tr>
-                                                                            <td>@(Model.HomeLinkList.IndexOf(item) + 1)</td>
-                                                                            <td>
-                                                                                @item.ParameterText
-                                                                            </td>
-                                                                            <td>@(Fileitem.FileCategory == 2 ? "連結" : "檔案")</td>
-                                                                            <td>@Fileitem.FileName</td>
-                                                                            <td>@(item.IsSync ? "是" : "否")</td>
-                                                                            <td>
-                                                                                <a href="javascript:return false;" class="btn HomeLinkMoveUp @(Model.HomeLinkList.IndexOf(item) == 0 ? "btn-outline-secondary" : "btn-outline-info")" onclick="moveUp(this)" style=" padding: 4px 25px;">上移</a>
-                                                                                <a href="javascript:return false;" class="btn HomeLinkMoveDown @(Model.HomeLinkList.IndexOf(item) == (Model.HomeLinkList.Count-1) ? "btn-outline-secondary" : "btn-outline-info")" onclick="moveDown(this)" style=" padding: 4px 25px;">下移</a>
-                                                                                <a href="javascript:return false;" class="btn btn-outline-danger" style=" padding: 4px 25px;" onclick="RowRemove(this)">刪除</a>
-                                                                                <input type="hidden" value="@item.ParameterID" />
-                                                                            </td>
-                                                                        </tr>
-                                                                                }
+                                                                        {
+                                                                            PDC_File Fileitem = Model.HomeLinkFileList.Where(x => x.SourceID == item.ParameterID).FirstOrDefault();
+                                                                            <tr>
+                                                                                <td>@(Model.HomeLinkList.IndexOf(item) + 1)</td>
+                                                                                <td>
+                                                                                    @item.ParameterText
+                                                                                </td>
+                                                                                <td>@(Fileitem.FileCategory == 2 ? "連結" : "檔案")</td>
+                                                                                <td>@Fileitem.FileName</td>
+                                                                                <td>@(item.IsSync ? "是" : "否")</td>
+                                                                                <td>
+                                                                                    <a href="javascript:return false;" class="btn HomeLinkMoveUp @(Model.HomeLinkList.IndexOf(item) == 0 ? "btn-outline-secondary" : "btn-outline-info")" onclick="moveUp(this)" style=" padding: 4px 25px;">上移</a>
+                                                                                    <a href="javascript:return false;" class="btn HomeLinkMoveDown @(Model.HomeLinkList.IndexOf(item) == (Model.HomeLinkList.Count-1) ? "btn-outline-secondary" : "btn-outline-info")" onclick="moveDown(this)" style=" padding: 4px 25px;">下移</a>
+                                                                                    <a href="javascript:return false;" class="btn btn-outline-danger" style=" padding: 4px 25px;" onclick="RowRemove(this)">刪除</a>
+                                                                                    <input type="hidden" value="@item.ParameterID" />
+                                                                                </td>
+                                                                            </tr>
+                                                                        }
 
                                                                     </tbody>
                                                                 </table>
@@ -214,7 +217,7 @@
                                                             <div class="form-group">
                                                                 <label>路徑</label>
                                                                 @*<input type="email" class="form-control" placeholder="PCB Layout Constraint/查詢">*@
-                                                                @Html.DropDownList("PCB_Type", Model.PCBTypeList, new { @class = "form-control selectpicker" , onchange = "PCBchangeItem(this)" })
+                                                                @Html.DropDownList("PCB_Type", Model.PCBTypeList, new { @class = "form-control selectpicker", onchange = "PCBchangeItem(this)" })
                                                             </div>
                                                         </div>
 
@@ -288,19 +291,19 @@
                                                                         </thead>
                                                                         <tbody>
                                                                             @*<tr>
-                                                                                    <td>註解圖1</td>
-                                                                                    <td>A1.jpg</td>
-                                                                                    <td>
-                                                                                        <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
-                                                                                    </td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>註解圖2</td>
-                                                                                    <td>A2.jpg</td>
-                                                                                    <td>
-                                                                                        <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
-                                                                                    </td>
-                                                                                </tr>*@
+                                        <td>註解圖1</td>
+                                        <td>A1.jpg</td>
+                                        <td>
+                                            <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>註解圖2</td>
+                                        <td>A2.jpg</td>
+                                        <td>
+                                            <a href="#" class="btn btn-danger" style=" padding: 4px 25px;" id="mail-compose">刪除</a>
+                                        </td>
+                                    </tr>*@
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -365,6 +368,14 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-2"></div>
+                                                    </div>
+                                                </div>
+                                                <!-- 事業群對照表 -->
+                                                <div class="tab-pane fade" id="Dept" role="tabpanel" aria-labelledby="profile-tab">
+                                                    <div class="tab-content" id="myTabContent">
+                                                        <div class="row">
+                                                            <span style="color: #ffc107;">*功能仍在開發階段，尚未開放測試。</span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <!-- 其他 -->
@@ -453,7 +464,7 @@
                                                                     疊構線寬和間距
                                                                     <div class="input-group" style="text-align: center; align-items: center;">
                                                                         @*<input type="email" class="form-control" placeholder="≦/=/≧" disabled="disabled" style="width: 20px;">*@
-                                                                        @Html.DropDownList("SystemCategorySelect", new SelectList(Model.SystemCategoryList.Where(x => x.Value != "2" && x.Value != "4").ToList(), "Value", "Text",Model.FormApply.ParameterText), new { @class = "form-control selectpicker",@style = "width: 20px;height: 49px" })
+                                                                        @Html.DropDownList("SystemCategorySelect", new SelectList(Model.SystemCategoryList.Where(x => x.Value != "2" && x.Value != "4").ToList(), "Value", "Text", Model.FormApply.ParameterText), new { @class = "form-control selectpicker", @style = "width: 20px;height: 49px" })
                                                                         <input type="email" class="form-control" placeholder="" id="FormApplyValue" style="width: 20px;" value="@Model.FormApply.ParameterValue">
                                                                         時，以下面訊息「提醒」使用者
                                                                     </div>
@@ -485,7 +496,7 @@
                                                                     <label>疊構檢核注意事項</label>
                                                                     疊構線寬和間距
                                                                     <div class="input-group" style="text-align: center; align-items: center;">
-                                                                        @Html.DropDownList("WorkDetailCategorySelect", new SelectList(Model.SystemCategoryList, "Value", "Text",Model.WorkDetail.ParameterText), new { @class = "form-control selectpicker", @style = "width: 20px;height: 49px" })
+                                                                        @Html.DropDownList("WorkDetailCategorySelect", new SelectList(Model.SystemCategoryList, "Value", "Text", Model.WorkDetail.ParameterText), new { @class = "form-control selectpicker", @style = "width: 20px;height: 49px" })
                                                                         @*<input type="email" class="form-control" placeholder="<" disabled="disabled" style="width: 20px;">*@
                                                                         <input type="email" class="form-control" placeholder="" id="WorkDetailValue" style="width: 20px;" value="@Model.WorkDetail.ParameterValue">
                                                                         時，顯示以下注意事項檔案
@@ -502,7 +513,7 @@
                                                                 <label>注意事項(限定PNG/JPG/BMP)</label>
                                                                 <div class="input-group">
                                                                     <div class="custom-file mb-3">
-                                                                        <input type="file" class="custom-file-input" id="WorkDetailFile" name="filename">
+                                                                        <input type="file" class="custom-file-input" id="WorkDetailFile" name="filename" accept=".png,.jpg,.bmp">
                                                                         <label class="custom-file-label" for="WorkDetailFile" id="WorkDetailFileLabel" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                                                     </div>
                                                                 </div>
@@ -603,8 +614,8 @@
             $.each(dd, function (index,row) {
                 row.order = index;
             });
-
-
+            //先查詢圖文說明
+            SearchPCB();
         });
 
         $('input[id=HomeLinkFile]').change(function () {
@@ -640,6 +651,8 @@
                     $.each(result, function (index, row) {
                         $('#PCB_TypeItem').append('<option value="' + row.Value + '">' + row.Text + '</option>');
                     });
+
+                    SearchPCB();
                 },
                 error: function (jqXHR) {
                 },
@@ -652,11 +665,6 @@
         function SavePCB() {
             var ParameterID = $('#PCB_TypeItem').val();
             var ParameterDesc = $('#PCBControlTextarea1').val();
-
-            if (ParameterDesc == "") {
-                alert("清輸入註解文字");
-                return;
-            }
 
             //loader
             $('body').removeClass('no-loader');
@@ -744,6 +752,7 @@
         }
 
         function SearchPCB() {
+            $('#PCBControlTextarea1').val('');
             var ParameterID = $('#PCB_TypeItem').val();
             var formData = new FormData();
             formData.append('ParameterID', ParameterID);
@@ -760,7 +769,7 @@
                 processData: false,  // tell jQuery not to process the data
                 contentType: false,  // tell jQuery not to set contentType
                 success: function (result) {
-                    $('#PCBControlTextarea1').text(result.m_PCBParameter.ParameterDesc);
+                    $('#PCBControlTextarea1').val(result.m_PCBParameter.ParameterDesc);
                     //清除資料
                     $('#PCBFileList').DataTable().clear().draw();
 
@@ -1305,7 +1314,9 @@
                 error: function (jqXHR) {
                 },
                 complete: function (jqXHR, status) {
-                     $('body').addClass('no-loader');
+                    $('body').addClass('no-loader');
+                    $('#WorkDetailFile').val('');
+                    $('#WorkDetailFileLabel').val('');
                 }
             });
         }
@@ -1354,8 +1365,9 @@
                 contentType: false,  // tell jQuery not to set contentType
                 success: function (result) {
                     if (!result.ErrorMsg) {
+                        var date = new Date(result.CNS_Sample.CreatorDate);
                         $('#CNS_Version').prop("placeholder", result.CNS_Sample.FileName);
-                        $('#CNS_CreateDate').prop("placeholder", result.CNS_Sample.CreatorDate);
+                        $('#CNS_CreateDate').prop("placeholder", date.getFullYear().toString() + "/" + (date.getMonth() + 1).toString()  + "/" + date.getDate().toString() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
                         $('#CNS_CreateName').prop("placeholder", result.CNS_Sample.CreatorName);
                         $('#CNS_ErrorMsg').prop("placeholder", "Success, 上傳成功");
                     }

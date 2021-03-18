@@ -32,8 +32,15 @@ namespace cns.Data
         public DbSet<PDC_Form_StageLog> PDC_Form_StageLog { get; set; }
         //會員表
         public DbSet<PDC_Member> PDC_Member { get; set; }
+        
+        //部門對照表
+        public DbSet<PDC_Department> PDC_Department { get; set; }
+        //權限設定表
+        public DbSet<PDC_Privilege> PDC_Privilege { get; set; }
 
         //表單查詢表
         public DbSet<vw_FormQuery> vw_FormQuery { get; set; }
+        //權限查詢表
+        public DbSet<vw_PrivilegeQuery> vw_PrivilegeQuery { get; set; }
     }
 }

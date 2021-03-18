@@ -264,6 +264,36 @@ namespace cns.Services
             return true;
         }
 
+        public bool UpdateFileSource(Int64 SourceID,List<Int64> FileIDList,ref string ErrorMsg)
+        {
+            FileHelper fileHelper = new FileHelper(_hostingEnvironment);
+            try
+            {
+                List<PDC_File> NewFileList = new List<PDC_File>();
+
+                foreach (Int64 item in FileIDList)
+                {
+                    PDC_File File = _context.PDC_File.Where(x => x.FileID == item).SingleOrDefault();
+                    File.SourceID = SourceID;
+                    NewFileList.Add(File);
+                }
+
+                _context.SaveChanges();
+
+                //把檔案從Temp移到FileUpload
+                foreach (PDC_File item in NewFileList)
+                {
+                    fileHelper.RemoveFile(item.FileFullName);
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMsg = "更新檔案來源失敗";
+                return false;
+            }
+            return true;
+        }
+
         public Boolean FileRemove(Int64 FileID)
         {
             FileHelper fileHelper = new FileHelper(_hostingEnvironment);

@@ -9,6 +9,7 @@ using cns.Data;
 using cns.Models;
 using cns.Services;
 using cns.Services.App;
+using cns.Services.Enum;
 using cns.Services.Helper;
 using cns.ViewModels;
 using Microsoft.AspNetCore.Hosting;
@@ -152,6 +153,7 @@ namespace cns.Controllers
             if (model.m_PDC_Form.FormStatusCode == Services.Enum.FormEnum.Form_Status.NoApply || model.m_PDC_Form.FormStatusCode == Services.Enum.FormEnum.Form_Status.Reject)
             {
                 model.IsSendApply = false;
+                model.m_PDC_Form.FormStatus = FormEnum.GetForm_StatusDic()[1];
             }
             else
             {
@@ -264,9 +266,18 @@ namespace cns.Controllers
 
             string FileCheckError = string.Empty;
             //驗證是否上傳正確檔案
-            if (!string.IsNullOrWhiteSpace(Extension) && !Path.GetExtension(file.FileName).Contains(Extension))
+            if (!string.IsNullOrWhiteSpace(Extension) )
             {
-                FileCheckError = "請上傳" + Extension + "檔案";
+                if(Extension == ".zip")
+                {
+                    if(!Path.GetExtension(file.FileName).ToUpper().Contains(".zip".ToUpper()) && !Path.GetExtension(file.FileName).ToUpper().Contains(".rar".ToUpper()) && !Path.GetExtension(file.FileName).ToUpper().Contains(".7z".ToUpper()))
+                        FileCheckError = "請上傳.zip/.rar/.7z檔案";
+                }
+                else
+                {
+                    if (!Path.GetExtension(file.FileName).Contains(Extension))
+                        FileCheckError = "請上傳" + Extension + "檔案";
+                }
             }
             if (!string.IsNullOrWhiteSpace(CheckFileName[type]) && !Path.GetFileName(file.FileName).Contains(CheckFileName[type]))
             {
@@ -302,7 +313,6 @@ namespace cns.Controllers
 
                     ISheet xSSFSheet = ExcelFile.GetSheet("Stackup");
                     stream.Dispose();
-                    stream.Close();
                     //資料轉為Datatable
                     DataTable ExcelDt = Helper.GetDataTableFromExcel(xSSFSheet, true);
 
@@ -357,7 +367,7 @@ namespace cns.Controllers
 
         [HttpPost]
         [ActionCheck]
-        public IActionResult FormExcelEdit(Int64 FileID)
+        public IActionResult FormExcelEdit(Int64 FileID,bool IsTemp = false)
         {
             //讀取使用者資訊
             CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
@@ -367,9 +377,9 @@ namespace cns.Controllers
 
             PDC_File File = FileService.GetFileOne(FileID);
 
-            
+            string Folder = IsTemp ? "\\Temp\\" : "\\FileUpload\\";
             //取得範例
-            Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName, FileMode.Open, FileAccess.Read);
+            Stream stream = new FileStream(_hostingEnvironment.WebRootPath + Folder + File.FileFullName, FileMode.Open, FileAccess.Read);
 
             stream.Position = 0; // <-- Add this, to make it work
             try
@@ -412,10 +422,14 @@ namespace cns.Controllers
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
 
             PDC_File File = FileService.GetFileOne(FileID);
+            string FilePath = string.Empty;
 
-
+            if (File.SourceID == 0)
+                FilePath = _hostingEnvironment.WebRootPath + "\\Temp\\" + File.FileFullName;
+            else
+                FilePath = _hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName;
             //取得範例
-            Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            Stream stream = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
 
             stream.Position = 0; // <-- Add this, to make it work
             try

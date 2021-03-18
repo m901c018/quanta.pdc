@@ -1,4 +1,4 @@
-﻿@model m_FormPartial
+﻿@model m_WorkDetailPartial
 @{
     ViewData["Title"] = "Work Detail 工作明細";
 }
@@ -15,9 +15,6 @@
                 </nav>
             </div>
         </div>
-        <div class"row"="">
-            <span style="color: #ffc107;">*功能仍在開發階段，尚未開放測試。</span>
-        </div>
     </div>
     <div class="main-wrapper container">
         <!-- 表頭 -->
@@ -30,13 +27,14 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>申請單編號</label>
-                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.AppliedFormNo" disabled="disabled">
+                                    <input type="text" class="form-control" placeholder="@Model.m_PDC_Form.AppliedFormNo" disabled="disabled">
+                                    <input type="hidden" id="FormID" value="@Model.m_PDC_Form.FormID" />
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>申請日期</label>
-                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.ApplyDate" disabled="disabled">
+                                    <input type="text" class="form-control" placeholder="@Model.m_PDC_Form.ApplyDate" disabled="disabled">
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -46,19 +44,19 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>公司別</label>
-                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.CompCode" disabled="disabled">
+                                    <input type="text" class="form-control" placeholder="@Model.m_PDC_Form.CompCode" disabled="disabled">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>部門</label>
-                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.BUCode" disabled="disabled">
+                                    <input type="text" class="form-control" placeholder="@Model.m_PDC_Form.BUCode" disabled="disabled">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>申請者</label>
-                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.CreatorName" disabled="disabled">
+                                    <input type="text" class="form-control" placeholder="@Model.m_PDC_Form.CreatorName" disabled="disabled">
                                 </div>
                             </div>
                         </div>
@@ -82,19 +80,19 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Project</label>
-                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.ProjectName" disabled="disabled">
+                                    <input type="text" class="form-control" placeholder="@Model.m_PDC_Form.ProjectName" disabled="disabled">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Board Type</label>
-                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.BoardTypeName" disabled="disabled">
+                                    <input type="text" class="form-control" placeholder="@Model.m_PDC_Form.BoardTypeName" disabled="disabled">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Rev.</label>
-                                    <input type="email" class="form-control" placeholder="@Model.m_PDC_Form.Revision" disabled="disabled">
+                                    <input type="text" class="form-control" placeholder="@Model.m_PDC_Form.Revision" disabled="disabled">
                                 </div>
                             </div>
                         </div>
@@ -206,7 +204,7 @@
                                     }
                                 </div>
                                 <div class="col-md-2">
-                                    <a href="javascript:return false;" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose">全部下載</a>
+                                    <a href="javascript:return false;" class="btn btn-outline-warning" style=" padding: 4px 25px;" onclick="window.location.href='@Url.Action("DownloadFileZip", "Work")/?FormID=@Model.m_PDC_Form.FormID'" id="mail-compose">全部下載</a>
                                 </div>
                             </div>
                             @*<div class="row">
@@ -273,8 +271,8 @@
                                             <td>@Model.ExcelDt.Rows[i][1]</td>
                                             <td>@Model.ExcelDt.Rows[i][2]</td>
                                             <td>@Model.ExcelDt.Rows[i][3]</td>
-                                            <td>@Model.ExcelDt.Rows[i][4]</td>
-                                            <td>@Model.ExcelDt.Rows[i][5]</td>
+                                            <td class="checkNum">@Model.ExcelDt.Rows[i][4]</td>
+                                            <td class="checkNum">@Model.ExcelDt.Rows[i][5]</td>
                                             <td>@Model.ExcelDt.Rows[i][6]</td>
                                             <td>@Model.ExcelDt.Rows[i][7]</td>
                                         </tr>
@@ -298,6 +296,22 @@
                         </div>
                     </div>
                     -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="ConfigurationWorkDetail" style="display:none">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body" style="padding-bottom: 0px;">
+                        @if (Model.m_ConfigurationWorkDetailFile != null)
+                        {
+                            string Path = "~/FileUpload/" + Model.m_ConfigurationWorkDetailFile.FileFullName;
+                            <img src="@Url.Content(Path)" class="img-fluid" asp-append-version="true" />
+                        }
+                        <input type="hidden" id="ConfigurationWorkDetailCategory" value="@Model.m_ConfigurationWorkDetail.ParameterText" />
+                        <input type="hidden" id="ConfigurationWorkDetailValue" value="@Model.m_ConfigurationWorkDetail.ParameterValue" />
+                        <input type="hidden" value="" />
                     </div>
                 </div>
             </div>
@@ -334,13 +348,13 @@
                                                                 <div class="col-md-6">
                                                                     <div class="form-group">
                                                                         <label>處理人員</label>
-                                                                        <input type="email" class="form-control" placeholder="Roger Chao (趙偉智)">
+                                                                        <input type="text" class="form-control" value="@(Model.Member.UserEngName + "(" + Model.Member.UserName + ")")" disabled="disabled">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <div class="form-group">
                                                                         <label>*紀錄工時</label>
-                                                                        <input type="email" class="form-control" placeholder="0.5" disabled="disabled">
+                                                                        <input type="text" class="form-control" id="ReleaseHour" value="@Model.m_ReleaseWorkHour.ParameterText">
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -351,16 +365,22 @@
                                                                 </div>
                                                                 <div class="col-md-4">
                                                                     <div class="custom-file mb-3">
-                                                                        <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                                                        <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                                        <input type="file" class="custom-file-input" id="ReleaseDcfFile" name="filename" accept=".dcf,.dcfx">
+                                                                        <label class="custom-file-label" id="ReleaseDcfFileLabel" for="ReleaseDcfFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-3">
-                                                                    <a href="#">pstxnet.dat (2020/10/23)</a>
-                                                                    <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                                                </div>
-                                                                <div class="col-md-2">
-
+                                                                <div class="col-md-5" id="ReleaseDcfFileDiv">
+                                                                    @*<a href="#">pstxnet.dat (2020/10/23)</a>
+                                                                    <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>*@
+                                                                    @*@if (Model.m_ReleaseDcfFile != null)
+                                                                    {
+                                                                        var DownloadPath = Url.Action("Download", "Form") + "/?FileID=" + Model.m_ReleaseDcfFile.FileID;
+                                                                        <div>
+                                                                            <a href="javascript:return false;" onclick="window.location.href='@DownloadPath'">@Model.m_ReleaseDcfFile.FileName (@Model.m_ReleaseDcfFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                                                            <a href="javascript:return false;" onclick="FileDelete(@Model.m_ReleaseDcfFile.FileID,this)" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                                                            <input type="hidden" asp-for="m_ReleaseDcfFile.FileID" />
+                                                                        </div>
+                                                                    }*@
                                                                 </div>
                                                             </div>
                                                             <div class="row">
@@ -369,19 +389,20 @@
                                                                 </div>
                                                                 <div class="col-md-4">
                                                                     <div class="custom-file mb-3">
-                                                                        <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                                                        <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                                        <input type="file" class="custom-file-input" id="UplpadReleaseOtherFile" name="filename">
+                                                                        <label class="custom-file-label" for="UplpadReleaseOtherFile" id="UplpadReleaseOtherFileLabel" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-3" style="padding-bottom: 10px;">
-                                                                    <li>
+                                                                <div class="col-md-3" style="padding-bottom: 10px;" id="UplpadReleaseOtherFileDiv">
+                                                                    @*<li>
                                                                         <a href="#">ChangeLog.xlsx (2020/10/23)</a>
                                                                         <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
                                                                     </li>
                                                                     <li>
                                                                         <a href="#">Kickoff.msg (2020/10/23)</a>
                                                                         <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                                                    </li>
+                                                                    </li>*@
+                                                                    
                                                                 </div>
                                                                 <div class="col-md-2">
                                                                 </div>
@@ -391,19 +412,18 @@
                                                                     <span>意見</span>
                                                                 </div>
                                                                 <div class="col-md-4">
-                                                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">增加減 Region</textarea>
+                                                                    <textarea class="form-control" id="ReleaseResult" rows="3"></textarea>
                                                                 </div>
                                                                 <div class="col-md-3">
                                                                     <div class="list-group">
-                                                                        <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-                                                                            增加減 Region
-                                                                        </a>
-                                                                        <a href="#" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
-                                                                        <a href="#" class="list-group-item list-group-item-action">其他</a>
+                                                                        @foreach (var item in Model.ReleaseResultList)
+                                                                        {
+                                                                            <a href="javascript:return false;" onclick="SetResult(this,'ReleaseResult')" class="list-group-item list-group-item-action active" aria-current="true">@item.ParameterText</a>
+                                                                        }
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-2">
-                                                                    <a href="#" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose">Release</a>
+                                                                    <a href="javascript:return false;" class="btn btn-outline-success" style=" padding: 4px 25px;" id="mail-compose" onclick="Release()">Release</a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -418,13 +438,13 @@
                                                                 <div class="col-md-6">
                                                                     <div class="form-group">
                                                                         <label>處理人員</label>
-                                                                        <input type="email" class="form-control" placeholder="Roger Chao (趙偉智)">
+                                                                        <input type="text" class="form-control" value="@(Model.Member.UserEngName + "(" + Model.Member.UserName + ")")" disabled="disabled">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <div class="form-group">
                                                                         <label>*紀錄工時</label>
-                                                                        <input type="email" class="form-control" placeholder="0.5" disabled="disabled">
+                                                                        <input type="text" class="form-control" value="@Model.m_RejectWorkHour.ParameterText" id="RejectHour">
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -435,19 +455,19 @@
                                                                 </div>
                                                                 <div class="col-md-4">
                                                                     <div class="custom-file mb-3">
-                                                                        <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                                                        <label class="custom-file-label" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                                        <input type="file" class="custom-file-input" id="UplpadRejectOtherFile" name="filename">
+                                                                        <label class="custom-file-label" id="UplpadRejectOtherFileLabel" for="UplpadRejectOtherFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-3" style="padding-bottom: 10px;">
-                                                                    <li>
+                                                                <div class="col-md-3" style="padding-bottom: 10px;" id="UplpadRejectOtherFileDiv">
+                                                                    @*<li>
                                                                         <a href="#">ChangeLog.xlsx (2020/10/23)</a>
                                                                         <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
                                                                     </li>
                                                                     <li>
                                                                         <a href="#">Kickoff.msg (2020/10/23)</a>
                                                                         <a href="#" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                                                    </li>
+                                                                    </li>*@
                                                                 </div>
                                                                 <div class="col-md-2">
                                                                 </div>
@@ -457,19 +477,18 @@
                                                                     <span>意見</span>
                                                                 </div>
                                                                 <div class="col-md-4">
-                                                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">增加減 Region</textarea>
+                                                                    <textarea class="form-control" id="RejectResult" rows="3"></textarea>
                                                                 </div>
                                                                 <div class="col-md-3">
                                                                     <div class="list-group">
-                                                                        <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-                                                                            增加減 Region
-                                                                        </a>
-                                                                        <a href="#" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
-                                                                        <a href="#" class="list-group-item list-group-item-action">其他</a>
+                                                                        @foreach (var item in Model.RejectResultList)
+                                                                        {
+                                                                            <a href="javascript:return false;" onclick="SetResult(this,'RejectResult')" class="list-group-item list-group-item-action active" aria-current="true">@item.ParameterText</a>
+                                                                        }
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-2">
-                                                                    <a href="#" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose">Reject</a>
+                                                                    <a href="javascript:return false;" class="btn btn-outline-danger" style=" padding: 4px 25px;" id="mail-compose" onclick="Reject()">Reject</a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -495,6 +514,19 @@
 @section Styles{
     <!-- data tables css -->
     <link rel="stylesheet" href="~/assets/plugins/data-tables/css/datatables.min.css">
+    <style>
+        input[type="text"]:disabled {
+            background: gray;
+        }
+
+        input[type="radio"]:disabled {
+            background: gray;
+        }
+
+        select:disabled {
+            background: gray;
+        }
+    </style>
 }
 
 @section Scripts {
@@ -504,7 +536,94 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('#showLayer').trigger('click');
+
+            $('input[id=ReleaseDcfFile]').change(function () {
+
+                $('body').removeClass('no-loader');
+                 var OldFileID = 0;
+                if ($('#ReleaseDcfFileDiv').find('input:eq(0)').length)
+                    OldFileID = $('#ReleaseDcfFileDiv').find('input:eq(0)').val();
+
+                uploadFile("ReleaseDcfFile",".dcf","m_ReleaseDcfFile", OldFileID);
+            });
+
+            $('input[id=UplpadReleaseOtherFile]').change(function () {
+
+                $('body').removeClass('no-loader');
+
+                uploadFile("UplpadReleaseOtherFile","","m_ReleaseOtherFileList", 0);
+            });
+
+            $('input[id=UplpadRejectOtherFile]').change(function () {
+
+                $('body').removeClass('no-loader');
+
+                uploadFile("UplpadRejectOtherFile","","m_RejectOtherFileList", 0);
+            });
+
+            GetTotal();
+
+            CheckWorkDetail();
         });
+
+        function CheckWorkDetail() {
+            //取得規則
+            var WorkDetailCategory = $('#ConfigurationWorkDetailCategory').val();
+            var WorkDetailValue = parseFloat($('#ConfigurationWorkDetailValue').val());
+            var IsCheck = true;
+
+            $.each($('.checkNum'), function (index, row) {
+                var value = $(this).text();
+                if ($.isNumeric(value))
+                {
+                    //有設定才檢查
+                    if (WorkDetailCategory && WorkDetailValue) {
+                        if (WorkDetailCategory == "1") {
+                            if (parseFloat(value) <= WorkDetailValue)
+                                IsCheck = false;
+                        }
+
+                        if (WorkDetailCategory == "2") {
+                            if (parseFloat(value) < WorkDetailValue)
+                                IsCheck = false;
+                        }
+
+                        if (WorkDetailCategory == "3") {
+                            if (parseFloat(value) = WorkDetailValue)
+                                IsCheck = false;
+                        }
+
+                        if (WorkDetailCategory == "4") {
+                            if (parseFloat(value) > WorkDetailValue)
+                                IsCheck = false;
+                        }
+
+                        if (WorkDetailCategory == "5") {
+                            if (parseFloat(value) >= WorkDetailValue)
+                                IsCheck = false;
+                        }
+                    }
+                }
+            });
+
+            if (!IsCheck) {
+                $('#ConfigurationWorkDetail').show();
+            }
+        }
+
+        //計算總版厚
+        function GetTotal() {
+            var Sum = 0.00;
+            
+            $.each($('#grid > tbody > tr'), function (index, row) {
+                var value = $(this).find('td').last().text();
+                if ($.isNumeric(value))
+                {
+                    Sum += Number(value);
+                }
+            });
+            $('#ThicknessTotal').text(Sum.toFixed(2));
+        }
 
         var IsShow = true;
         function GridShow(obj) {
@@ -518,6 +637,218 @@
                 $('.SecondRow').show();
                 IsShow = true;
             }
+        }
+
+        //意見快捷鍵
+        function SetResult(obj,name) {
+            $('#' + name).val($(obj).text());
+            $('.list-group-item').removeClass('active');
+            $(obj).addClass('active');
+        }
+        //Release
+        function Release() {
+            if (!$('#ReleaseDcfFileDiv').find('input:eq(0)').length) {
+                alert("請上傳.dcf/.dcfx檔案");
+                return;
+            }
+
+            if (!$.isNumeric($('#ReleaseHour').val())) {
+                alert("紀錄工時請輸入數字");
+                return;
+            }
+
+            $('body').removeClass('no-loader');
+
+            var ReleaseOtherFileArray = "";
+
+            $.each($('#UplpadReleaseOtherFileDiv').find('input[type=hidden]'), function (index, row) {
+                var ReleaseOtherFileID = $(this).val();
+                ReleaseOtherFileArray += ReleaseOtherFileID + ",";
+            }); 
+
+            var formData = new FormData();
+            formData.append('DcfFileID', $('#ReleaseDcfFileDiv').find('input:eq(0)').val());
+            formData.append('ReleaseHour',  $('#ReleaseHour').val());
+            formData.append('ReleaseOtherFileArray',  ReleaseOtherFileArray);
+            formData.append('Result',  $('#ReleaseResult').val());
+            formData.append('FormID',  $('#FormID').val());
+
+            var _url = '@Url.Action("WorkRelease", "Work")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (result) {
+                    if (result.status == "400") {
+                        alert(result.ErrorMessage);
+                    }
+                    else if (result.status == "401") {
+                        alert(result.ErrorMessage);
+                        window.location.href = '@Url.Action("WorkArea", "Work")';
+                    }
+                    else {
+                        alert("Release成功");
+
+                        window.location.href = '@Url.Action("WorkArea", "Work")';
+                    }
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                    $('body').addClass('no-loader');
+                }
+            });
+
+        }
+
+        //Reject
+        function Reject() {
+            if (!$.isNumeric($('#RejectHour').val())) {
+                alert("紀錄工時請輸入數字");
+                return;
+            }
+
+            $('body').removeClass('no-loader');
+
+            var RejectOtherFileArray = "";
+
+            $.each($('#UplpadRejectOtherFileDiv').find('input[type=hidden]'), function (index, row) {
+                var RejectOtherFileID = $(this).val();
+                RejectOtherFileArray += RejectOtherFileID + ",";
+            }); 
+
+            var formData = new FormData();
+            formData.append('RejectHour',  $('#RejectHour').val());
+            formData.append('RejectOtherFileArray',  RejectOtherFileArray);
+            formData.append('Result',  $('#RejectResult').val());
+            formData.append('FormID',  $('#FormID').val());
+
+            var _url = '@Url.Action("WorkReject", "Work")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (result) {
+                    if (result.status == "400") {
+                        alert(result.ErrorMessage);
+                    }
+                    else if (result.status == "401") {
+                        alert(result.ErrorMessage);
+                        window.location.href = '@Url.Action("WorkArea", "Work")';
+                    }
+                    else {
+                        alert("Reject成功");
+
+                        window.location.href = '@Url.Action("WorkArea", "Work")';
+                    }
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                    $('body').addClass('no-loader');
+                }
+            });
+
+        }
+        //上傳檔案
+        function uploadFile(type, Extension, model, OldFileID) {
+            if ($('#' + type)[0].files[0]) {
+                 $('#' + type + 'Label').val($('#'+ type)[0].files[0].name);
+            }
+
+            var formData = new FormData();
+            formData.append('file', $('#' + type)[0].files[0]);
+            formData.append('Extension', Extension);
+            formData.append('type', type);
+            formData.append('GUID', $('#GUID').val());
+            formData.append('OldFileID', OldFileID);
+
+            var _url = '@Url.Action("UploadFile", "Work")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (result) {
+                    if (result.status == "400") {
+                        alert(result.ErrorMessage);
+                        $('#' + type).val('');
+                    }
+                    else {
+                        if (type == "UplpadReleaseOtherFile") {
+                            var date = new Date(result.CreatorDate);
+                            var Count = $('#' + type + 'Div').find("input").length;
+                            var Html = "<li><a href=\"javascript:return false;\" onclick=\"window.location.href='/Form/Download/?FileID="+ result.FileID +"'\">"+result.FileName + " ("+ date.getFullYear().toString() + "/" + (date.getMonth() + 1).toString()  + "/" + date.getDate().toString() +")</a>";
+                            Html += " <a href=\"javascript:return false;\" onclick=\"FileDelete(" + result.FileID + ")\" alt=\"刪除\"><i style=\"color: #f05154;\" class=\"fas fa-trash-alt\"></i></a>";
+                            Html += "<input type=\"hidden\" data-val=\"true\" data-val-required=\"The FileID field is required.\" id=\"" + model + "_" + Count + "__FileID\" name=\"" + model + "[" + Count + "].FileID\" value=\"" + result.FileID + "\"></li>";
+                            $('#' + type + 'Div').append(Html);
+                        }
+                        else if (type == "ReleaseDcfFile") {
+                            var date = new Date(result.CreatorDate);
+
+                            var Html = "<div><a href=\"javascript:return false;\" onclick=\"window.location.href='/Form/Download/?FileID="+ result.FileID +"'\">"+result.FileName + " ("+ date.getFullYear().toString() + "/" + (date.getMonth() + 1).toString()  + "/" + date.getDate().toString() +")</a>";
+                            Html += " <a href=\"javascript:return false;\" onclick=\"FileDelete(" + result.FileID + ")\" alt=\"刪除\"><i style=\"color: #f05154;\" class=\"fas fa-trash-alt\"></i></a>";
+                            Html += "<input type=\"hidden\" data-val=\"true\" data-val-required=\"The FileID field is required.\" id=\""+ model +"_FileID\" name=\""+ model +".FileID\" value=\"" + result.FileID + "\"></div>";
+                            $('#' + type + 'Div').html(Html);
+                        }
+                        else {
+                            var date = new Date(result.CreatorDate);
+                            var Count = $('#' + type + 'Div').find("input").length;
+                            var Html = "<li><a href=\"javascript:return false;\" onclick=\"window.location.href='/Form/Download/?FileID="+ result.FileID +"'\">"+result.FileName + " ("+ date.getFullYear().toString() + "/" + (date.getMonth() + 1).toString()  + "/" + date.getDate().toString() +")</a>";
+                            Html += " <a href=\"javascript:return false;\" onclick=\"FileDelete(" + result.FileID + ")\" alt=\"刪除\"><i style=\"color: #f05154;\" class=\"fas fa-trash-alt\"></i></a>";
+                            Html += "<input type=\"hidden\" data-val=\"true\" data-val-required=\"The FileID field is required.\" id=\"" + model + "_" + Count + "__FileID\" name=\"" + model + "[" + Count + "].FileID\" value=\"" + result.FileID + "\"></li>";
+                            $('#' + type + 'Div').append(Html);
+                        }
+
+                    }
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                    //$('#' + type).val('');
+                    $('#' + type + 'Label').text('Choose file');
+                    $('body').addClass('no-loader');
+                }
+            });
+        }
+        //刪除檔案
+        function FileDelete(FileID,obj) {
+            $('body').removeClass('no-loader');
+
+            var formData = new FormData();
+            formData.append('FileID', FileID);
+
+            var _url = '@Url.Action("FileDelete", "Form")';
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+                success: function (result) {
+                    if (result.status == "400") {
+                        alert(result.ErrorMessage);
+                    }
+                    else {
+                        $(obj).parent().remove();
+
+                    }
+                },
+                error: function (jqXHR) {
+                },
+                complete: function (jqXHR, status) {
+                    $('body').addClass('no-loader');
+                }
+            });
         }
     </script>
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using cns.Data;
 
 namespace cns.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210310122310_AddPDC_Department")]
+    partial class AddPDC_Department
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -495,34 +497,6 @@ namespace cns.Migrations
                     b.ToTable("PDC_Parameter");
                 });
 
-            modelBuilder.Entity("cns.Models.PDC_Privilege", b =>
-                {
-                    b.Property<Guid>("PrivilegeID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Creator")
-                        .IsRequired()
-                        .HasMaxLength(128);
-
-                    b.Property<DateTime>("CreatorDate");
-
-                    b.Property<string>("CreatorName")
-                        .IsRequired()
-                        .HasMaxLength(128);
-
-                    b.Property<bool?>("IsMB");
-
-                    b.Property<bool?>("IsMail");
-
-                    b.Property<Guid>("MemberID");
-
-                    b.Property<int>("RoleID");
-
-                    b.HasKey("PrivilegeID");
-
-                    b.ToTable("PDC_Privilege");
-                });
-
             modelBuilder.Entity("cns.Models.PDC_StackupColumn", b =>
                 {
                     b.Property<long>("StackupColumnID")
@@ -665,8 +639,6 @@ namespace cns.Migrations
 
                     b.Property<string>("CreatorName");
 
-                    b.Property<string>("FormCreator");
-
                     b.Property<string>("FormStatus");
 
                     b.Property<int?>("FormStatusCode");
@@ -683,15 +655,11 @@ namespace cns.Migrations
 
                     b.Property<string>("PCBType");
 
-                    b.Property<string>("PCBTypeStatusName");
-
                     b.Property<string>("PDC_Member");
 
                     b.Property<string>("PDC_MemberName");
 
                     b.Property<string>("ProjectName");
-
-                    b.Property<string>("Result");
 
                     b.Property<string>("Revision");
 

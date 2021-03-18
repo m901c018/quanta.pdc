@@ -96,6 +96,7 @@ namespace cns.Services.Helper
                         {
                             file.CopyTo(fileStream);
                             fileStream.Position = 0;
+                            fileStream.Dispose();
                         }
                         bResult = true;
                     }

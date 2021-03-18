@@ -25,7 +25,7 @@
                         <p class="card-title">公告說明</p>
                         <div class="form-group">
                             <!--<label for="exampleFormControlTextarea1">公告說明</label>-->
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" disabled="disabled">@Model.Announcement.ParameterText</textarea>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="@(Model.Announcement.ParameterText.Split("\n").Length > 2 ? Model.Announcement.ParameterText.Split("\n").Length : 3)" disabled="disabled">@Model.Announcement.ParameterText</textarea>
                         </div>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                                 PDC_File File = Model.HomeLinkFileList.Where(x => x.SourceID == item.ParameterID).FirstOrDefault();
                                 if (File.FileCategory == 1)
                                 {
-                                    string Path = Url.RouteUrl(new { Controller = "Excel", Action = "Download" }) + "/?fileName=" + File.FileFullName;
+                                    string Path = Url.RouteUrl(new { Controller = "File", Action = "Download" }) + "/?fileID=" + File.FileID;
                                     <li>
                                         <div class="info-list">
                                             <div style="flex: 15; text-align: left; display: inline-block; ">

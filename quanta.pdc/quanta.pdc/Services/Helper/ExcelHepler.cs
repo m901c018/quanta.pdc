@@ -217,26 +217,76 @@ namespace cns.Services.Helper
                         string NameValue = GetCellValue(Row, StackupColumnList.Where(x => x.ColumnCode == "Col_03A").FirstOrDefault().OrderNo);
 
                         //判斷資料是否為最後一筆
-                        if (string.IsNullOrWhiteSpace(NameValue) || NameValue == "BOT")
+                        if (string.IsNullOrWhiteSpace(NameValue))
                             IsEnd = true;
                     }
-
-                    dtExcelRecords.Rows.Add(dr);
-                    dtExcelRecords.Rows.Add(dr2);
-                    //資料取到BOT + 1行
+                    //資料取到Name為null就停
                     if (IsEnd)
                     {
-                        //XSSFRow Row2 = (XSSFRow)xSSFSheet.GetRow(i + 1);
-                        //DataRow dr2 = dtExcelRecords.NewRow();
-                        //for (int j = 0; j <= StackupColumnList.Count - 1; j++) //對工作表每一列 
-                        //{
-                        //    string cellValue = GetCellValue(Row2, j); //獲取i行j列數據 
-                        //    dr2[j] = cellValue;
-                        //}
-                        //dtExcelRecords.Rows.Add(dr2);
-
                         return dtExcelRecords;
                     }
+                    dtExcelRecords.Rows.Add(dr);
+                    dtExcelRecords.Rows.Add(dr2);
+                }
+            }
+
+            return dtExcelRecords;
+        }
+
+        /// <summary> 把Sheet資料轉為ExcelRow
+        /// 
+        /// </summary>
+        /// <param name="xSSFSheet">Excel Sheet</param>
+        /// <param name="IsStackup">是否為Stackup</param>
+        /// <returns></returns>
+        public List<ExcelRow> GetExcelRowFromExcel(ISheet xSSFSheet, Boolean IsStackup)
+        {
+            List<ExcelRow> dtExcelRecords = new List<ExcelRow>();
+            if (IsStackup)
+            {
+
+                XSSFRow FirstRow = (XSSFRow)xSSFSheet.GetRow(4);
+                int index = 5;
+                //判斷第一筆資料是不是TOP
+                if (string.IsNullOrWhiteSpace(GetCellValue(FirstRow, StackupColumnList.Where(x => x.ColumnCode == "Col_03A").FirstOrDefault().OrderNo)))
+                {
+                    ExcelRow firstRow = new ExcelRow();
+                    firstRow.IsFirstRow = true;
+                    firstRow.FirstRow = FirstRow;
+                    dtExcelRecords.Add(firstRow);
+                }
+                else
+                {
+                    index = 4;
+                }
+                for (int i = index; i <= xSSFSheet.LastRowNum - 1; i += 2)
+                {
+                    
+                    
+                    bool IsEnd = false;
+                    //每筆有兩列
+                    XSSFRow Row = (XSSFRow)xSSFSheet.GetRow(i);
+                    XSSFRow Row2 = (XSSFRow)xSSFSheet.GetRow(i + 1);
+
+                    ExcelRow excelRow = new ExcelRow();
+                    excelRow.IsFirstRow = false;
+                    excelRow.FirstRow = Row;
+                    excelRow.SecondRow = Row2;
+
+                    for (int j = 0; j <= StackupColumnList.Count - 1; j++) //對工作表每一列 
+                    {
+                        string NameValue = GetCellValue(Row, StackupColumnList.Where(x => x.ColumnCode == "Col_03A").FirstOrDefault().OrderNo);
+                        excelRow.Name = NameValue;
+                        //判斷資料是否為最後一筆
+                        if (string.IsNullOrWhiteSpace(NameValue))
+                            IsEnd = true;
+                    }
+                    //資料取到Name為null就停
+                    if (IsEnd)
+                    {
+                        return dtExcelRecords;
+                    }
+                    dtExcelRecords.Add(excelRow);
                 }
             }
 
@@ -287,6 +337,8 @@ namespace cns.Services.Helper
             //End檢查結果
             bool EndCheck = false;
 
+            bool SxCheck = false;
+
             decimal ThicknessTotal = 0;
 
             int ColIndex = 0;
@@ -304,12 +356,34 @@ namespace cns.Services.Helper
                 if(Decimal.TryParse(ColFirst[7].ToString(),out Thickness1))
                 {
                     ThicknessTotal += Thickness1;
-                    ColFirst[7] = Thickness1.ToString("N2");
+                    ColFirst[7] = Math.Round(Thickness1, 2, MidpointRounding.AwayFromZero);
                 }
 
                 //設定Layer欄位
                 ColFirst[0] = "L" + ColIndex;
                 ColFirst[2] = ColFirst[2].ToString().ToUpper();
+                //數字欄位改為顯示小數2位數
+                decimal LineNum;
+                if (decimal.TryParse(ColFirst[4].ToString(), out LineNum))
+                {
+                    ColFirst[4] = Math.Round(LineNum, 2, MidpointRounding.AwayFromZero).ToString("N2");
+                }
+
+                if (decimal.TryParse(ColFirst[5].ToString(), out LineNum))
+                {
+                    ColFirst[5] = Math.Round(LineNum, 2, MidpointRounding.AwayFromZero).ToString("N2");
+                }
+
+                decimal ThicknessNum;
+                if (decimal.TryParse(ColFirst[7].ToString(), out ThicknessNum))
+                {
+                    ColFirst[7] = Math.Round(ThicknessNum, 2, MidpointRounding.AwayFromZero).ToString("N2");
+                }
+
+                if (decimal.TryParse(ColSecond[7].ToString(), out ThicknessNum))
+                {
+                    ColSecond[7] = Math.Round(ThicknessNum, 2, MidpointRounding.AwayFromZero).ToString("N2");
+                }
 
                 //最後BOT代表結束
                 if (ColFirst[2].ToString() == "BOT" || ColSecond[2].ToString() == "BOT")
@@ -321,6 +395,7 @@ namespace cns.Services.Helper
                         ColFirst[3] = "B";
                         ColFirst[6] = "Cu + Plating";
                         ColSecond[6] = "Solder Mask";
+                        ColSecond[0] = "";
                         if (string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
                             BotCheck = true;
 
@@ -334,6 +409,13 @@ namespace cns.Services.Helper
                         ColSecond[1] = "Conductor";
                         ColSecond[3] = "B";
                         ColSecond[6] = "Cu + Plating";
+
+                        decimal Thickness = 0;
+                        if (Decimal.TryParse(ColSecond[7].ToString(), out Thickness))
+                        {
+                            ThicknessTotal += Thickness;
+                            ColSecond[7] = Math.Round(Thickness, 2, MidpointRounding.AwayFromZero).ToString("N2");
+                        }
                         if (string.IsNullOrWhiteSpace(ColSecond[4].ToString()) || string.IsNullOrWhiteSpace(ColSecond[5].ToString()))
                             BotCheck = true;
 
@@ -351,14 +433,13 @@ namespace cns.Services.Helper
                         }
                     }
                 }
-
                 
-
 
                 decimal Thickness2 = 0;
                 if (Decimal.TryParse(ColSecond[7].ToString(), out Thickness2))
                 {
                     ThicknessTotal += Thickness2;
+                    ColSecond[7] = Math.Round(Thickness2, 2, MidpointRounding.AwayFromZero).ToString("N2");
                 }
 
                 if (!string.IsNullOrWhiteSpace(ColFirst[2].ToString()))
@@ -425,8 +506,10 @@ namespace cns.Services.Helper
                         ColFirst[1] = "Plane";
                         ColSecond[1] = "Dielectric";
                         ColFirst[3] = "";
-                        ColFirst[4] = "";
-                        ColFirst[5] = "";
+                        //ColFirst[4] = "";
+                        //ColFirst[5] = "";
+                        if (!string.IsNullOrWhiteSpace(ColFirst[4].ToString()) || !string.IsNullOrWhiteSpace(ColFirst[5].ToString()))
+                            SxCheck = true;
                     }
                 }
 
@@ -447,7 +530,13 @@ namespace cns.Services.Helper
 
             //第一筆資料是起始
             if (ExcelDt.Rows[0][6].ToString() != "Solder Mask")
-                ErrorMsg += "第一筆起始疊構(Stack up)必需為Solder Mask\n";
+            {
+                if (ExcelDt.Rows[0][2].ToString() != "")
+                    ErrorMsg += "第一筆起始疊構(Stack up)必需為Solder Mask\n";
+                else
+                    ExcelDt.Rows[0][6] = "Solder Mask";
+            }
+               
 
             //if (StackupTypeCheck)
             //    ErrorMsg += "疊構類別：只有 Conductor、Dielectric、Plane三種項目。\n";
@@ -459,13 +548,16 @@ namespace cns.Services.Helper
                 ErrorMsg += "固定值『BOT』，線寬 & 間距必須有值。\n";
 
             if (VCCCheck)
-                ErrorMsg += "Name=『VCCx』，線寬 & 間距必須有值。\n";
+                ErrorMsg += "Name=『VCCx』正片設計：線寬 & 間距必須有值。\n";
 
             if (NameList.Where(x => x.StartsWith("VCC")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any())
                 ErrorMsg += "VCC, VCC1 …最多到 9。\n";
 
             if (GNDCheck)
-                ErrorMsg += "Name=『GNDx』，線寬 & 間距必須有值。\n";
+                ErrorMsg += "Name=『GNDx』正片設計：線寬 & 間距必須有值。\n";
+
+            if (SxCheck)
+                ErrorMsg += "負片設計：依規則需以『S』開頭填寫。\n";
 
             if (NameList.Where(x => x.StartsWith("GND")).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "").ToString()).Where(x => x.Length > 1).Any())
                 ErrorMsg += "GND, GND1 …最多到 9。\n";
@@ -512,21 +604,38 @@ namespace cns.Services.Helper
             {
                 bool NameNumCheck = false;
                 int NameNum1 = 0;
-                List<string> NameTypeNumList = NameList.Where(x => x.StartsWith(item)).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "")).Where(x => x != "").OrderBy(o => o).ToList();
+                List<string> NameTypeNumList = NameList.Where(x => x.StartsWith(item)).Select(x => System.Text.RegularExpressions.Regex.Replace(x, @"[^0-9]+", "")).OrderBy(o => o).ToList();
                 for (int i = 0; i <= NameTypeNumList.Count - 1; i++)
                 {
                     if (Int32.TryParse(NameTypeNumList[i], out NameNum1))
                     {
-                        if ((i + 1) != NameNum1)
+                        if(item == "IN")
                         {
-                            NameNumCheck = true;
-                            break;
+                            if ((i + 1) != NameNum1)
+                            {
+                                NameNumCheck = true;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            if (i != NameNum1)
+                            {
+                                NameNumCheck = true;
+                                break;
+                            }
                         }
                     }
                     else
                     {
-                        NameNumCheck = true;
-                        break;
+                        if (NameTypeNumList[i] == "")
+                            NameNum1 = 0;
+
+                        if (i != NameNum1)
+                        {
+                            NameNumCheck = true;
+                            break;
+                        }
                     }
                 }
 
@@ -548,7 +657,7 @@ namespace cns.Services.Helper
                 bool NameCheck = true;
                 foreach (string NameTypeitem in NameType)
                 {
-                    if (item.StartsWith(NameTypeitem))
+                    if (System.Text.RegularExpressions.Regex.Replace(item, @"[0-9]", "") == NameTypeitem)
                     {
                         NameCheck = false;
                     }
@@ -789,18 +898,134 @@ namespace cns.Services.Helper
             return ms;
         }
 
-        /// <summary>
-        /// Copies the contents of input to output. Doesn't close either stream.
+        /// <summary> 匯出Excel範例
+        /// 
         /// </summary>
-        public static void CopyStream(Stream input, Stream output)
+        /// <param name="ExcelSheets"></param>
+        /// <param name="headerCtyle"></param>
+        /// <param name="DataCtyle"></param>
+        /// <returns></returns>
+        public MemoryStream ExportExcelSample(List<ExcelRow> excelRows, DataTable StackupDetalDt)
         {
-            byte[] buffer = new byte[8 * 1024];
-            int len;
-            while ((len = input.Read(buffer, 0, buffer.Length)) > 0)
+
+            XSSFWorkbook workbookExport = new XSSFWorkbook(ExportPath);
+            MemoryStream ms = new MemoryStream();
+
+            #region == 取得範例樣式style ==
+            //轉NPOI類型
+            XSSFWorkbook Sample = new XSSFWorkbook(SamplePath);
+
+            var StackupSheet = Sample.GetSheet("Stackup");
+
+            IRow SampleRow = StackupSheet.GetRow(5);
+            IRow SampleRow2 = StackupSheet.GetRow(6);
+            #endregion
+
+            // 新增試算表。
+            //ISheet sheet = (XSSFSheet)workbookExport.GetSheet("Stackup");
+            //ICell[] Thicknesscell = new ICell[StackupColumnList.Count];
+            //ICell[] Thicknesscell2 = new ICell[StackupColumnList.Count];
+            ISheet sheet = workbookExport.GetSheet("Stackup");
+            
+            //IRow ThicknessRow1 = sheet.CreateRow(2);
+            //Thicknesscell[ThicknessNum] = ThicknessRow1.CreateCell(ThicknessNum);
+            //Thicknesscell[ThicknessNum].CellStyle = ThicknessHeaderTotalStyle;
+            //Thicknesscell[ThicknessNum].SetCellValue("總板厚");
+            Int32 ColIndex = 0;
+            //第二行開始才是資料
+            for (int i = 1; i <= StackupDetalDt.Rows.Count - 1; i += 2)
             {
-                output.Write(buffer, 0, len);
+                //當前筆數
+                ColIndex += 1;
+                //每筆有兩列
+                DataRow ColFirst = StackupDetalDt.Rows[i];
+                DataRow ColSecond = StackupDetalDt.Rows[i + 1];
+
+                IRow ExportRow1 = sheet.GetRow(i + 4);
+                IRow ExportRow2 = sheet.GetRow(i + 5);
+
+                IRow dataRow1;
+                IRow dataRow2;
+                if (excelRows.Where(x => x.Name == ColFirst[2].ToString()).Any())
+                {
+                    ExcelRow excelRow = excelRows.Where(x => x.Name == ColFirst[2].ToString()).FirstOrDefault();
+
+                    dataRow1 = excelRow.FirstRow;
+                    dataRow2 = excelRow.SecondRow;
+
+                    CopyRows(dataRow1, ref ExportRow1);
+                    CopyRows(dataRow2, ref ExportRow2);
+                }
+
+
+
+                for (int j = 0; j <= StackupColumnList.Count - 1; j++)
+                {
+                    ExportRow1.GetCell(j).SetCellValue(ColFirst[j].ToString());
+                    ExportRow2.GetCell(j).SetCellValue(ColSecond[j].ToString());
+                }
+
+                
+            }
+
+            InsertRows(ref sheet, 10, 2);
+            //    for (int i = 0; i <= TotalCount; i++)
+            //{
+
+
+            workbookExport.Write(ms);
+
+            ms.Close();
+            ms.Dispose();
+
+            return ms;
+        }
+
+        public void InsertRows(ref ISheet sheet1, int fromRowIndex, int rowCount)
+        {
+            sheet1.ShiftRows(fromRowIndex, sheet1.LastRowNum, rowCount);
+
+            for (int rowIndex = fromRowIndex; rowIndex < fromRowIndex + rowCount; rowIndex++)
+            {
+                IRow rowSource = sheet1.GetRow(rowIndex + rowCount);
+                IRow rowInsert = sheet1.CreateRow(rowIndex);
+                rowInsert.Height = rowSource.Height;
+                for (int colIndex = 0; colIndex < rowSource.LastCellNum; colIndex++)
+                {
+                    ICell cellSource = rowSource.GetCell(colIndex);
+                    ICell cellInsert = rowInsert.CreateCell(colIndex);
+                    if (cellSource != null)
+                    {
+                        cellInsert.CellStyle = cellSource.CellStyle;
+                    }
+                }
             }
         }
+        public void CopyRows(IRow rowSource, ref IRow rowInsert)
+        {
+            for (int colIndex = 0; colIndex < rowSource.LastCellNum; colIndex++)
+            {
+                ICell cellSource = rowSource.GetCell(colIndex);
+                ICell cellInsert = rowInsert.GetCell(colIndex);
+                if (cellSource != null)
+                {
+                    //cellInsert.CellStyle.CloneStyleFrom(cellSource.CellStyle);
+                    switch (cellSource.CellType)
+                    {
+                        case CellType.String:
+                            cellInsert.SetCellValue(cellSource.StringCellValue);
+                            break;
+                        case CellType.Numeric:
+                            cellInsert.SetCellValue(cellSource.NumericCellValue.ToString());
+                            break;
+                        default:
+                            
+                            break;
+                    }
+                }
+            }
+        }
+       
 
         /// <summary> 匯出Excel範例
         /// 

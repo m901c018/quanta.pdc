@@ -53,6 +53,10 @@ namespace cns.Models
         /// </summary>
         public string PCBLayoutStatus { get; set; }
         /// <summary>
+        /// PCBTypeStatusName
+        /// </summary>
+        public string PCBTypeStatusName { get; set; }
+        /// <summary>
         /// 是否為MB
         /// </summary>
         public Boolean IsMB { get; set; }
@@ -125,5 +129,15 @@ namespace cns.Models
         /// 
         /// </summary>
         public string BUName { get; set; }
+
+        /// <summary> 意見
+        /// 
+        /// </summary>
+        public string Result { get; set; }
+
+        /// <summary> 申請單申請人
+        /// 
+        /// </summary>
+        public string FormCreator { get; set; }  
     }
 }

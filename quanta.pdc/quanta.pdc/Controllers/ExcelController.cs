@@ -96,15 +96,45 @@ namespace cns.Controllers
             model.Errmsg = Helper.ExcelStackupCheck(ExcelDt);
 
             model.ExcelSheetDts.Add(ExcelDt);
-            //model.ThicknessTotal = decimal.Round(ThicknessTotal, 2);
-
+            
+            //List<ExcelRow> excelRows = Helper.GetExcelRowFromExcel(xSSFSheet, true);
             //Session紀錄
             HttpContext.Session.SetObjectAsJson("SessionExcelData", ExcelDt);
             HttpContext.Session.SetString("SessionFileName", Path.GetFileName(file.FileName));
             //TempData["SessionExcelData"] = JsonConvert.SerializeObject(ExcelDt);
-
+            //    DataTable StackupDetalDt = Helper.GetDataTableFromStackupDetail(ViewModel.StackupDetalList);
+            //    //
+            //    stream = Helper.ExportExcelSample(m_ExcelPartial.SheetData, StackupDetalDt);
             //return PartialView("m_ExcelPartial", model);
             return Json(ExcelDt);
+        }
+
+        [HttpPost]
+        [ActionCheck]
+        public IActionResult TestUploadFile(IFormFile file)
+        {
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+            FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
+            string SampleFilePath = "";
+            if (FileService.GetFileList("ConfigurationSample").Any())
+                SampleFilePath = FileService.GetFileList("ConfigurationSample").OrderByDescending(x => x.CreatorDate).FirstOrDefault().FileFullName;
+
+            ExcelHepler Helper = new ExcelHepler(_hostingEnvironment, SampleFilePath);
+
+            Stream stream = file.OpenReadStream();
+            //轉NPOI類型
+            XSSFWorkbook ExcelFile = new XSSFWorkbook(stream);
+
+            ISheet xSSFSheet = ExcelFile.GetSheet("Stackup");
+            //資料轉為Datatable
+            DataTable ExcelDt = Helper.GetDataTableFromExcel(xSSFSheet, true);
+
+            List<ExcelRow> excelRows = Helper.GetExcelRowFromExcel(xSSFSheet, true);
+
+            MemoryStream Exportstream = Helper.ExportExcelSample(excelRows, ExcelDt);
+
+            return File(Exportstream.ToArray(), "application/vnd.ms-excel", "text.xlsx");
         }
 
         [HttpPost]
@@ -152,6 +182,7 @@ namespace cns.Controllers
             CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
 
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
+
             var jsonString = JsonConvert.SerializeObject(model);
             m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
 
@@ -162,10 +193,14 @@ namespace cns.Controllers
             {
                 FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
                 PDC_File File = FileService.GetFileOne(FileID);
+                string FilePath = string.Empty;
+                if (File.SourceID == 0)
+                    FilePath = _hostingEnvironment.WebRootPath + "\\Temp\\" + File.FileFullName;
+                else
+                    FilePath = _hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName;
 
-                string FilePath = _hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName;
                 //取得範例
-                Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                Stream stream = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
                 stream.Position = 0; // <-- Add this, to make it work
 
 
@@ -190,9 +225,15 @@ namespace cns.Controllers
 
             if(FileService.GetFileList("ConfigurationSample").Any())
             {
-                PDC_File Sample = FileService.GetFileList("ConfigurationSample").FirstOrDefault();
+                PDC_File Sample = FileService.GetFileList("ConfigurationSample").OrderByDescending(x => x.CreatorDate).FirstOrDefault();
 
-                return RedirectToAction("Download", new { fileName = Sample.FileFullName });
+                //取得範例
+                MemoryStream stream = FileService.DownloadFile(Sample.FileFullName);
+
+                string sFileName = HttpUtility.UrlEncode(Sample.FileName);
+
+
+                return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);
             }
             else
             {
@@ -223,8 +264,21 @@ namespace cns.Controllers
 
             var jsonString = JsonConvert.SerializeObject(model);
             m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
-            //取得範例
+
+            //
+            //m_ExcelPartial m_ExcelPartial = HttpContext.Session.GetObjectFromJson<m_ExcelPartial>("SessionSheetRow");
+
             MemoryStream stream = Helper.ExportExcelSample(ViewModel.StackupDetalList);
+            //if (m_ExcelPartial.SheetData.Count > 0)
+            //{
+            //    DataTable StackupDetalDt = Helper.GetDataTableFromStackupDetail(ViewModel.StackupDetalList);
+            //    //
+            //    stream = Helper.ExportExcelSample(m_ExcelPartial.SheetData, StackupDetalDt);
+            //}
+            //else
+            //{
+            //    stream = Helper.ExportExcelSample(ViewModel.StackupDetalList);
+            //}
 
             string FilePath = FileService.SaveAndGetExcelPath(stream);
 
@@ -294,7 +348,7 @@ namespace cns.Controllers
             MemoryStream stream = FileService.DownloadFile(fileName);
 
 
-            string sFileName = HttpUtility.UrlEncode(Path.GetFileNameWithoutExtension(RealFileName) + ".xlsx");
+            string sFileName = HttpUtility.UrlEncode(Path.GetFileNameWithoutExtension(RealFileName) + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx");
 
 
             return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);

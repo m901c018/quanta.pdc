@@ -120,5 +120,16 @@ namespace cns.Services.Enum
 
             return Dic_Form_Status;
         }
+
+        public static Dictionary<int, string> GetWorkArea_Form_StageDic()
+        {
+            Dictionary<int, string> Dic_Form_Status = new Dictionary<int, string>();
+            Dic_Form_Status.Add(3, "未處理");
+            Dic_Form_Status.Add(4, "Release");
+            Dic_Form_Status.Add(5, "Reject");
+            Dic_Form_Status.Add(6, "已抽單");
+
+            return Dic_Form_Status;
+        }
     }
 }

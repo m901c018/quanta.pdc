@@ -43,7 +43,7 @@ namespace cns.Services.Enum
         public static Dictionary<int, string> GetRoleDic()
         {
             Dictionary<int, string> Dic_Role = new Dictionary<int, string>();
-            Dic_Role.Add(1, "EE使用者");
+            //Dic_Role.Add(1, "EE使用者");
             Dic_Role.Add(2, "PDC指派員");
             Dic_Role.Add(3, "PDC處理員");
             Dic_Role.Add(4, "PDC管理員");

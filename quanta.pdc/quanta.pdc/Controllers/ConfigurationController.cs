@@ -16,6 +16,7 @@ using cns.Models;
 using cns.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using cns.Services.App;
+using static cns.Services.Enum.MemberEnum;
 
 namespace cns.Controllers
 {
@@ -31,7 +32,92 @@ namespace cns.Controllers
         [ActionCheck]
         public IActionResult Permission()
         {
-            return View();
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            PrivilegeService privilegeService = new PrivilegeService(_context, UserInfo.User);
+            m_PrivilegePartial model = new m_PrivilegePartial();
+
+            model.vw_ProcessQueryList = privilegeService.GetFilterPrivilegeList(null, Services.Enum.MemberEnum.Role.PDC_Processor);
+            model.vw_AssignQueryList = privilegeService.GetFilterPrivilegeList(null, Services.Enum.MemberEnum.Role.PDC_Designator);
+            model.vw_AdminQueryList = privilegeService.GetFilterPrivilegeList(null, Services.Enum.MemberEnum.Role.PDC_Administrator);
+
+            return View(model);
+        }
+
+        public IActionResult DeletePrivilege(Guid PrivilegeID)
+        {
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            PrivilegeService privilegeService = new PrivilegeService(_context, UserInfo.User);
+
+            if(privilegeService.DeletePrivilege(PrivilegeID))
+            {
+                return Json(new { status = 0 });
+            }
+            else
+            {
+                return Json(new { status = 400, ErrorMessage = "刪除失敗" });
+            }
+        }
+
+        public IActionResult AddPrivilege(Guid MemberID, string type, bool? IsMB, bool? IsMail)
+        {
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            AuthenticationService authenticationService = new AuthenticationService(_context);
+            PrivilegeService privilegeService = new PrivilegeService(_context, UserInfo.User);
+
+            PDC_Member pDC_Member = authenticationService.GetMember(MemberID);
+
+            Role role;
+            switch (type)
+            {
+                case "Admin":
+                    role = Role.PDC_Administrator;
+                    break;
+                case "Assign":
+                    role = Role.PDC_Designator;
+                    break;
+                case "Process":
+                    role = Role.PDC_Processor;
+                    break;
+                default:
+                    role = Role.PDC_Processor;
+                    break;
+            }
+            string ErrorMsg = string.Empty;
+
+            if (privilegeService.AddPrivilege(MemberID, role, ref ErrorMsg, IsMB, IsMail)) 
+            {
+                vw_PrivilegeQuery vw_PrivilegeQuery = privilegeService.GetFilterPrivilegeList(null, role).Where(x => x.MemberID == MemberID).FirstOrDefault();
+                return Json(new { status = 0, Privilege = vw_PrivilegeQuery });
+            }
+            else
+            {
+                return Json(new { status = 400, ErrorMessage = ErrorMsg });
+            }
+        }
+        
+
+        public IActionResult GetMember(string EmpNumber)
+        {
+            //讀取使用者資訊
+            CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+
+            AuthenticationService authenticationService = new AuthenticationService(_context);
+
+            PDC_Member pDC_Member = new PDC_Member();
+            if (authenticationService.GetMember(EmpNumber,ref pDC_Member))
+            {
+                return Json(new { status = 0,Member = pDC_Member });
+            }
+            else
+            {
+                return Json(new { status = 400, ErrorMessage = "查無資料" });
+            }
         }
 
         [ActionCheck]
@@ -157,6 +243,9 @@ namespace cns.Controllers
                         NewFile.FileCategory = 1;
                         NewFile.FileSize = file.Length;
                         FileService.FileAdd(ref NewFile);
+
+                        ViewModel.m_HomeLink = NewParameter;
+                        ViewModel.m_HomeLinkFile = NewFile;
                     }
                 }
             }
@@ -473,7 +562,7 @@ namespace cns.Controllers
 
             PDC_File newFile = new PDC_File();
             PDC_Parameter item = parameterService.GetParameterOne("ConfigurationWorkDetail");
-            if (file.Length > 0)
+            if (file != null)
             {
                 PDC_File WorkDetail_File = FileService.GetFileList("ConfigurationWorkDetail", item.ParameterID).FirstOrDefault();
 

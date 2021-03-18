@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using cns.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using NPOI.XSSF.UserModel;
 
 namespace cns.ViewModels
 {
@@ -77,6 +78,11 @@ namespace cns.ViewModels
         /// </summary>
         public bool IsFormApplyEdit { get; set; }
 
+        /// <summary> 
+        /// 
+        /// </summary>
+        public List<ExcelRow> SheetData { get; set; }
+
         public m_ExcelPartial()
         {
             StackupColumnList = new List<PDC_StackupColumn>();
@@ -96,5 +102,18 @@ namespace cns.ViewModels
             StackupTypeList.Add(new SelectListItem { Text = "Dielectric", Value = "Dielectric" });
             StackupTypeList.Add(new SelectListItem { Text = "Plane", Value = "Plane" });
         }
+    }
+
+    public class ExcelRow
+    {
+
+        public bool IsFirstRow { get; set; }
+
+        public string Name { get; set; }
+
+        public XSSFRow FirstRow { get; set; }
+
+        public XSSFRow SecondRow { get; set; }
+
     }
 }

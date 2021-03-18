@@ -88,7 +88,9 @@ namespace cns
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             //使用TempData需引用
             services.AddMemoryCache();
-            services.AddSession();
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(60);
+            });
             // cookie settings
             services.ConfigureApplicationCookie(options =>
             {

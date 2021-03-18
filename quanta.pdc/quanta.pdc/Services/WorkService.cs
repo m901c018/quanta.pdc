@@ -38,7 +38,11 @@ namespace cns.Services
             _Member = Member;
         }
 
-
+        /// <summary> 指派功能查詢用
+        /// 
+        /// </summary>
+        /// <param name="PDC_Form">查詢條件</param>
+        /// <returns></returns>
         public List<vw_FormQuery> GetFilterFormList(QueryParam PDC_Form)
         {
             //判斷物件
@@ -46,6 +50,11 @@ namespace cns.Services
             //去掉未送件跟Reject
             Predicate = Predicate.And(a => a.FormStatusCode != FormEnum.Form_Status.NoApply);
             Predicate = Predicate.And(a => a.FormStatusCode != FormEnum.Form_Status.Reject);
+            Predicate = Predicate.And(a => a.IsMB == PDC_Form.IsMB);
+            //if (PDC_Form.IsMB.HasValue)
+            //{
+            //    Predicate = Predicate.And(a => a.IsMB == PDC_Form.IsMB);
+            //}
 
             if (!string.IsNullOrWhiteSpace(PDC_Form.CreatorName))
             {
@@ -89,12 +98,12 @@ namespace cns.Services
 
             if (PDC_Form.SearchDate_Start.HasValue)
             {
-                Predicate = Predicate.And(a => a.CreatorDate >= PDC_Form.SearchDate_Start.Value);
+                Predicate = Predicate.And(a => a.ApplyDate >= Convert.ToDateTime(PDC_Form.SearchDate_Start.Value.ToString("yyyy/MM/dd 00:00:00")));
             }
 
             if (PDC_Form.SearchDate_End.HasValue)
             {
-                Predicate = Predicate.And(a => a.CreatorDate <= PDC_Form.SearchDate_End.Value);
+                Predicate = Predicate.And(a => a.ApplyDate <= Convert.ToDateTime(PDC_Form.SearchDate_End.Value.ToString("yyyy/MM/dd 23:59:59")));
             }
 
             if (PDC_Form.FormStage != null)
@@ -111,10 +120,7 @@ namespace cns.Services
                 }
             }
 
-            if (PDC_Form.IsMB.HasValue)
-            {
-                Predicate = Predicate.And(a => a.IsMB == PDC_Form.IsMB);
-            }
+            
             
 
             List<vw_FormQuery> pDC_FormList = new List<vw_FormQuery>();
@@ -124,7 +130,51 @@ namespace cns.Services
             return pDC_FormList;
         }
 
+        /// <summary> 工作區查詢用
+        /// 
+        /// </summary>
+        /// <param name="PDC_Form">查詢條件</param>
+        /// <returns></returns>
+        public List<vw_FormQuery> GetFilterWorkFormList(QueryParam PDC_Form)
+        {
+            //判斷物件
+            var Predicate = PredicateBuilder.True<vw_FormQuery>();
+            //去掉未送件跟未指派
+            Predicate = Predicate.And(a => a.FormStatusCode != FormEnum.Form_Status.NoApply);
+            Predicate = Predicate.And(a => a.FormStatusCode != FormEnum.Form_Status.Apply);
 
+            if (!string.IsNullOrWhiteSpace(PDC_Form.PDC_Member))
+            {
+                Predicate = Predicate.And(a => a.PDC_Member == PDC_Form.PDC_Member);
+            }
+
+            if (PDC_Form.Form_Status != null)
+            {
+                Predicate = Predicate.And(a => a.FormStatusCode == PDC_Form.Form_Status);
+            }
+
+            if (PDC_Form.SearchDate_Start.HasValue)
+            {
+                Predicate = Predicate.And(a => a.ApplyDate >= Convert.ToDateTime(PDC_Form.SearchDate_Start.Value.ToString("yyyy/MM/dd 00:00:00")));
+            }
+
+            if (PDC_Form.SearchDate_End.HasValue)
+            {
+                Predicate = Predicate.And(a => a.ApplyDate <= Convert.ToDateTime(PDC_Form.SearchDate_End.Value.ToString("yyyy/MM/dd 23:59:59")));
+            }
+
+            if (!string.IsNullOrWhiteSpace(PDC_Form.AppliedFormNo))
+            {
+                Predicate = Predicate.And(a => a.AppliedFormNo.Contains(PDC_Form.AppliedFormNo));
+            }
+
+            
+            List<vw_FormQuery> pDC_FormList = new List<vw_FormQuery>();
+
+            pDC_FormList = _context.vw_FormQuery.Where(Predicate).ToList();
+
+            return pDC_FormList;
+        }
     }
 
    

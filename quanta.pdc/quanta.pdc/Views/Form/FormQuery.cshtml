@@ -202,50 +202,58 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @for (int i = 0; i <= Model.vw_FormQueryList.Count - 1; i++)
+                                        @if (Model.vw_FormQueryList.Count == 0)
                                         {
-                                            var Path = Url.Action("FormApplyEdit", "Form") + "/?FormID=" + @Model.vw_FormQueryList[i].FormID;
-                                        <tr>
-                                            <td>
-                                                <a href="@Path" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">@Model.vw_FormQueryList[i].AppliedFormNo</a>
-                                            </td>
-                                            <td>@Model.vw_FormQueryList[i].ApplyOrder</td>
-                                            <td>@Model.vw_FormQueryList[i].FormStatus</td>
-                                            <td>
-                                                @if (Model.vw_FormQueryList[i].ApplyDate.Year != 1)
-                                                {
-                                                    @Model.vw_FormQueryList[i].ApplyDate.ToString("yyyy/MM/dd")<br>
-                                                    @Model.vw_FormQueryList[i].ApplyDate.ToString("HH:mm:ss")
-                                                }
-
-                                            </td>
-                                            <td>@Model.vw_FormQueryList[i].CreatorName</td>
-                                            <td>@Model.vw_FormQueryList[i].PCBLayoutStatus</td>
-                                            <td>@Model.vw_FormQueryList[i].ProjectName</td>
-                                            <td>@Model.vw_FormQueryList[i].BoardTypeName</td>
-                                            <td>@Model.vw_FormQueryList[i].Revision</td>
-                                            <td>
-                                                @*Roger Chao<br>
-            (趙偉智)/#10370*@
-                                                @Model.vw_FormQueryList[i].PDC_MemberName
-                                            </td>
-                                            @if (Model.vw_FormQueryList[i].FormStatusCode == cns.Services.Enum.FormEnum.Form_Status.Release)
-                                            {
-                                                <td>@Model.vw_FormQueryList[i].StageName</td>
-                                                <td>
-                                                    @(Model.vw_FormQueryList[i].StageDate.HasValue ? Model.vw_FormQueryList[i].StageDate.Value.ToString("yyyy/MM/dd") : "")
-                                                    <br />
-                                                    @(Model.vw_FormQueryList[i].StageDate.HasValue ? Model.vw_FormQueryList[i].StageDate.Value.ToString("HH:mm:ss") : "")
-                                                </td>
-                                            }
-                                            else
-                                            {
-                                                <td></td>
-                                                <td></td>
-                                            }
-                                            
-                                        </tr>
+                                            <tr>
+                                                <td colspan="12" style="font-weight:bold;font-size:larger">查無資料</td>
+                                            </tr>
                                         }
+                                        else
+                                        {
+                                            for (int i = 0; i <= Model.vw_FormQueryList.Count - 1; i++)
+                                            {
+                                                var Path = Url.Action("FormApplyEdit", "Form") + "/?FormID=" + @Model.vw_FormQueryList[i].FormID;
+                                                <tr>
+                                                    <td>
+                                                        <a href="@Path" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">@Model.vw_FormQueryList[i].AppliedFormNo</a>
+                                                    </td>
+                                                    <td>@Model.vw_FormQueryList[i].ApplyOrder</td>
+                                                    <td>@Model.vw_FormQueryList[i].FormStatus</td>
+                                                    <td>
+                                                        @if (Model.vw_FormQueryList[i].ApplyDate.Year != 1)
+                                                        {
+                                                            @Model.vw_FormQueryList[i].ApplyDate.ToString("yyyy/MM/dd")<br>
+                                                            @Model.vw_FormQueryList[i].ApplyDate.ToString("HH:mm:ss")
+                                                        }
+
+                                                    </td>
+                                                    <td>@Html.Raw(Model.vw_FormQueryList[i].FormCreator)</td>
+                                                    <td>@Model.vw_FormQueryList[i].PCBTypeStatusName</td>
+                                                    <td>@Model.vw_FormQueryList[i].ProjectName</td>
+                                                    <td>@Model.vw_FormQueryList[i].BoardTypeName</td>
+                                                    <td>@Model.vw_FormQueryList[i].Revision</td>
+                                                    <td>
+                                                        @Html.Raw(Model.vw_FormQueryList[i].PDC_MemberName)
+                                                    </td>
+                                                    @if (Model.vw_FormQueryList[i].FormStatusCode == cns.Services.Enum.FormEnum.Form_Status.Release)
+                                                    {
+                                                        <td>@Model.vw_FormQueryList[i].StageName</td>
+                                                        <td>
+                                                            @(Model.vw_FormQueryList[i].StageDate.HasValue ? Model.vw_FormQueryList[i].StageDate.Value.ToString("yyyy/MM/dd") : "")
+                                                            <br />
+                                                            @(Model.vw_FormQueryList[i].StageDate.HasValue ? Model.vw_FormQueryList[i].StageDate.Value.ToString("HH:mm:ss") : "")
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                        <td></td>
+                                                    }
+
+                                                </tr>
+                                            }
+                                        }
+
 
 
                                     </tbody>
@@ -281,8 +289,8 @@
 
 @section Scripts {
     <!-- datatable Js -->
-    <script src="~/assets/plugins/data-tables/js/datatables.min.js"></script>
-    <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
+    @*<script src="~/assets/plugins/data-tables/js/datatables.min.js"></script>*@
+    @*<script src="~/assets/js/pages/tbl-datatable-custom.js"></script>*@
     <script src="~/assets/js/ekko-lightbox.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {

@@ -28,22 +28,23 @@
                                     <div class="form-group">
                                         <label>是否為MB</label>
                                         <select class="select2 form-control" asp-for="QueryParam.IsMB">
-                                            <option value="" selected="selected"></option>
-                                            <option value="true">MB</option>
-                                            <option value="false">Other</option>
+                                            @foreach (var item in Model.PrivilegeList.Where(x => x.RoleID == cns.Services.Enum.MemberEnum.Role.PDC_Designator))
+                                            {
+                                                <option value="@(item.IsMB.Value ? "true" : "false")">@(item.IsMB.Value ? "MB" : "Other")</option>
+                                            }
+                                            @*<option value="true" selected="selected">MB</option>
+                                            <option value="false">Other</option>*@
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>申請者狀態</label>
+                                        <label>申請單狀態</label>
                                         @*<input type="email" class="form-control" placeholder="未指派/已指派/已完成/已抽單" disabled="disabled">*@
                                         <select class="select2 form-control" asp-for="QueryParam.FormStage">
-                                            <option value=""></option>
                                             @foreach (var item in Model.m_FormStage)
                                             {
                                                 <option value="@item.Key">@item.Value</option>
-
                                             }
                                         </select>
                                     </div>
@@ -67,31 +68,31 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>公司別</label>
-                                        <select class="select2 form-control" asp-for="QueryParam.CompCode">
+                                        <select class="select2 form-control" id="CompCode" asp-for="QueryParam.CompCode" onchange="ChangeCompBU(this)">
                                             <option value=""></option>
-                                            @foreach (var item in Model.m_CompCodeList)
+                                            @*@foreach (var item in Model.m_CompCodeList)
                                             {
                                                 <option value="@item.Value">@item.Text</option>
-                                            }
+                                            }*@
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>部門</label>
-                                        <select class="select2 form-control" asp-for="QueryParam.BUCode">
+                                        <label>事業群</label>
+                                        <select class="select2 form-control" id="BuCode" asp-for="QueryParam.BUCode" onchange="ChangeCompBU(this)">
                                             <option value=""></option>
-                                            @foreach (var item in Model.m_DeptCodeList)
+                                            @*@foreach (var item in Model.m_DeptCodeList)
                                             {
                                                 <option value="@item.Value">@item.Text</option>
-                                            }
+                                            }*@
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>人員</label>
-                                        <input type="text" class="form-control" asp-for="QueryParam.CreatorName">
+                                        <input type="text" class="form-control" id="Member" asp-for="QueryParam.CreatorName" onchange="ChangePDCUser(this)">
                                     </div>
                                 </div>
                             </div>
@@ -153,138 +154,152 @@
                 </form>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body" style="padding-bottom: 0px;">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <p class="card-title">查詢結果</p>
-                                <div class="table-responsive">
-                                    <table class="table table-hover" id="grid">
-                                        <thead class="thead-dark">
-                                            <tr>
-                                                <th scope="col" style="">
-                                                    <input type="checkbox" name="">
-                                                    申請單號
-                                                </th>
-                                                <th scope="col" style="">單號順序</th>
-                                                <th scope="col" style="">申請狀態</th>
-                                                <th scope="col" style="">申請日期</th>
-                                                <th scope="col" style="">公司別</th>
-                                                <th scope="col" style="">部門</th>
-                                                <th scope="col" style="">
-                                                    PCB Layout<br>Status
-                                                </th>
-                                                <th scope="col" style="">Project</th>
-                                                <th scope="col" style="">Board Type</th>
-                                                <th scope="col" style="">Rev.</th>
-                                                <th scope="col" style="">PDC 負責人</th>
-                                                <th scope="col" style="">處理結果</th>
-                                                <th scope="col" style="">完成日期</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @for (int i = 0; i <= Model.vw_FormQueryList.Count - 1; i++)
-                                            {
-                                                var Path = Url.Action("WorkDetail", "Work") + "/?AppliedFormNo=" + @Model.vw_FormQueryList[i].AppliedFormNo;
-                                            <tr>
-                                                <td>
-                                                    @if (Model.vw_FormQueryList[i].StageName == "Assign" || Model.vw_FormQueryList[i].StageName == "Apply")
+        @if (Model.vw_FormQueryList != null)
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body" style="padding-bottom: 0px;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p class="card-title">查詢結果</p>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover" id="grid">
+                                            <thead class="thead-dark">
+                                                <tr>
+                                                    <th scope="col" style="text-align:left">
+                                                        <input type="checkbox" name="" onclick="SelectAll(this)">
+                                                        　　　申請單號
+                                                    </th>
+                                                    <th scope="col" style="">單號順序</th>
+                                                    <th scope="col" style="">申請狀態</th>
+                                                    <th scope="col" style="">申請日期</th>
+                                                    <th scope="col" style="">公司別</th>
+                                                    <th scope="col" style="">事業群</th>
+                                                    <th scope="col" style="">
+                                                        PCB Layout<br>Status
+                                                    </th>
+                                                    <th scope="col" style="">Project</th>
+                                                    <th scope="col" style="">Board Type</th>
+                                                    <th scope="col" style="">Rev.</th>
+                                                    <th scope="col" style="">PDC 負責人</th>
+                                                    <th scope="col" style="">處理結果</th>
+                                                    <th scope="col" style="">完成日期</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.vw_FormQueryList.Count == 0)
+                                                {
+                                                    <tr>
+                                                        <td colspan="13" style="font-weight:bold;font-size:larger">查無資料</td>
+                                                    </tr>
+                                                }
+                                                else
+                                                {
+                                                    for (int i = 0; i <= Model.vw_FormQueryList.Count - 1; i++)
                                                     {
-                                                        <input type="checkbox" name="" value="@Model.vw_FormQueryList[i].AppliedFormNo">
-                                                    }
-                                                    <a href="@Path" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">@Model.vw_FormQueryList[i].AppliedFormNo</a>
-                                                </td>
-                                                <td>@Model.vw_FormQueryList[i].ApplyOrder</td>
-                                                <td>@Model.vw_FormQueryList[i].FormStatus</td>
-                                                @if (Model.vw_FormQueryList[i].FormStatusCode == cns.Services.Enum.FormEnum.Form_Status.NoApply || Model.vw_FormQueryList[i].FormStatusCode == cns.Services.Enum.FormEnum.Form_Status.Reject)
-                                                {
-                                                    <td></td>
-                                                }
-                                                else
-                                                {
-                                                    <td>
-                                                        @if (Model.vw_FormQueryList[i].ApplyDate.Year != 1)
-                                                        {
-                                                            @Model.vw_FormQueryList[i].ApplyDate.ToString("yyyy/MM/dd")<br>
-                                                            @Model.vw_FormQueryList[i].ApplyDate.ToString("HH:mm:ss")
-                                                        }
-                                                    </td>
-                                                }
-                                                <td>@Model.vw_FormQueryList[i].CompCode</td>
-                                                <td>@Model.vw_FormQueryList[i].BUCode</td>
-                                                <td>@Model.vw_FormQueryList[i].PCBLayoutStatus</td>
-                                                <td>@Model.vw_FormQueryList[i].ProjectName</td>
-                                                <td>@Model.vw_FormQueryList[i].BoardTypeName</td>
-                                                <td>@Model.vw_FormQueryList[i].Revision</td>
-                                                <td>
-                                                    @Model.vw_FormQueryList[i].PDC_MemberName
-                                                </td>
+                                                        var Path = Url.Action("WorkDetail", "Work") + "/?AppliedFormNo=" + @Model.vw_FormQueryList[i].AppliedFormNo;
+                                                        <tr>
+                                                            <td style="text-align:left">
+                                                                @if (Model.vw_FormQueryList[i].StageName == "Assign" || Model.vw_FormQueryList[i].StageName == "Apply")
+                                                                {
+                                                                    <input type="checkbox" name="" value="@Model.vw_FormQueryList[i].AppliedFormNo">
+                                                                }
+                                                                　<a href="@Path" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">@Model.vw_FormQueryList[i].AppliedFormNo</a>
+                                                            </td>
+                                                            <td>@Model.vw_FormQueryList[i].ApplyOrder</td>
+                                                            <td>@Model.vw_FormQueryList[i].FormStatus</td>
+                                                            @if (Model.vw_FormQueryList[i].FormStatusCode == cns.Services.Enum.FormEnum.Form_Status.NoApply || Model.vw_FormQueryList[i].FormStatusCode == cns.Services.Enum.FormEnum.Form_Status.Reject)
+                                                            {
+                                                                <td></td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>
+                                                                    @if (Model.vw_FormQueryList[i].ApplyDate.Year != 1)
+                                                                    {
+                                                                        @Model.vw_FormQueryList[i].ApplyDate.ToString("yyyy/MM/dd")<br>
+                                                                        @Model.vw_FormQueryList[i].ApplyDate.ToString("HH:mm:ss")
+                                                                    }
+                                                                </td>
+                                                            }
+                                                            <td>@Model.vw_FormQueryList[i].CompCode</td>
+                                                            <td>@Model.vw_FormQueryList[i].BUCode</td>
+                                                            <td>@Model.vw_FormQueryList[i].PCBTypeStatusName</td>
+                                                            <td>@Model.vw_FormQueryList[i].ProjectName</td>
+                                                            <td>@Model.vw_FormQueryList[i].BoardTypeName</td>
+                                                            <td>@Model.vw_FormQueryList[i].Revision</td>
+                                                            <td>
+                                                                @Html.Raw(Model.vw_FormQueryList[i].PDC_MemberName)
+                                                            </td>
 
-                                                @if (Model.vw_FormQueryList[i].FormStatusCode == cns.Services.Enum.FormEnum.Form_Status.Release)
-                                                {
-                                                    <td>@Model.vw_FormQueryList[i].StageName</td>
-                                                    <td>
-                                                        @(Model.vw_FormQueryList[i].StageDate.HasValue ? Model.vw_FormQueryList[i].StageDate.Value.ToString("yyyy/MM/dd") : "")
-                                                        <br />
-                                                        @(Model.vw_FormQueryList[i].StageDate.HasValue ? Model.vw_FormQueryList[i].StageDate.Value.ToString("HH:mm:ss") : "")
-                                                    </td>
+                                                            @if (Model.vw_FormQueryList[i].FormStatusCode == cns.Services.Enum.FormEnum.Form_Status.Release)
+                                                            {
+                                                                <td>@Model.vw_FormQueryList[i].StageName</td>
+                                                                <td>
+                                                                    @(Model.vw_FormQueryList[i].StageDate.HasValue ? Model.vw_FormQueryList[i].StageDate.Value.ToString("yyyy/MM/dd") : "")
+                                                                    <br />
+                                                                    @(Model.vw_FormQueryList[i].StageDate.HasValue ? Model.vw_FormQueryList[i].StageDate.Value.ToString("HH:mm:ss") : "")
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td></td>
+                                                                <td></td>
+                                                            }
+                                                        </tr>
+                                                    }
                                                 }
-                                                else
-                                                {
-                                                    <td></td>
-                                                    <td></td>
-                                                }
-                                            </tr>
-                                            }
-                                        </tbody>
-                                    </table>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <p class="card-title">處理回覆</p>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>意見</label>
-                                            <textarea class="form-control" id="Result" rows="3"></textarea>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p class="card-title">處理回覆</p>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>意見</label>
+                                                <textarea class="form-control" id="Result" rows="3"></textarea>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>處理人員</label>
-                                            <select class="select2 form-control" id="Processor">
-                                                @foreach (var item in Model.m_ProcessorList)
-                                                {
-                                                    <option value="@item.Value">@item.Text</option>
-                                                }
-                                            </select>
-                                            <input type="hidden" id="MemberID" value="@Model.MemberID" />
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>處理人員</label>
+                                                <select class="select2 form-control" id="Processor">
+                                                    <option value=""></option>
+                                                    @foreach (var item in Model.m_ProcessorList)
+                                                    {
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                </select>
+                                                <input type="hidden" id="MemberID" value="@Model.MemberID" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>附件</label>
-                                            <div class="custom-file mb-3">
-                                                <input type="file" class="custom-file-input" id="customFile" name="filename">
-                                                <label class="custom-file-label" id="customFileLabel" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>附件</label>
+                                                <div class="custom-file mb-3">
+                                                    <input type="file" class="custom-file-input" id="customFile" name="filename">
+                                                    <label class="custom-file-label" id="customFileLabel" for="customFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div style="padding-top: 10px; padding-bottom: 15px; text-align: center;">
-                                            <a href="#" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose" onclick="WorkDesign(true)">Assign</a>
-                                            <a href="#" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="WorkDesign(false)">Reject</a>
+                                    <div class="row">
+                                        <div class="col-md-4">
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
+                                        <div class="col-md-4">
+                                            <div style="padding-top: 10px; padding-bottom: 15px; text-align: center;">
+                                                <a href="#" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose" onclick="WorkDesign(true)">Assign</a>
+                                                <a href="#" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose" onclick="WorkDesign(false)">Reject</a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -292,7 +307,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+        }
+
         <!-- End of Main -->
     </div>
 
@@ -318,8 +334,8 @@
 
 @section Scripts {
     <!-- datatable Js -->
-    <script src="~/assets/plugins/data-tables/js/datatables.min.js"></script>
-    <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
+    @*<script src="~/assets/plugins/data-tables/js/datatables.min.js"></script>
+    <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>*@
     <script type="text/javascript">
         $(document).ready(function () {
             $('#SearchDate_Start').datepicker({ dateFormat: 'yy-mm-dd' });
@@ -331,11 +347,11 @@
         });
 
         function WorkDesign(IsAssign) {
-            if ($('#Result').val() == "") {
-                alert("請輸入意見");
+            if ($('#Processor').val() == "") {
+                alert("請選擇處理人員");
                 return;
             }
-
+            
             if ($('#grid > tbody > tr').find('input[type=checkbox]:checked').length == 0) {
                 if(IsAssign)
                     alert("請選擇要Assign的申請單");
@@ -377,7 +393,7 @@
                     }
                     else {
                         if (result.IsSingle) {
-                            if ($('#MemberID').val() == result.CreaterID) {
+                            if ($('#MemberID').val() == $('#Processor').val()) {
                                 if (confirm("是否直接進入處理畫面")) {
                                     var Path = "@Url.Action("WorkDetail", "Work")/?AppliedFormNo=" + result.FormNo;
                                     window.location.href = Path;
@@ -395,6 +411,23 @@
                 }
             });
 
+        }
+
+        function ChangeCompBU(obj) {
+            if ($(obj).val() != "") {
+                $('#Member').val('');
+            }
+        }
+
+        function ChangePDCUser(obj) {
+            if ($(obj).val() != "") {
+                $('#CompCode').val('');
+                $('#BuCode').val('');
+            }
+        }
+
+        function SelectAll(obj) {
+            $('#grid >tbody > tr').find('input[type=checkbox]').prop('checked', $(obj).prop('checked'));
         }
     </script>
 }

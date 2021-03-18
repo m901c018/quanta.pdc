@@ -88,6 +88,46 @@ namespace cns.Services
             return MenuList;
         }
 
+        public List<Menu> GetMenuList(List<PDC_Privilege> PrivilegeList)
+        {
+            List<Menu> MenuList = new List<Menu>();
+
+            if (PrivilegeList.Where(x => x.RoleID == Role.PDC_Administrator).Any()) 
+            {
+                MenuList.Add(new Menu { MenuID = 1, ParentMenuID = 0, MenuName = "PCB Layout Constraint", Order = 1 });
+                MenuList.Add(new Menu { MenuID = 2, ParentMenuID = 1, MenuName = "Check/驗證", Order = 1, Action = "Index", Controller = "Excel" });
+                MenuList.Add(new Menu { MenuID = 3, ParentMenuID = 1, MenuName = "Query/查詢", Order = 2, Action = "FormQuery", Controller = "Form" });
+                MenuList.Add(new Menu { MenuID = 4, ParentMenuID = 1, MenuName = "Apply/表單申請", Order = 3, Action = "FormApply", Controller = "Form" });
+                MenuList.Add(new Menu { MenuID = 5, ParentMenuID = 0, MenuName = "PDC Work Area", Order = 2 });
+                MenuList.Add(new Menu { MenuID = 7, ParentMenuID = 5, MenuName = "Assign/派單", Order = 1, Action = "Assign", Controller = "Work" });
+                MenuList.Add(new Menu { MenuID = 6, ParentMenuID = 5, MenuName = "Work/工作區", Order = 2, Action = "WorkArea", Controller = "Work" });
+                MenuList.Add(new Menu { MenuID = 8, ParentMenuID = 0, MenuName = "System Administration", Order = 3 });
+                MenuList.Add(new Menu { MenuID = 9, ParentMenuID = 8, MenuName = "Download/資料下載", Order = 1, Action = "DownloadCNS", Controller = "Configuration" });
+                MenuList.Add(new Menu { MenuID = 10, ParentMenuID = 8, MenuName = "Privilege/權限設定", Order = 2, Action = "Permission", Controller = "Configuration" });
+                MenuList.Add(new Menu { MenuID = 11, ParentMenuID = 8, MenuName = "Check Rules/規則設定", Order = 3, Action = "", Controller = "" });
+                MenuList.Add(new Menu { MenuID = 12, ParentMenuID = 8, MenuName = "Configuration/組態設定", Order = 4, Action = "Index", Controller = "Configuration" });
+            }
+            else
+            {
+                MenuList.Add(new Menu { MenuID = 1, ParentMenuID = 0, MenuName = "PCB Layout Constraint", Order = 1 });
+                MenuList.Add(new Menu { MenuID = 2, ParentMenuID = 1, MenuName = "Check/驗證", Order = 1, Action = "Index", Controller = "Excel" });
+                MenuList.Add(new Menu { MenuID = 3, ParentMenuID = 1, MenuName = "Query/查詢", Order = 2, Action = "FormQuery", Controller = "Form" });
+                MenuList.Add(new Menu { MenuID = 4, ParentMenuID = 1, MenuName = "Apply/表單申請", Order = 3, Action = "FormApply", Controller = "Form" });
+                if (PrivilegeList.Any())
+                {
+                    MenuList.Add(new Menu { MenuID = 5, ParentMenuID = 0, MenuName = "PDC Work Area", Order = 2 });
+
+                    if (PrivilegeList.Where(x => x.RoleID == Role.PDC_Designator).Any())
+                        MenuList.Add(new Menu { MenuID = 7, ParentMenuID = 5, MenuName = "Assign/派單", Order = 1, Action = "Assign", Controller = "Work" });
+
+                    if (PrivilegeList.Where(x => x.RoleID == Role.PDC_Processor).Any())
+                        MenuList.Add(new Menu { MenuID = 6, ParentMenuID = 5, MenuName = "Work/工作區", Order = 1, Action = "WorkArea", Controller = "Work" });
+                }
+            }
+
+            return MenuList;
+        }
+
         /// <summary> 取得測試用帳號
         /// 
         /// </summary>
@@ -100,9 +140,9 @@ namespace cns.Services
 
             try
             {
-                if (_context.PDC_Member.Where(x => x.EmpNumber == EmpNumber.Trim() && x.IsEnabled == false).Any())
+                if (_context.PDC_Member.Where(x => (x.EmpNumber == EmpNumber.Trim() || x.DomainEmpNumber == EmpNumber.Trim()) && x.IsEnabled == false).Any())
                 {
-                    User.User = _context.PDC_Member.Where(x => x.EmpNumber == EmpNumber.Trim() && x.IsEnabled == false).SingleOrDefault();
+                    User.User = _context.PDC_Member.Where(x => (x.EmpNumber == EmpNumber.Trim() || x.DomainEmpNumber == EmpNumber.Trim()) && x.IsEnabled == false).SingleOrDefault();
                 }
             }
             catch (Exception ex)
@@ -112,6 +152,62 @@ namespace cns.Services
             }
 
             return true;
+        }
+
+        /// <summary> 取得帳號
+        /// 
+        /// </summary>
+        /// <param name="EmpNumber">工號</param>
+        /// <param name="User">帳號Model</param>
+        /// <returns></returns>
+        public bool GetMember(string EmpNumber, ref PDC_Member User)
+        {
+            User = new PDC_Member();
+
+            try
+            {
+                if (_context.PDC_Member.Where(x => (x.EmpNumber == EmpNumber.Trim() || x.DomainEmpNumber == EmpNumber.Trim()) && x.IsEnabled == false).Any())
+                {
+                    User = _context.PDC_Member.Where(x => (x.EmpNumber == EmpNumber.Trim() || x.DomainEmpNumber == EmpNumber.Trim()) && x.IsEnabled == false).SingleOrDefault();
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary> 取得帳號
+        /// 
+        /// </summary>
+        /// <param name="EmpNumber">工號</param>
+        /// <param name="User">帳號Model</param>
+        /// <returns></returns>
+        public PDC_Member GetMember(Guid MemberID)
+        {
+            PDC_Member User = new PDC_Member();
+
+            try
+            {
+                if (_context.PDC_Member.Where(x => x.MemberID == MemberID && x.IsEnabled == false).Any())
+                {
+                    User = _context.PDC_Member.Where(x => x.MemberID == MemberID && x.IsEnabled == false).SingleOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new PDC_Member();
+            }
+
+            return User;
         }
 
         /// <summary> 取得帳號

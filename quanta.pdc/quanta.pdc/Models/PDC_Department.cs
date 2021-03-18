@@ -8,15 +8,15 @@ using static cns.Services.Enum.MemberEnum;
 
 namespace cns.Models
 {
-    [Table("PDC_Member")]
-    public class PDC_Member
+    [Table("PDC_Department")]
+    public class PDC_Department
     {
         /// <summary>
         /// 主鍵
         /// </summary>
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid MemberID { get; set; }
+        public Guid DepartmentID { get; set; }
         /// <summary>
         /// 公司別
         /// </summary>
@@ -26,7 +26,6 @@ namespace cns.Models
         /// <summary>
         /// 公司名稱
         /// </summary>
-        [Required(ErrorMessage ="必填")]
         public string CompName { get; set; }
         /// <summary>
         /// 部門代碼
@@ -40,49 +39,9 @@ namespace cns.Models
         [Required(ErrorMessage = "必填")]
         public string BUName { get; set; }
         /// <summary>
-        /// 信箱
+        /// 顯示部門名稱
         /// </summary>
-        public string Email { get; set; }
-        /// <summary>
-        /// 角色代碼
-        /// </summary>
-        [Required(ErrorMessage ="必填")]
-        public Role RoleID { get; set; }
-        /// <summary>
-        /// 名字
-        /// </summary>
-        public string UserName { get; set; }
-        /// <summary>
-        /// 英文名字
-        /// </summary>
-        public string UserEngName { get; set; }
-        /// <summary>
-        /// 分機
-        /// </summary>
-        public string Extension { get; set; }
-        /// <summary>
-        /// PCBType
-        /// </summary>
-        public string PCBType { get; set; }
-        /// <summary>
-        /// 工號
-        /// </summary>
-        [Required(ErrorMessage = "必填")]
-        public string EmpNumber { get; set; }
-        /// <summary>
-        /// 工號含域名
-        /// </summary>
-        [Required(ErrorMessage = "必填")]
-        public string DomainEmpNumber { get; set; }
-        /// <summary>
-        /// 電話
-        /// </summary>
-        public string Phone { get; set; }
-        /// <summary>
-        /// 是否註銷
-        /// </summary>
-        [Required(ErrorMessage = "必填")]
-        public Boolean IsEnabled { get; set; }
+        public string ShowName { get; set; }
         /// <summary>
         /// 建立者
         /// </summary>

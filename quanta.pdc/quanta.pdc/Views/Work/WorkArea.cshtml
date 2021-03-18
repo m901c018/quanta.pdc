@@ -1,4 +1,4 @@
-﻿@*@model m_FormPartial*@
+﻿@model m_WorkAreaPartial
 @{
     ViewData["Title"] = "Work 工作區";
 }
@@ -15,141 +15,180 @@
                 </nav>
             </div>
         </div>
-        <div class"row"="">
-            <span style="color: #ffc107;">*功能仍在開發階段，尚未開放測試。</span>
-        </div>
+        
     </div>
     <div class="main-wrapper container">
         <div class="row">
             <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="card-title">查詢條件</p>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>負責人</label>
-                                    <input type="email" class="form-control" placeholder="SC Liu" disabled="disabled">
+                <form asp-action="WorkArea" method="post" enctype="multipart/form-data">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-title">查詢條件</p>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>負責人</label>
+                                        @if (Model.IsAdmin)
+                                        {
+                                            <select class="select2 form-control" id="PDC_Member" asp-for="QueryParam.PDC_Member">
+                                                <option value=""></option>
+                                                @foreach (var item in Model.m_ProcessorList)
+                                                {
+                                                    <option value="@item.Value">@item.Text</option>
+                                                }
+                                            </select>
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="form-control" id="Member" asp-for="QueryParam.CreatorName" disabled="disabled">
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>處理結果</label>
+                                        @*<input type="email" class="form-control" placeholder="未處理/Released/Rejected/已抽單" disabled="disabled">*@
+                                        <select class="select2 form-control" id="FormStage" asp-for="QueryParam.Form_Status">
+                                            <option value=""></option>
+                                            @foreach (var item in Model.m_FormStage)
+                                            {
+                                                <option value="@item.Key">@item.Value</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>查詢日期</label>
+                                        <input type="text" class="form-control" id="SearchDate_Start" asp-for="QueryParam.SearchDate_Start">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>　<a></a></label>
+                                        <input type="text" class="form-control" id="SearchDate_End" asp-for="QueryParam.SearchDate_End">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>申請單號</label>
+                                        <input type="text" class="form-control" id="AppliedFormNo" asp-for="QueryParam.AppliedFormNo">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>處理結果</label>
-                                    <input type="email" class="form-control" placeholder="未處理/Released/Rejected/已抽單" disabled="disabled">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>查詢日期</label>
-                                    <input type="email" class="form-control" placeholder=" ~ " disabled="disabled">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label>申請單號</label>
-                                    <input type="email" class="form-control" placeholder="" disabled="disabled">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div style="padding-top: 10px;">
+                                        <button type="submit" class="btn btn-outline-info" id="SearchApply" style=" padding: 4px 25px;">查詢紀錄</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div style="padding-top: 10px;">
-                                    <a href="#" class="btn btn-outline-info" style=" padding: 4px 25px;" id="mail-compose">查詢紀錄</a>
-                                </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        @if (Model.vw_FormQueryList != null)
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body" style="padding-bottom: 0px;">
+                            <p class="card-title">查詢結果</p>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col" style="">
+                                                申請單號
+                                            </th>
+                                            <th scope="col" style="">單號順序</th>
+                                            <th scope="col" style="">申請狀態</th>
+                                            <th scope="col" style="">申請日期</th>
+                                            <th scope="col" style="">公司別</th>
+                                            <th scope="col" style="">部門</th>
+                                            <th scope="col" style="">
+                                                PCB Layout<br>Status
+                                            </th>
+                                            <th scope="col" style="">Project</th>
+                                            <th scope="col" style="">Board Type</th>
+                                            <th scope="col" style="">Rev.</th>
+                                            <th scope="col" style="">指派意見</th>
+                                            <th scope="col" style="">PDC 負責人</th>
+                                            <th scope="col" style="">處理結果</th>
+                                            <th scope="col" style="">完成日期</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.vw_FormQueryList.Count == 0)
+                                        {
+                                            <tr>
+                                                <td colspan="14" style="font-weight:bold;font-size:larger">查無資料</td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            for (int i = 0; i <= Model.vw_FormQueryList.Count - 1; i++)
+                                            {
+                                                var Path = Url.Action("WorkDetail", "Work") + "/?AppliedFormNo=" + @Model.vw_FormQueryList[i].AppliedFormNo;
+                                    <tr>
+                                        <td style="text-align:left">
+                                            <a href="@Path" class="btn btn-outline-light" style=" padding: 4px 10px;" id="mail-compose">@Model.vw_FormQueryList[i].AppliedFormNo</a>
+                                        </td>
+                                        <td>@Model.vw_FormQueryList[i].ApplyOrder</td>
+                                        <td>@Model.vw_FormQueryList[i].FormStatus</td>
+                                        @if (Model.vw_FormQueryList[i].FormStatusCode == cns.Services.Enum.FormEnum.Form_Status.NoApply || Model.vw_FormQueryList[i].FormStatusCode == cns.Services.Enum.FormEnum.Form_Status.Reject)
+                                        {
+                                            <td></td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                @if (Model.vw_FormQueryList[i].ApplyDate.Year != 1)
+                                                {
+                                                    @Model.vw_FormQueryList[i].ApplyDate.ToString("yyyy/MM/dd")<br>
+                                                    @Model.vw_FormQueryList[i].ApplyDate.ToString("HH:mm:ss")
+                                                }
+                                            </td>
+                                        }
+                                        <td>@Model.vw_FormQueryList[i].CompCode</td>
+                                        <td>@Model.vw_FormQueryList[i].BUCode</td>
+                                        <td>@Model.vw_FormQueryList[i].PCBTypeStatusName</td>
+                                        <td>@Model.vw_FormQueryList[i].ProjectName</td>
+                                        <td>@Model.vw_FormQueryList[i].BoardTypeName</td>
+                                        <td>@Model.vw_FormQueryList[i].Revision</td>
+                                        <td>@Model.vw_FormQueryList[i].Result</td>
+                                        <td>
+                                            @Html.Raw(Model.vw_FormQueryList[i].PDC_MemberName)
+                                        </td>
+
+                                        @if (Model.vw_FormQueryList[i].FormStatusCode == cns.Services.Enum.FormEnum.Form_Status.Release)
+                                        {
+                                            <td>@Model.vw_FormQueryList[i].StageName</td>
+                                            <td>
+                                                @(Model.vw_FormQueryList[i].StageDate.HasValue ? Model.vw_FormQueryList[i].StageDate.Value.ToString("yyyy/MM/dd") : "")
+                                                <br />
+                                                @(Model.vw_FormQueryList[i].StageDate.HasValue ? Model.vw_FormQueryList[i].StageDate.Value.ToString("HH:mm:ss") : "")
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                            <td></td>
+                                        }
+                                    </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body" style="padding-bottom: 0px;">
-                        <p class="card-title">查詢結果</p>
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th scope="col" style="">
-                                            申請單號
-                                        </th>
-                                        <th scope="col" style="">單號順序</th>
-                                        <th scope="col" style="">申請狀態</th>
-                                        <th scope="col" style="">申請日期</th>
-                                        <th scope="col" style="">公司別</th>
-                                        <th scope="col" style="">部門</th>
-                                        <th scope="col" style="">
-                                            PCB Layout<br>Status
-                                        </th>
-                                        <th scope="col" style="">Project</th>
-                                        <th scope="col" style="">Board Type</th>
-                                        <th scope="col" style="">Rev.</th>
-                                        <th scope="col" style="">指派意見</th>
-                                        <th scope="col" style="">PDC 負責人</th>
-                                        <th scope="col" style="">處理結果</th>
-                                        <th scope="col" style="">完成日期</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <a href="@Url.Action("WorkDetail", "Work")" class="btn btn-outline-light" style=" padding: 4px 12px;" id="mail-compose">CN000015</a>
-                                        </td>
-                                        <td></td>
-                                        <td>已完成</td>
-                                        <td>
-                                            2020/10/05<br>
-                                            09:48:35
-                                        </td>
-                                        <td>QCI</td>
-                                        <td>BU2</td>
-                                        <td>New</td>
-                                        <td>XV1U</td>
-                                        <td>MB</td>
-                                        <td>A</td>
-                                        <td>急件優先處理</td>
-                                        <td>
-                                            Roger Chao<br>
-                                            (趙偉智)/#10370
-                                        </td>
-                                        <td>Release</td>
-                                        <td>
-                                            2020/10/06<br>
-                                            13:34:02
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="@Url.Action("WorkDetail", "Work")" class="btn btn-outline-light" style=" padding: 4px 12px;" id="mail-compose">CN000147</a>
-                                        </td>
-                                        <td>1</td>
-                                        <td>處理中</td>
-                                        <td>
-                                            2020/11/08<br>
-                                            15:12:00
-                                        </td>
-                                        <td>QCI</td>
-                                        <td>BU10</td>
-                                        <td>Modify</td>
-                                        <td>C53</td>
-                                        <td>AUDIO</td>
-                                        <td>C</td>
-                                        <td>急件優先處理</td>
-                                        <td>
-                                            Roger Chao<br>
-                                            (趙偉智)/#10370
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        }
         <!-- End of Main -->
     </div>
 
@@ -158,6 +197,19 @@
 @section Styles{
     <!-- data tables css -->
     <link rel="stylesheet" href="~/assets/plugins/data-tables/css/datatables.min.css">
+    <style>
+        input[type="text"]:disabled {
+            background: gray;
+        }
+
+        input[type="radio"]:disabled {
+            background: gray;
+        }
+
+        select:disabled {
+            background: gray;
+        }
+    </style>
 }
 
 @section Scripts {
@@ -166,7 +218,9 @@
     <script src="~/assets/js/pages/tbl-datatable-custom.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-
+            $('#SearchDate_Start').datepicker({ dateFormat: 'yy-mm-dd' });
+            $('#SearchDate_End').datepicker({ dateFormat: 'yy-mm-dd' });
+        });
 
     </script>
 }

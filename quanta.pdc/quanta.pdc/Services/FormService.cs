@@ -129,12 +129,12 @@ namespace cns.Services
 
             if (PDC_Form.SearchDate_Start.HasValue)
             {
-                Predicate = Predicate.And(a => a.CreatorDate >= PDC_Form.SearchDate_Start.Value);
+                Predicate = Predicate.And(a => a.ApplyDate >= Convert.ToDateTime(PDC_Form.SearchDate_Start.Value.ToString("yyyy/MM/dd 00:00:00")));
             }
 
             if (PDC_Form.SearchDate_End.HasValue)
             {
-                Predicate = Predicate.And(a => a.CreatorDate <= PDC_Form.SearchDate_End.Value);
+                Predicate = Predicate.And(a => a.ApplyDate <= Convert.ToDateTime(PDC_Form.SearchDate_End.Value.ToString("yyyy/MM/dd 23:59:59")));
             }
 
             if (!string.IsNullOrWhiteSpace(PDC_Form.FormStatus))
@@ -164,12 +164,12 @@ namespace cns.Services
                 PDC_Form OldForm = GetFormOne(NewForm.FormID);
                
                 OldForm.ApplyDate = NewForm.ApplyDate;
-                OldForm.BoardTypeName = NewForm.BoardTypeName;
+                OldForm.BoardTypeName = NewForm.BoardTypeName.ToUpper();
                 OldForm.FormStatus = NewForm.FormStatus;
                 OldForm.PCBLayoutStatus = NewForm.PCBLayoutStatus;
                 OldForm.PCBType = NewForm.PCBType;
-                OldForm.ProjectName = NewForm.ProjectName;
-                OldForm.Revision = NewForm.Revision;
+                OldForm.ProjectName = NewForm.ProjectName.ToUpper();
+                OldForm.Revision = NewForm.Revision.ToUpper();
                 OldForm.FormStatusCode = NewForm.FormStatusCode;
                 OldForm.Result = NewForm.Result;
                 OldForm.Modifyer = _Member.MemberID.ToString();
@@ -217,9 +217,12 @@ namespace cns.Services
             ErrorMsg = string.Empty;
             try
             {
-                NewForm.Modifyer = _Member.MemberID.ToString();
-                NewForm.ModifyerName = _Member.UserEngName;
-                NewForm.ModifyerDate = DateTime.Now;
+                NewForm.ProjectName = NewForm.ProjectName.ToUpper();
+                NewForm.Revision = NewForm.Revision.ToUpper();
+                NewForm.BoardTypeName = NewForm.BoardTypeName.ToUpper();
+                NewForm.Creator = _Member.MemberID.ToString();
+                NewForm.CreatorName = _Member.UserEngName;
+                NewForm.CreatorDate = DateTime.Now;
 
                 _context.PDC_Form.Add(NewForm);
                 _context.SaveChanges();
@@ -346,7 +349,7 @@ namespace cns.Services
         /// <param name="FormStageID">表單紀錄ID</param>
         /// <param name="ErrorMsg">錯誤訊息</param>
         /// <returns></returns>
-        public bool AddForm_StageLog(long FormID, Enum.FormEnum.Form_Stage form_Stage, string result,string PDC_Member, out long FormStageID, ref string ErrorMsg)
+        public bool AddForm_StageLog(long FormID, Enum.FormEnum.Form_Stage form_Stage, string result,string PDC_Member, out long FormStageID, ref string ErrorMsg,decimal WorkHour = 0)
         {
             PDC_Form_StageLog FormStage = new PDC_Form_StageLog();
             ErrorMsg = string.Empty;
@@ -380,7 +383,7 @@ namespace cns.Services
                 FormStage.Result = result;
                 FormStage.Stage = form_Stage;
                 FormStage.StageName = FormEnum.GetForm_StageName(form_Stage);
-                FormStage.WorkHour = 0;
+                FormStage.WorkHour = WorkHour;
                 FormStage.Creator = _Member.MemberID.ToString();
                 FormStage.CreatorName = _Member.UserEngName.ToString();
                 FormStage.CreatorDate = DateTime.Now;
@@ -402,6 +405,27 @@ namespace cns.Services
             return true;
         }
 
+        public bool DeleteForm_StageLog(long StageLogID)
+        {
+            try
+            {
+                PDC_Form_StageLog Stage = _context.PDC_Form_StageLog.Where(x => x.StageLogID == StageLogID).SingleOrDefault();
+                _context.PDC_Form_StageLog.Remove(Stage);
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary> 抽單
+        /// 
+        /// </summary>
+        /// <param name="FormID">申請單ID</param>
+        /// <param name="ErrorMsg">錯誤訊息</param>
+        /// <returns></returns>
         public bool CloseFormApply(long FormID, ref string ErrorMsg)
         {
             ErrorMsg = string.Empty;

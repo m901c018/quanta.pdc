@@ -12,7 +12,7 @@ namespace cns.ViewModels
 {
     //view model for changeroles screen
     [Serializable]
-    public class m_AssignPartial
+    public class m_WorkAreaPartial
     {
         
         /// <summary> 查詢資料
@@ -31,16 +31,6 @@ namespace cns.ViewModels
         /// </summary>
         public List<PDC_File> PicDescriptionFileList { get; set; }
 
-        /// <summary> PCBType-欄位下拉
-        /// 
-        /// </summary>
-        public List<SelectListItem> PCBTypeList { get; set; }
-
-        /// <summary> PCB Layout Status-欄位下拉
-        /// 
-        /// </summary>
-        public List<SelectListItem> PCBLayoutStatusList { get; set; }
-
         /// <summary> 查詢欄位
         /// 
         /// </summary>
@@ -56,27 +46,12 @@ namespace cns.ViewModels
         /// </summary>
         public List<SelectListItem> m_ProcessorList { get; set; }
 
-        /// <summary> 公司別清單-欄位下拉
+        /// <summary> 是否管理者
         /// 
         /// </summary>
-        public List<SelectListItem> m_CompCodeList { get; set; }
+        public bool IsAdmin { get; set; }
 
-        /// <summary> 部門清單-欄位下拉
-        /// 
-        /// </summary>
-        public List<SelectListItem> m_DeptCodeList { get; set; }
-
-        /// <summary> 目前登入者ID
-        /// 
-        /// </summary>
-        public string MemberID { get; set; }
-
-        /// <summary> 目前登入者權限
-        /// 
-        /// </summary>
-        public List<PDC_Privilege> PrivilegeList { get; set; }
-
-        public m_AssignPartial()
+        public m_WorkAreaPartial()
         {
             vw_FormQueryList = new List<vw_FormQuery>();
             QueryParam = new QueryParam();
