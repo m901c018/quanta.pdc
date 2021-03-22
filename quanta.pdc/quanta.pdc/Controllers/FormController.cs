@@ -47,7 +47,7 @@ namespace cns.Controllers
 
             ParameterService parameterService = new ParameterService(_context, UserInfo.User);
             m_FormPartial model = new m_FormPartial();
-            List<PDC_Parameter> data = parameterService.GetParameterList("PCBTypeList");
+            List<PDC_Parameter> data = parameterService.GetParameterList(ParameterKey.PCBTypeList);
             model.Member = UserInfo.User;
             model.PCBTypeList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBType").FirstOrDefault().ParameterID);
             model.PCBLayoutStatusList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBLayoutStatus").FirstOrDefault().ParameterID);
@@ -59,7 +59,8 @@ namespace cns.Controllers
             model.m_PDC_Form.CompCode = UserInfo.User.CompCode;
 
             model.GUID = Guid.NewGuid().ToString("N");
-            
+            //組態設定線寬線距規則
+            model.m_ExcelRule = parameterService.GetParameterOne(ParameterKey.ConfigurationFormApply);
 
             return View(model);
         }
@@ -143,7 +144,7 @@ namespace cns.Controllers
             model.PDC_Form_StageLogFileList = fileService.GetForm_StageFileList(model.PDC_Form_StageLogList);
             model.m_PDC_Form_StageLog = model.PDC_Form_StageLogList.OrderByDescending(x => x.CreatorDate).FirstOrDefault();
 
-            List<PDC_Parameter> data = parameterService.GetParameterList("PCBTypeList");
+            List<PDC_Parameter> data = parameterService.GetParameterList(ParameterKey.PCBTypeList);
 
             model.PCBTypeList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBType").FirstOrDefault().ParameterID);
             model.PCBLayoutStatusList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBLayoutStatus").FirstOrDefault().ParameterID);
@@ -169,15 +170,17 @@ namespace cns.Controllers
                 model.IsReadOnly = true;
             }
 
-            model.m_BRDFile = fileService.GetFileOne(FormID, "FormApplyBRD");
-            model.m_ExcelFile = fileService.GetFileOne(FormID, "FormApplyExcel");
-            model.m_OtherFileList = fileService.GetFileList("FormApplyOther", FormID);
-            model.m_pstchipFile = fileService.GetFileOne(FormID, "FormApplypstchip");
-            model.m_pstxnetFile = fileService.GetFileOne(FormID, "FormApplypstxnet");
-            model.m_pstxprtFile = fileService.GetFileOne(FormID, "FormApplypstxprt");
+            model.m_BRDFile = fileService.GetFileOne(FormID, FileKey.FormApplyBRD);
+            model.m_ExcelFile = fileService.GetFileOne(FormID, FileKey.FormApplyExcel);
+            model.m_OtherFileList = fileService.GetFileList(FileKey.FormApplyOther, FormID);
+            model.m_pstchipFile = fileService.GetFileOne(FormID, FileKey.FormApplypstchip);
+            model.m_pstxnetFile = fileService.GetFileOne(FormID, FileKey.FormApplypstxnet);
+            model.m_pstxprtFile = fileService.GetFileOne(FormID, FileKey.FormApplypstxprt);
+            //組態設定線寬線距規則
+            model.m_ExcelRule = parameterService.GetParameterOne(ParameterKey.ConfigurationFormApply);
 
             //取得範例
-            Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\FileUpload\\" + model.m_ExcelFile.FileFullName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\"+ FileKey.FileUpload + "\\" + model.m_ExcelFile.FileFullName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
            
             stream.Position = 0; // <-- Add this, to make it work
             //IFormFile File = new FormFile(stream,)
@@ -250,12 +253,12 @@ namespace cns.Controllers
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
 
             Dictionary<string, string> functionName = new Dictionary<string, string>();
-            functionName.Add("UplpadBRDFile", "FormApplyBRD");
-            functionName.Add("UplpadExcelFile", "FormApplyExcel");
-            functionName.Add("UplpadpstchipFile", "FormApplypstchip");
-            functionName.Add("UplpadpstxnetFile", "FormApplypstxnet");
-            functionName.Add("UplpadpstxprtFile", "FormApplypstxprt");
-            functionName.Add("UplpadOtherFile", "FormApplyOther");
+            functionName.Add("UplpadBRDFile", FileKey.FormApplyBRD);
+            functionName.Add("UplpadExcelFile", FileKey.FormApplyExcel);
+            functionName.Add("UplpadpstchipFile", FileKey.FormApplypstchip);
+            functionName.Add("UplpadpstxnetFile", FileKey.FormApplypstxnet);
+            functionName.Add("UplpadpstxprtFile", FileKey.FormApplypstxprt);
+            functionName.Add("UplpadOtherFile", FileKey.FormApplyOther);
             Dictionary<string, string> CheckFileName = new Dictionary<string, string>();
             CheckFileName.Add("UplpadBRDFile", "");
             CheckFileName.Add("UplpadExcelFile", "");
@@ -377,7 +380,7 @@ namespace cns.Controllers
 
             PDC_File File = FileService.GetFileOne(FileID);
 
-            string Folder = IsTemp ? "\\Temp\\" : "\\FileUpload\\";
+            string Folder = IsTemp ? "\\"+ FileKey.Temp + "\\" : "\\" + FileKey.FileUpload + "\\";
             //取得範例
             Stream stream = new FileStream(_hostingEnvironment.WebRootPath + Folder + File.FileFullName, FileMode.Open, FileAccess.Read);
 
@@ -425,9 +428,9 @@ namespace cns.Controllers
             string FilePath = string.Empty;
 
             if (File.SourceID == 0)
-                FilePath = _hostingEnvironment.WebRootPath + "\\Temp\\" + File.FileFullName;
+                FilePath = _hostingEnvironment.WebRootPath + "\\" + FileKey.Temp + "\\" + File.FileFullName;
             else
-                FilePath = _hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName;
+                FilePath = _hostingEnvironment.WebRootPath + "\\" + FileKey.FileUpload + "\\" + File.FileFullName;
             //取得範例
             Stream stream = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
 
@@ -496,13 +499,14 @@ namespace cns.Controllers
             model.QueryParam.CompCode = UserInfo.User.CompCode;
             model.QueryParam.CreatorName = UserInfo.User.UserEngName;
 
-            model.PicDescriptionList = parameterService.GetParameterList("PCBLayoutConstraint_query_Col");
-            model.PicDescriptionFileList = FileService.GetParameterFileList(model.PicDescriptionList, "Configuration_PCBFile");
+            model.PicDescriptionList = parameterService.GetParameterList(ParameterKey.PCBLayoutConstraint_query_Col);
+            model.PicDescriptionFileList = FileService.GetParameterFileList(model.PicDescriptionList, FileKey.Configuration_PCBFile);
 
-            List<PDC_Parameter> data = parameterService.GetParameterList("PCBTypeList");
+            List<PDC_Parameter> data = parameterService.GetParameterList(ParameterKey.PCBTypeList);
 
             model.PCBTypeList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBType").FirstOrDefault().ParameterID);
             model.PCBLayoutStatusList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBLayoutStatus").FirstOrDefault().ParameterID);
+            
 
             return View(model);
         }
@@ -523,7 +527,7 @@ namespace cns.Controllers
             m_FormPartial.QueryParam.CreatorName = UserInfo.User.UserEngName;
             m_FormPartial.QueryParam.ApplierID = UserInfo.User.MemberID.ToString();
 
-            List<PDC_Parameter> data = parameterService.GetParameterList("PCBTypeList");
+            List<PDC_Parameter> data = parameterService.GetParameterList(ParameterKey.PCBTypeList);
 
             m_FormPartial.PCBTypeList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBType").FirstOrDefault().ParameterID);
             m_FormPartial.PCBLayoutStatusList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBLayoutStatus").FirstOrDefault().ParameterID);

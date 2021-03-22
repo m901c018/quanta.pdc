@@ -39,6 +39,20 @@
                     <div class="card-body" style="padding-bottom: 0px;">
                         <p class="card-title">快速連結</p>
                         <ul class="inbox-list list-unstyled">
+                            <li>
+                                <div class="info-list">
+                                    <div style="flex: 15; text-align: left; display: inline-block; ">
+                                        <span>Constraint 範本 (@(Model.m_CNSSampleFile != null ? Model.m_CNSSampleFile.CreatorDate.ToString("yyyy/MM/dd") : "2021/01/01"))</span>
+                                        @*<span style="color: #ffc107;">*請務必使用最新版範本</span>*@
+                                    </div>
+
+                                    <div style=" text-align: right; display: inline-block; ">
+                                        <a href="javascript:return false;" class="btn btn-outline-info" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" style=" padding: 4px 25px;" id="mail-compose">下載</a>
+                                    </div>
+                                </div>
+
+                            </li>
+
                             @foreach (var item in Model.HomeLinkList)
                             {
                                 PDC_File File = Model.HomeLinkFileList.Where(x => x.SourceID == item.ParameterID).FirstOrDefault();
@@ -74,19 +88,7 @@
                                     </li>
                                 }
                             }
-                            <li>
-                                <div class="info-list">
-                                    <div style="flex: 15; text-align: left; display: inline-block; ">
-                                        <span>Constraint 範本 (@(Model.m_CNSSampleFile != null ? Model.m_CNSSampleFile.CreatorDate.ToString("yyyy/MM/dd") : "2021/01/01"))</span>
-                                        @*<span style="color: #ffc107;">*請務必使用最新版範本</span>*@
-                                    </div>
 
-                                    <div style=" text-align: right; display: inline-block; ">
-                                        <a href="javascript:return false;" class="btn btn-outline-info" onclick="window.location.href='@Url.Action("DownloadSample", "Excel")'" style=" padding: 4px 25px;" id="mail-compose">下載</a>
-                                    </div>
-                                </div>
-
-                            </li>
 
                         </ul>
                     </div>

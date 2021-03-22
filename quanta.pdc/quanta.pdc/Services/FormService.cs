@@ -82,6 +82,11 @@ namespace cns.Services
             return item;
         }
 
+        /// <summary> 取得申請單查詢資料
+        /// 
+        /// </summary>
+        /// <param name="PDC_Form">查詢條件</param>
+        /// <returns></returns>
         public List<vw_FormQuery> GetFilterFormList(QueryParam PDC_Form)
         {
             //判斷物件
@@ -154,7 +159,13 @@ namespace cns.Services
             return pDC_FormList;
         }
 
-
+        /// <summary> 更新申請單
+        /// 
+        /// </summary>
+        /// <param name="NewForm">更新申請單資料</param>
+        /// <param name="FileList">關聯檔案</param>
+        /// <param name="ErrorMsg">錯誤訊息</param>
+        /// <returns></returns>
         public bool UpdateForm(PDC_Form NewForm, List<PDC_File> FileList, ref string ErrorMsg)
         {
             FileHelper fileHelper = new FileHelper(_hostingEnvironment);
@@ -239,7 +250,7 @@ namespace cns.Services
                     NewFileList.Add(File);
                 }
 
-                NewForm.AppliedFormNo = "C" + NewForm.FormID.ToString().PadLeft(7, '0');
+                NewForm.AppliedFormNo = "CNS" + NewForm.FormID.ToString().PadLeft(7, '0');
                 _context.SaveChanges();
                 //把檔案從Temp移到FileUpload
                 foreach (PDC_File item in NewFileList)
@@ -258,7 +269,11 @@ namespace cns.Services
             return true;
         }
 
-
+        /// <summary> 取得關卡對應時數
+        /// 
+        /// </summary>
+        /// <param name="form_Stage"></param>
+        /// <returns></returns>
         public decimal GetWorkHour(Enum.FormEnum.Form_Stage form_Stage)
         {
             PDC_Parameter pDC_Parameter = new PDC_Parameter();
@@ -286,6 +301,16 @@ namespace cns.Services
                 return 0.5M;
         }
 
+        /// <summary> 新增申請單關卡
+        /// 
+        /// </summary>
+        /// <param name="FormID">申請單ID</param>
+        /// <param name="form_Stage">申請單關卡</param>
+        /// <param name="result">意見</param>
+        /// <param name="FileList">關聯檔案</param>
+        /// <param name="FormStageID">關卡ID</param>
+        /// <param name="ErrorMsg">錯誤訊息</param>
+        /// <returns></returns>
         public bool AddForm_StageLog(long FormID, Enum.FormEnum.Form_Stage form_Stage, string result, List<PDC_File> FileList, out long FormStageID, ref string ErrorMsg)
         {
             PDC_Form_StageLog FormStage = new PDC_Form_StageLog();
@@ -405,6 +430,11 @@ namespace cns.Services
             return true;
         }
 
+        /// <summary> 刪除申請單關卡
+        /// 
+        /// </summary>
+        /// <param name="StageLogID">申請單關卡ID</param>
+        /// <returns></returns>
         public bool DeleteForm_StageLog(long StageLogID)
         {
             try

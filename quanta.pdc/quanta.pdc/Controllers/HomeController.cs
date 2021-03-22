@@ -43,6 +43,7 @@ namespace cns.Controllers
             PrivilegeService privilegeService = new PrivilegeService(_context);
 
             bool IsDemo = _config.GetValue<bool>("IdentityDefaultOptions:IsDemo");
+            //測試用
             if(IsDemo)
             {
                 EmpNumber = string.IsNullOrWhiteSpace(EmpNumber) ? "100041F9" : EmpNumber;
@@ -61,16 +62,25 @@ namespace cns.Controllers
             }
             else
             {
-                string UserDomainName = Environment.UserDomainName;
-                EmpNumber = Environment.UserName;
-                CurrentUser User = new CurrentUser();
-                if (authenticationService.GetAccount(UserDomainName, ref User))
-                {
-                    User.PrivilegeList = privilegeService.GetPrivilegeList(User.User.MemberID);
+                string DomainwithNumber = Environment.UserDomainName + "\\\\" + Environment.UserName;
+                Api_QueryUserInfo apiModel = new Api_QueryUserInfo();
+                string ErrorMsg = string.Empty;
 
-                    User.MenuList = authenticationService.GetMenuList(User.PrivilegeList);
-                    //Session紀錄
-                    HttpContext.Session.SetObjectAsJson(SessionKey.usrInfo, User);
+                if (ApiService.GetApiUserInfo(DomainwithNumber, ref apiModel, ref ErrorMsg)) 
+                {
+                    CurrentUser User = new CurrentUser();
+                    if (authenticationService.GetApiAccount(apiModel, ref User))
+                    {
+                        User.PrivilegeList = privilegeService.GetPrivilegeList(User.User.MemberID);
+
+                        User.MenuList = authenticationService.GetMenuList(User.PrivilegeList);
+                        //Session紀錄
+                        HttpContext.Session.SetObjectAsJson(SessionKey.usrInfo, User);
+                    }
+                }
+                else
+                {
+                    TempData["TempMsg"] = "工號：" + DomainwithNumber + "Api查無資料";
                 }
             }
            
@@ -95,16 +105,16 @@ namespace cns.Controllers
             FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
             m_HomePartial ViewModel = new m_HomePartial();
             //CNS範本
-            if (_context.PDC_File.Where(x => x.FunctionName == "ConfigurationSample").Any())
+            if (_context.PDC_File.Where(x => x.FunctionName == FileKey.ConfigurationSample).Any())
             {
-                ViewModel.m_CNSSampleFile = _context.PDC_File.Where(x => x.FunctionName == "ConfigurationSample").OrderByDescending(x => x.CreatorDate).FirstOrDefault();
+                ViewModel.m_CNSSampleFile = _context.PDC_File.Where(x => x.FunctionName == FileKey.ConfigurationSample).OrderByDescending(x => x.CreatorDate).FirstOrDefault();
 
             }
             //首頁連結
-            ViewModel.HomeLinkList = parameterService.GetParameterList("Configuration_HomeLink");
-            ViewModel.HomeLinkFileList = _context.PDC_File.Where(x => x.FunctionName == "Configuration_HomeLink").ToList();
+            ViewModel.HomeLinkList = parameterService.GetParameterList(ParameterKey.Configuration_HomeLink);
+            ViewModel.HomeLinkFileList = _context.PDC_File.Where(x => x.FunctionName == FileKey.Configuration_HomeLink).ToList();
             //首頁公告
-            ViewModel.Announcement = parameterService.GetParameterOne("ConfigurationAnnouncement");
+            ViewModel.Announcement = parameterService.GetParameterOne(ParameterKey.ConfigurationAnnouncement);
 
 
             return View(ViewModel);
@@ -112,12 +122,14 @@ namespace cns.Controllers
 
         public IActionResult Menu()
         {
-            AuthenticationService authenticationService = new AuthenticationService(_context);
             //讀取使用者資訊
             CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
+            AuthenticationService authenticationService = new AuthenticationService(_context);
+            PrivilegeService privilegeService = new PrivilegeService(_context, UserInfo.User);
 
             m_HomePartial model = new m_HomePartial();
-            model.MenuList = UserInfo.MenuList;
+            List<PDC_Privilege> pDC_Privileges = privilegeService.GetPrivilegeList(UserInfo.User.MemberID);
+            model.MenuList = authenticationService.GetMenuList(pDC_Privileges);
 
             return PartialView(model);
 

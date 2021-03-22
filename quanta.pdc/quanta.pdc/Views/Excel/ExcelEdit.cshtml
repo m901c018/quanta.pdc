@@ -219,7 +219,7 @@
             });
             $('#ThicknessTotal').text(Sum.toFixed(2));
         }
-
+        //儲存檔案，並返回申請單
         function SaveFile() {
 
             var data = new Array();
@@ -305,6 +305,7 @@
             }
         }
 
+        //根據Name自動帶入其他欄位值
         function SetGroupName(obj) {
             //先轉大寫
             $(obj).val($(obj).val().toUpperCase());
@@ -412,7 +413,7 @@
                 }
             });
         }
-
+        //下載檢查後檔案
         function DownloadCheckFile() {
             var data = new Array();
 
@@ -437,6 +438,9 @@
                 dataType: 'json',
                 contentType: "application/json; charset=utf-8",
                 success: function (result) {
+                    if (IsChangeRow) {
+                        alert('有新增減列，匯出後麻煩確認後方參考訊息');
+                    }
                     //顯示訊息
                     window.location.href = "@Url.RouteUrl(new { Controller = "Excel", Action = "Download" })/?fileName=" + result;
                 },
@@ -452,7 +456,7 @@
                 }
             });
         }
-
+        //下載錯誤訊息
         function DownloadError() {
             var data = new Array();
 
@@ -493,8 +497,11 @@
             });
         }
 
+        var IsChangeRow = false;
+        //新增列
         function AddRow(obj) {
-            
+            IsChangeRow = true;
+
             var NextRow = $(obj).parent().parent().next();
 
             var html = '';
@@ -508,11 +515,6 @@
             html += '<td>';
             html += '<input type="email" class="form-control data" style="padding:12px 15px; background-color:gray" value="Conductor" disabled="disabled" />';
             
-            //html += '<select class="form-control select2 data" id="Select" name="Select" style="height:45px">';
-            //html += '<option selected="selected" value="Conductor">Conductor</option>';
-            //html += '<option value="Dielectric">Dielectric</option>';
-            //html += '<option value="Plane">Plane</option>';
-            //html += '</select>';
             html += '</td>';
             html += '<td>';
             html += '<input type="email" class="form-control data" style="padding:12px 15px;" value="" onchange="SetGroupName(this)" />';
@@ -545,11 +547,7 @@
             html += '</td>';
             html += '<td>';
             html += '<input type="email" class="form-control data" style="padding:12px 15px; background-color:gray" value="Dielectric" disabled="disabled" />';
-            //html += '<select class="form-control select2 data" id="Select" name="Select" style="height:45px">';
-            //html += '<option value="Conductor">Conductor</option>';
-            //html += '<option selected="selected" value="Dielectric">Dielectric</option>';
-            //html += '<option value="Plane">Plane</option>';
-            //html += '</select>';
+            
             html += '</td>';
             html += '<td>';
             html += '<input type="email" class="form-control data" style="padding:12px 15px;background-color: gray;" value="" disabled="disabled" />';
@@ -577,9 +575,10 @@
 
             ReSetData();
         }
-
+        //刪除列
         function DeleteRow(obj) {
-            
+            IsChangeRow = true;
+
             var NextRow = $(obj).parent().parent().next();
 
             NextRow.remove();
@@ -587,7 +586,7 @@
 
             ReSetData();
         }
-
+        //Layer重新編製
         function ReSetData() {
              
             $.each($('#grid > tbody > tr').find('.Layer'), function (colIndex,col) {

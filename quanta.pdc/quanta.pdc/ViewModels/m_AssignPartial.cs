@@ -76,6 +76,7 @@ namespace cns.ViewModels
         /// </summary>
         public List<PDC_Privilege> PrivilegeList { get; set; }
 
+
         public m_AssignPartial()
         {
             vw_FormQueryList = new List<vw_FormQuery>();

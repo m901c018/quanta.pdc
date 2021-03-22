@@ -26,6 +26,8 @@ namespace cns.Services
 
         private readonly ApplicationDbContext _context;
 
+        private readonly PDC_Member _Member;
+
         private readonly IHostingEnvironment _hostingEnvironment;
 
         public AuthenticationService(ApplicationDbContext context)
@@ -38,6 +40,12 @@ namespace cns.Services
         {
             _hostingEnvironment = hostingEnvironment;
             _context = context;
+        }
+
+        public AuthenticationService(ApplicationDbContext context,PDC_Member Member)
+        {
+            _context = context;
+            _Member = Member;
         }
 
         public List<Menu> GetMenuList(MemberEnum.Role Role)
@@ -210,6 +218,32 @@ namespace cns.Services
             return User;
         }
 
+        /// <summary> 新增帳號
+        /// 
+        /// </summary>
+        /// <param name="EmpNumber">工號</param>
+        /// <param name="User">帳號Model</param>
+        /// <returns></returns>
+        public PDC_Member AddMember(Guid MemberID)
+        {
+            PDC_Member User = new PDC_Member();
+
+            try
+            {
+                if (_context.PDC_Member.Where(x => x.MemberID == MemberID && x.IsEnabled == false).Any())
+                {
+                    User = _context.PDC_Member.Where(x => x.MemberID == MemberID && x.IsEnabled == false).SingleOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new PDC_Member();
+            }
+
+            return User;
+        }
+
         /// <summary> 取得帳號
         /// 
         /// </summary>
@@ -253,43 +287,111 @@ namespace cns.Services
 
             return MemberList;
         }
+        /// <summary> 取得所有事業群對照表
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public List<PDC_Department> GetDepartmentList()
+        {
+            List<PDC_Department> model = new List<PDC_Department>();
+
+            model = _context.PDC_Department.ToList();
+
+            return model;
+        }
+
+        /// <summary> 取得事業群對照表資料
+        /// 
+        /// </summary>
+        /// <param name="DepartmentID"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public bool GetDepartmentOne(Guid DepartmentID,ref PDC_Department model)
+        {
+            model = new PDC_Department();
+            try
+            {
+                model = _context.PDC_Department.Where(x => x.DepartmentID == DepartmentID).SingleOrDefault();
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary> 新增事業群對照表
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public bool AddDepartment(ref PDC_Department model)
+        {
+            try
+            {
+                model.Creator = _Member.MemberID.ToString();
+                model.CreatorDate = DateTime.Now;
+                model.CreatorName = _Member.UserEngName;
+                _context.PDC_Department.Add(model);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary> 
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public bool CheckDepartmentAny(string CompCode,string DeptCode)
+        {
+            bool IsCheck = _context.PDC_Department.Where(x => x.CompCode == CompCode && x.BUCode == DeptCode).Any();
+
+            return IsCheck;
+        }
+
+        /// <summary> 刪除事業群對照表
+        /// 
+        /// </summary>
+        /// <param name="DepartmentID"></param>
+        /// <returns></returns>
+        public bool DeleteDepartment(Guid DepartmentID)
+        {
+            try
+            {
+                PDC_Department model = _context.PDC_Department.Where(x => x.DepartmentID == DepartmentID).SingleOrDefault();
+                _context.PDC_Department.Remove(model);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+
+            return true;
+        }
 
         /// <summary> 取得帳號
         /// 
         /// </summary>
-        /// <param name="EmpNumber">工號</param>
+        /// <param name="api_QueryUserInfo">Api Model</param>
         /// <param name="User">帳號Model</param>
         /// <returns></returns>
-        public bool GetAccount(string DomainEmpNumber, ref CurrentUser User)
+        public bool GetApiAccount(Api_QueryUserInfo api_QueryUserInfo, ref CurrentUser User)
         {
             User = new CurrentUser();
 
             try
             {
-
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://qcicore01/SAM_API/api/Software/QueryUserInfo");
-                request.Method = "POST";
-                request.ContentType = "application/json";
-
-                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
-                {
-                    string json = "{\"EmployeeId\":\""+ DomainEmpNumber + "\","
-                                + "\"EMail\":\"\"}";
-
-                    streamWriter.Write(json);
-                }
-
-                //API回傳的字串
-                string responseStr = "";
-                //發出Request
-                var httpResponse = (HttpWebResponse)request.GetResponse();
-                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-                {
-                    responseStr = streamReader.ReadToEnd();
-                }
-
-                Api_QueryUserInfo api_QueryUserInfo = new Api_QueryUserInfo();
-                api_QueryUserInfo = JsonConvert.DeserializeObject<Api_QueryUserInfo>(responseStr.Replace("[", "").Replace("]", ""));
 
                 if (_context.PDC_Member.Where(x => x.EmpNumber == api_QueryUserInfo.EMPLID.Trim() && x.BUCode == api_QueryUserInfo.DEPCOD.Trim() && x.CompCode == api_QueryUserInfo.COMCOD && x.IsEnabled == false).Any())
                 {
@@ -297,6 +399,9 @@ namespace cns.Services
                 }
                 else
                 {
+                    //取得同工號資料
+                    List<PDC_Member> pDC_MemberList = _context.PDC_Member.Where(x => x.EmpNumber == api_QueryUserInfo.EMPLID.Trim() && x.IsEnabled == false).ToList();
+
                     PDC_Member pDC_Member = new PDC_Member();
                     pDC_Member.BUCode = api_QueryUserInfo.DEPCOD;
                     pDC_Member.BUName = api_QueryUserInfo.DEPNAM;
@@ -309,14 +414,13 @@ namespace cns.Services
                     pDC_Member.MemberID = Guid.NewGuid();
                     pDC_Member.RoleID = MemberEnum.Role.EE_User;
                     pDC_Member.UserEngName = api_QueryUserInfo.ENGNAM;
-                    pDC_Member.UserName = api_QueryUserInfo.ENGNAM;
+                    pDC_Member.UserName = api_QueryUserInfo.CHINAM;
                     pDC_Member.Creator = "super@admin.com";
                     pDC_Member.CreatorDate = DateTime.Now;
-                    pDC_Member.CreatorName = "super@admin.com";
+                    pDC_Member.CreatorName = "admin";
                     _context.PDC_Member.Add(pDC_Member);
 
                     //如果同工號但部門或公司代碼不同，把原本資料Enabled
-                    List<PDC_Member> pDC_MemberList = _context.PDC_Member.Where(x => x.EmpNumber == api_QueryUserInfo.EMPLID.Trim() && x.IsEnabled == false).ToList();
                     foreach(var item in pDC_MemberList)
                     {
                         item.IsEnabled = true;

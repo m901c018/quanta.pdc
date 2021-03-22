@@ -70,10 +70,10 @@
                                         <label>公司別</label>
                                         <select class="select2 form-control" id="CompCode" asp-for="QueryParam.CompCode" onchange="ChangeCompBU(this)">
                                             <option value=""></option>
-                                            @*@foreach (var item in Model.m_CompCodeList)
+                                            @foreach (var item in Model.m_CompCodeList)
                                             {
                                                 <option value="@item.Value">@item.Text</option>
-                                            }*@
+                                            }
                                         </select>
                                     </div>
                                 </div>
@@ -82,10 +82,10 @@
                                         <label>事業群</label>
                                         <select class="select2 form-control" id="BuCode" asp-for="QueryParam.BUCode" onchange="ChangeCompBU(this)">
                                             <option value=""></option>
-                                            @*@foreach (var item in Model.m_DeptCodeList)
+                                            @foreach (var item in Model.m_DeptCodeList)
                                             {
                                                 <option value="@item.Value">@item.Text</option>
-                                            }*@
+                                            }
                                         </select>
                                     </div>
                                 </div>
@@ -224,7 +224,7 @@
                                                                 </td>
                                                             }
                                                             <td>@Model.vw_FormQueryList[i].CompCode</td>
-                                                            <td>@Model.vw_FormQueryList[i].BUCode</td>
+                                                            <td>@Model.vw_FormQueryList[i].BUName</td>
                                                             <td>@Model.vw_FormQueryList[i].PCBTypeStatusName</td>
                                                             <td>@Model.vw_FormQueryList[i].ProjectName</td>
                                                             <td>@Model.vw_FormQueryList[i].BoardTypeName</td>

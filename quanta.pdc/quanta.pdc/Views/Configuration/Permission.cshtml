@@ -65,6 +65,7 @@
                                                 <div class="form-group">
                                                     <label>部門</label>
                                                     <input type="text" class="form-control" id="ProcessDeptName" disabled="disabled">
+                                                    <input type="hidden" id="ProcessDeptCode" />
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
@@ -150,6 +151,7 @@
                                                 <div class="form-group">
                                                     <label>部門</label>
                                                     <input type="text" class="form-control" id="AssignDeptName" disabled="disabled">
+                                                    <input type="hidden" id="AssignDeptCode" />
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
@@ -260,6 +262,7 @@
                                                 <div class="form-group">
                                                     <label>部門</label>
                                                     <input type="text" class="form-control" id="AdminDeptName" disabled="disabled">
+                                                    <input type="hidden" id="AdminDeptCode" />
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
@@ -384,7 +387,7 @@
                     else {
                         var Html = "";
                         Html += "<tr>";
-                        Html += "<td>" + result.Privilege.EmpNumber + "</td>";
+                        Html += "<td>" + result.Privilege.DomainEmpNumber + "</td>";
                         Html += "<td>" + result.Privilege.MemberName + "</td>";
                         Html += "<td>" + result.Privilege.CompCode + "</td>";
                         var BUName = result.Privilege.ShowName == null ? result.Privilege.BUName : result.Privilege.ShowName;
@@ -413,11 +416,11 @@
         }
 
         function GetMember(obj, type) {
-            $('body').removeClass('no-loader');
-
             if ($('#' + type + 'EmpNumber').val() == "") {
                 return;
             }
+
+            $('body').removeClass('no-loader');
 
             var formData = new FormData();
             formData.append('EmpNumber', $('#' + type + 'EmpNumber').val());
@@ -437,13 +440,15 @@
                         $('#' + type + 'EmpNumber').val('');
                         $('#' + type + 'Name').val('');
                         $('#' + type + 'CompCode').val('');
+                        $('#' + type + 'DeptCode').val('');
                         $('#' + type + 'DeptName').val('');
                     }
                     else {
                         $('#' + type + 'ID').val(result.Member.MemberID);
-                        $('#' + type + 'Name').val(result.Member.UserEngName + '('+ result.Member.UserName +')');
-                        $('#' + type + 'CompCode').val(result.Member.CompCode);
-                        $('#' + type + 'DeptName').val(result.Member.BUName);
+                        $('#' + type + 'Name').val(result.apiModel.ENGNAM + '('+ result.apiModel.CHINAM +')');
+                        $('#' + type + 'CompCode').val(result.apiModel.COMCOD);
+                        $('#' + type + 'DeptCode').val(result.apiModel.DEPCOD);
+                        $('#' + type + 'DeptName').val(result.apiModel.DEPNAM);
                     }
                 },
                 error: function (jqXHR) {

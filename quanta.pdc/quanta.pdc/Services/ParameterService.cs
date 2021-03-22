@@ -124,6 +124,25 @@ namespace cns.Services
             return true;
         }
 
+        public bool DeleteParameter(Int64 ParameterID, ref string ErrorMsg)
+        {
+            ErrorMsg = string.Empty;
+            try
+            {
+                PDC_Parameter Parameter = GetParameterOne(ParameterID);
+                _context.Remove(Parameter);
+                _context.SaveChanges();
+
+                ErrorMsg = "刪除成功";
+            }
+            catch (Exception ex)
+            {
+                ErrorMsg = "刪除失敗";
+                return false;
+            }
+            return true;
+        }
+
         public bool AddParameter(ref PDC_Parameter NewParameter, ref string ErrorMsg)
         {
             ErrorMsg = string.Empty;

@@ -46,14 +46,14 @@ namespace cns.Controllers
             m_AssignPartial model = new m_AssignPartial();
 
             model.MemberID = UserInfo.User.MemberID.ToString();
-            model.PrivilegeList = UserInfo.PrivilegeList;
+            model.PrivilegeList = privilegeService.GetPrivilegeList(UserInfo.User.MemberID);
             model.m_FormStage = FormEnum.GetAssign_Form_StageDic();
             //model.m_ProcessorList = authenticationService.GetAccountList(MemberEnum.Role.PDC_Processor).Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Text = x.UserEngName + "(" + x.UserName + ")", Value = x.MemberID.ToString() }).ToList();
             model.m_ProcessorList = privilegeService.GetProcessorList();
-            model.m_CompCodeList = authenticationService.GetAccountList().GroupBy(x=>x.CompCode).Select(x=> new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Text = x.Key, Value = x.Key }).ToList();
-            model.m_DeptCodeList = authenticationService.GetAccountList().GroupBy(x => new { x.BUCode,x.BUName}).Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Text = x.Key.BUName, Value = x.Key.BUCode }).ToList();
+            model.m_CompCodeList = parameterService.GetParameterList(ParameterKey.ConfigurationCompCode).Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Text = x.ParameterText, Value = x.ParameterText }).ToList();
+            model.m_DeptCodeList = authenticationService.GetDepartmentList().GroupBy(x => new { x.BUCode, x.ShowName }).Distinct().Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Text = x.Key.ShowName, Value = x.Key.BUCode }).ToList();
 
-            List<PDC_Parameter> data = parameterService.GetParameterList("PCBTypeList");
+            List<PDC_Parameter> data = parameterService.GetParameterList(ParameterKey.PCBTypeList);
             model.PCBTypeList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBType").FirstOrDefault().ParameterID);
             model.PCBLayoutStatusList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBLayoutStatus").FirstOrDefault().ParameterID);
 
@@ -78,13 +78,13 @@ namespace cns.Controllers
             WorkService WorkService = new WorkService(_context, UserInfo.User);
 
             model.MemberID = UserInfo.User.MemberID.ToString();
-            model.PrivilegeList = UserInfo.PrivilegeList;
+            model.PrivilegeList = privilegeService.GetPrivilegeList(UserInfo.User.MemberID);
             model.m_FormStage = FormEnum.GetAssign_Form_StageDic();
             model.m_ProcessorList = privilegeService.GetProcessorList();
-            model.m_CompCodeList = authenticationService.GetAccountList().GroupBy(x => x.CompCode).Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Text = x.Key, Value = x.Key }).ToList();
-            model.m_DeptCodeList = authenticationService.GetAccountList().GroupBy(x => new { x.BUCode, x.BUName }).Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Text = x.Key.BUName, Value = x.Key.BUCode }).ToList();
+            model.m_CompCodeList = parameterService.GetParameterList(ParameterKey.ConfigurationCompCode).Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Text = x.ParameterText, Value = x.ParameterText }).ToList();
+            model.m_DeptCodeList = authenticationService.GetDepartmentList().GroupBy(x => new { x.BUCode, x.ShowName }).Distinct().Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem() { Text = x.Key.ShowName, Value = x.Key.BUCode }).ToList();
 
-            List<PDC_Parameter> data = parameterService.GetParameterList("PCBTypeList");
+            List<PDC_Parameter> data = parameterService.GetParameterList(ParameterKey.PCBTypeList);
             model.PCBTypeList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBType").FirstOrDefault().ParameterID);
             model.PCBLayoutStatusList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBLayoutStatus").FirstOrDefault().ParameterID);
 
@@ -161,17 +161,17 @@ namespace cns.Controllers
             model.vw_FormQuery = formService.GetFilterFormList(new QueryParam() { AppliedFormNo = AppliedFormNo }).FirstOrDefault();
             model.m_PDC_Form = Form;
 
-            List<PDC_Parameter> data = parameterService.GetParameterList("PCBTypeList");
+            List<PDC_Parameter> data = parameterService.GetParameterList(ParameterKey.PCBTypeList);
             model.PCBTypeList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBType").FirstOrDefault().ParameterID);
             model.PCBLayoutStatusList = parameterService.GetSelectList(data.Where(x => x.ParameterValue == "PCBLayoutStatus").FirstOrDefault().ParameterID);
             model.ReleaseResultList = parameterService.GetParameterList(data.Where(x => x.ParameterValue == "ReleaseResult").FirstOrDefault().ParameterID);
             model.RejectResultList = parameterService.GetParameterList(data.Where(x => x.ParameterValue == "RejectResult").FirstOrDefault().ParameterID);
 
-            model.m_ReleaseWorkHour = parameterService.GetParameterOne("ConfigurationRelease");
-            model.m_RejectWorkHour = parameterService.GetParameterOne("ConfigurationReject");
+            model.m_ReleaseWorkHour = parameterService.GetParameterOne(ParameterKey.ConfigurationRelease);
+            model.m_RejectWorkHour = parameterService.GetParameterOne(ParameterKey.ConfigurationReject);
             model.Member = UserInfo.User;
 
-            model.m_ConfigurationWorkDetail = parameterService.GetParameterOne("ConfigurationWorkDetail");
+            model.m_ConfigurationWorkDetail = parameterService.GetParameterOne(ParameterKey.ConfigurationWorkDetail);
             model.m_ConfigurationWorkDetailFile = fileService.GetFileList("ConfigurationWorkDetail", model.m_ConfigurationWorkDetail.ParameterID).FirstOrDefault();
 
             if (model.vw_FormQuery.PDC_Member == UserInfo.User.MemberID.ToString() && model.vw_FormQuery.Stage == FormEnum.Form_Stage.Assign)
@@ -183,15 +183,15 @@ namespace cns.Controllers
                 model.IsReadOnly = true;
             }
 
-            model.m_BRDFile = fileService.GetFileOne(Form.FormID, "FormApplyBRD");
-            model.m_ExcelFile = fileService.GetFileOne(Form.FormID, "FormApplyExcel");
-            model.m_OtherFileList = fileService.GetFileList("FormApplyOther", Form.FormID);
-            model.m_pstchipFile = fileService.GetFileOne(Form.FormID, "FormApplypstchip");
-            model.m_pstxnetFile = fileService.GetFileOne(Form.FormID, "FormApplypstxnet");
-            model.m_pstxprtFile = fileService.GetFileOne(Form.FormID, "FormApplypstxprt");
+            model.m_BRDFile = fileService.GetFileOne(Form.FormID, FileKey.FormApplyBRD);
+            model.m_ExcelFile = fileService.GetFileOne(Form.FormID, FileKey.FormApplyExcel);
+            model.m_OtherFileList = fileService.GetFileList(FileKey.FormApplyOther, Form.FormID);
+            model.m_pstchipFile = fileService.GetFileOne(Form.FormID, FileKey.FormApplypstchip);
+            model.m_pstxnetFile = fileService.GetFileOne(Form.FormID, FileKey.FormApplypstxnet);
+            model.m_pstxprtFile = fileService.GetFileOne(Form.FormID, FileKey.FormApplypstxprt);
 
             //取得範例
-            Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\FileUpload\\" + model.m_ExcelFile.FileFullName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            Stream stream = new FileStream(_hostingEnvironment.WebRootPath + "\\" + FileKey.FileUpload + "\\" + model.m_ExcelFile.FileFullName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
 
             stream.Position = 0; // <-- Add this, to make it work
             //IFormFile File = new FormFile(stream,)
@@ -236,7 +236,7 @@ namespace cns.Controllers
             string ErrorMsg = string.Empty;
             PDC_File File = new PDC_File();
 
-            if (!fileService.FileAdd(file, "FormStage", out File, "Temp", 0, GUID))
+            if (!fileService.FileAdd(file, FileKey.FormStage, out File, FileKey.Temp, 0, GUID))
             {
                 return Json(new { status = 400, ErrorMessage = ErrorMsg });
             }
@@ -405,7 +405,7 @@ namespace cns.Controllers
                     if(file != null)
                     {
                         PDC_File PDC_File = new PDC_File();
-                        fileService.FileAdd(file, "FormStage", out PDC_File, "FileUpload", StageLogID);
+                        fileService.FileAdd(file, FileKey.FormStage, out PDC_File, FileKey.FileUpload, StageLogID);
                     }
                 }
                 else
@@ -436,13 +436,13 @@ namespace cns.Controllers
             PDC_Form pDC_Form = formService.GetFormOne(FormID);
             List<PDC_File> ALLFileList = new List<PDC_File>();
 
-            ALLFileList.Add(fileService.GetFileOne(FormID, "FormApplyBRD"));
-            ALLFileList.Add(fileService.GetFileOne(FormID, "FormApplyExcel"));
+            ALLFileList.Add(fileService.GetFileOne(FormID, FileKey.FormApplyBRD));
+            ALLFileList.Add(fileService.GetFileOne(FormID, FileKey.FormApplyExcel));
 
-            ALLFileList.Add(fileService.GetFileOne(FormID, "FormApplypstchip"));
-            ALLFileList.Add(fileService.GetFileOne(FormID, "FormApplypstxnet"));
-            ALLFileList.Add(fileService.GetFileOne(FormID, "FormApplypstxprt"));
-            List<PDC_File> OtherFileList = fileService.GetFileList("FormApplyOther", FormID);
+            ALLFileList.Add(fileService.GetFileOne(FormID, FileKey.FormApplypstchip));
+            ALLFileList.Add(fileService.GetFileOne(FormID, FileKey.FormApplypstxnet));
+            ALLFileList.Add(fileService.GetFileOne(FormID, FileKey.FormApplypstxprt));
+            List<PDC_File> OtherFileList = fileService.GetFileList(FileKey.FormApplyOther, FormID);
 
             if (OtherFileList != null)
                 ALLFileList.AddRange(OtherFileList);

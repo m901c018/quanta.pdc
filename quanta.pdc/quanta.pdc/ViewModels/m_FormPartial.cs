@@ -56,36 +56,6 @@ namespace cns.ViewModels
         /// </summary>
         public List<PDC_Parameter> FormApplyResultList { get; set; }
 
-        /// <summary> BRD壓縮檔
-        /// 
-        /// </summary>
-        [Required(ErrorMessage = "必填")]
-        public IFormFile m_UplpadBRDFile { get; set; }
-
-        /// <summary> Constraint Excel
-        /// 
-        /// </summary>
-        [Required(ErrorMessage = "必填")]
-        public IFormFile m_UplpadExcelFile { get; set; }
-
-        /// <summary> pstchip.dat
-        /// 
-        /// </summary>
-        [Required(ErrorMessage = "必填")]
-        public IFormFile m_UplpadpstchipFile { get; set; }
-
-        /// <summary> pstxnet.dat
-        /// 
-        /// </summary>
-        [Required(ErrorMessage = "必填")]
-        public IFormFile m_UplpadpstxnetFile { get; set; }
-
-        /// <summary> pstxprt.dat
-        /// 
-        /// </summary>
-        [Required(ErrorMessage = "必填")]
-        public IFormFile m_UplpadpstxprtFile { get; set; }
-
         /// <summary> BRD壓縮檔(編輯用)
         /// 
         /// </summary>
@@ -195,6 +165,11 @@ namespace cns.ViewModels
         /// 
         /// </summary>
         public PDC_Member Member { get; set; }
+
+        /// <summary> 組態設定線寬線距規則
+        /// 
+        /// </summary>
+        public PDC_Parameter m_ExcelRule { get; set; }
 
         public m_FormPartial()
         {

@@ -143,6 +143,20 @@ namespace cns.ViewModels
         /// </summary>
         public List<SelectListItem> SystemCategoryList { get; set; }
 
+        /// <summary> 事業群對照表-公司別
+        /// 
+        /// </summary>
+        public List<PDC_Parameter> CompList { get; set; }
+
+        /// <summary> 事業群對照表-事業群
+        /// 
+        /// </summary>
+        public List<PDC_Parameter> DeptList { get; set; }
+
+        /// <summary> 事業群對照表
+        /// 
+        /// </summary>
+        public List<PDC_Department> DepartmentList { get; set; }
         public m_ConfigurationPartial()
         {
             CNS_Sample = new PDC_File();

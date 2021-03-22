@@ -18,5 +18,20 @@ namespace cns.Services.App
         /// </summary>
         public const String MenuUrl = "MenuUrl";
 
+        /// <summary>
+        /// Excel檔案ID
+        /// </summary>
+        public const String SessionFileID = "SessionFileID";
+
+        /// <summary>
+        /// Excel檔案內容
+        /// </summary>
+        public const String SessionExcelData = "SessionExcelData";
+
+        /// <summary>
+        /// Excel檔案名稱
+        /// </summary>
+        public const String SessionFileName = "SessionFileName";
+        
     }
 }

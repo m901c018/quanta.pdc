@@ -128,7 +128,11 @@ namespace cns.Services
         }
 
         
-
+        /// <summary> 取得檔案資料
+        /// 
+        /// </summary>
+        /// <param name="FileID">檔案ID</param>
+        /// <returns></returns>
         public PDC_File GetFileOne(Int64 FileID)
         {
             PDC_File PDC_File = new PDC_File();
@@ -138,6 +142,12 @@ namespace cns.Services
             return PDC_File;
         }
 
+        /// <summary> 取得檔案資料
+        /// 
+        /// </summary>
+        /// <param name="SourceID">關聯ID</param>
+        /// <param name="FunctionName">檔案FunctionName</param>
+        /// <returns></returns>
         public PDC_File GetFileOne(Int64 SourceID,string FunctionName)
         {
             PDC_File PDC_File = new PDC_File();
@@ -147,6 +157,12 @@ namespace cns.Services
             return PDC_File;
         }
 
+        /// <summary> 取得檔案集合
+        /// 
+        /// </summary>
+        /// <param name="FunctionName">檔案FunctionName</param>
+        /// <param name="SourceID">關聯ID</param>
+        /// <returns></returns>
         public List<PDC_File> GetFileList(string FunctionName,Int64 SourceID)
         {
             List<PDC_File> FileList = new List<PDC_File>();
@@ -156,6 +172,11 @@ namespace cns.Services
             return FileList;
         }
 
+        /// <summary> 取得所有關卡清單關聯檔案
+        /// 
+        /// </summary>
+        /// <param name="Form_StageLogs">關卡資料</param>
+        /// <returns></returns>
         public List<PDC_File> GetForm_StageFileList(List<PDC_Form_StageLog> Form_StageLogs)
         {
             List<PDC_File> result = new List<PDC_File>();
@@ -168,6 +189,12 @@ namespace cns.Services
             return result;
         }
 
+        /// <summary> 取得參數表對應檔案
+        /// 
+        /// </summary>
+        /// <param name="ParameterList">參數表資料</param>
+        /// <param name="FunctionName">檔案FunctionName</param>
+        /// <returns></returns>
         public List<PDC_File> GetParameterFileList(List<PDC_Parameter> ParameterList,string FunctionName)
         {
             List<PDC_File> result = new List<PDC_File>();
@@ -180,6 +207,11 @@ namespace cns.Services
             return result;
         }
 
+        /// <summary> 取得檔案集合
+        /// 
+        /// </summary>
+        /// <param name="FunctionName">檔案FunctionName</param>
+        /// <returns></returns>
         public List<PDC_File> GetFileList(string FunctionName)
         {
             List<PDC_File> FileList = new List<PDC_File>();
@@ -189,6 +221,16 @@ namespace cns.Services
             return FileList;
         }
 
+        /// <summary> 檔案新增
+        /// 
+        /// </summary>
+        /// <param name="file">上傳檔案</param>
+        /// <param name="FunctionName">檔案FunctionName</param>
+        /// <param name="item">返回檔案資料</param>
+        /// <param name="Folder">存取檔案資料夾</param>
+        /// <param name="SourceID">關聯ID</param>
+        /// <param name="FileDescription">檔案描述</param>
+        /// <returns></returns>
         public Boolean FileAdd(IFormFile file, string FunctionName, out PDC_File item, string Folder = "FileUpload", Int64 SourceID = 0, string FileDescription = "")
         {
             item = new PDC_File();
@@ -223,6 +265,11 @@ namespace cns.Services
             return true;
         }
 
+        /// <summary> 新增檔案資料
+        /// 
+        /// </summary>
+        /// <param name="item">檔案資料</param>
+        /// <returns></returns>
         public Boolean FileAdd(ref PDC_File item)
         {
             try
@@ -241,6 +288,12 @@ namespace cns.Services
             return true;
         }
 
+        /// <summary> 更新檔案資料
+        /// 
+        /// </summary>
+        /// <param name="NewFile">檔案資料</param>
+        /// <param name="ErrorMsg">錯誤訊息</param>
+        /// <returns></returns>
         public bool UpdateFile(PDC_File NewFile, ref string ErrorMsg)
         {
             ErrorMsg = string.Empty;
@@ -264,6 +317,13 @@ namespace cns.Services
             return true;
         }
 
+        /// <summary> 更新檔案關聯ID
+        /// 
+        /// </summary>
+        /// <param name="SourceID">關聯ID</param>
+        /// <param name="FileIDList">要更新檔案集合</param>
+        /// <param name="ErrorMsg">錯誤訊息</param>
+        /// <returns></returns>
         public bool UpdateFileSource(Int64 SourceID,List<Int64> FileIDList,ref string ErrorMsg)
         {
             FileHelper fileHelper = new FileHelper(_hostingEnvironment);
@@ -294,6 +354,11 @@ namespace cns.Services
             return true;
         }
 
+        /// <summary> 移除檔案
+        /// 
+        /// </summary>
+        /// <param name="FileID">檔案ID</param>
+        /// <returns></returns>
         public Boolean FileRemove(Int64 FileID)
         {
             FileHelper fileHelper = new FileHelper(_hostingEnvironment);

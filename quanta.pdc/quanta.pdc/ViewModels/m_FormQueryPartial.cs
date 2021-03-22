@@ -51,6 +51,8 @@ namespace cns.ViewModels
         /// </summary>
         public QueryParam QueryParam { get; set; }
 
+        
+
         public string rootPath { get; set; }
 
         public m_FormQueryPartial()

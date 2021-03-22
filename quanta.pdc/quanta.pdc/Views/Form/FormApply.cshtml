@@ -3,364 +3,364 @@
     ViewData["Title"] = "表單資訊";
 }
 
-<div class="page-content">
-    <div class="page-info container">
-        <div class="row">
-            <div class="col">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#">PDC - CNS平台</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">表單申請</li>
-                    </ol>
-                </nav>
+    <div class="page-content">
+        <div class="page-info container">
+            <div class="row">
+                <div class="col">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">PDC - CNS平台</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">表單申請</li>
+                        </ol>
+                    </nav>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="main-wrapper container">
-        <!-- 表頭 -->
-        <div class="row">
-            <div class="col-lg-12">
-                <form asp-action="FormApply" enctype="multipart/form-data" id="FormApply">
-                    @*<div asp-validation-summary="All"></div>*@
+        <div class="main-wrapper container">
+            <!-- 表頭 -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <form asp-action="FormApply" enctype="multipart/form-data" id="FormApply">
+                        @*<div asp-validation-summary="All"></div>*@
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-title">@ViewData["Title"]</p>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>申請單編號</label>
+                                            <input type="text" class="form-control" placeholder="(系統自動產生)" disabled="disabled">
+                                            <input type="hidden" asp-for="GUID" id="GUID" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>申請日期</label>
+                                            <input type="text" class="form-control" disabled="disabled" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>申請單狀態</label>
+                                            <input type="text" class="form-control" asp-for="m_PDC_Form.FormStatus" value="未送件" disabled="disabled">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>公司別</label>
+                                            <input type="text" class="form-control" asp-for="m_PDC_Form.CompCode" value="@Model.Member.CompCode" disabled="disabled">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>部門</label>
+                                            <input type="text" class="form-control" asp-for="m_PDC_Form.BUCode" value="@Model.Member.BUName" disabled="disabled">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>申請者</label>
+                                            <input type="text" class="form-control" asp-for="m_PDC_Form.ApplierID" value="@Model.Member.UserEngName" disabled="disabled">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>PCB Layout Status</label>
+                                            <select class="select2 form-control" asp-for="m_PDC_Form.PCBLayoutStatus">
+                                                @foreach (var item in Model.PCBLayoutStatusList)
+                                                {
+                                                    <option value="@item.Value">@item.Text</option>
+                                                }
+                                                @*<option value="New">New</option>
+                                                <option value="RFQ">RFQ</option>
+                                                <option value="Modify">Modify</option>*@
+                                            </select>
+                                            @*<input type="email" class="form-control" value="New" placeholder="New/RFQ/Modify" disabled="disabled">*@
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>是否為MB</label>
+                                            <div class="input-group">
+                                                <div class="custom-control custom-radio">
+                                                    <input class="custom-control-input" asp-for="m_PDC_Form.IsMB" id="IsMBYes" type="radio" value="true">
+                                                    <label class="custom-control-label" for="exampleRadios3" style="padding-right: 10px;" onclick="ClickMB('IsMBYes')">
+                                                        MB
+                                                    </label>
+                                                </div>
+                                                <div class="custom-control custom-radio">
+                                                    <input class="custom-control-input" asp-for="m_PDC_Form.IsMB" id="IsMBNo" type="radio" value="false">
+                                                    <label class="custom-control-label" for="exampleRadios3" onclick="ClickMB('IsMBNo')">
+                                                        其他
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="input-group">
+                                                <span asp-validation-for="m_PDC_Form.IsMB" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>PCB Type</label>
+                                            @*<input type="email" class="form-control" placeholder="Non-HDI/HDI/Anylayer/FPC/Rigid-flex" disabled="disabled">*@
+                                            <select class="select2 form-control" asp-for="m_PDC_Form.PCBType">
+                                                @foreach (var item in Model.PCBTypeList)
+                                                {
+                                                    <option value="@item.Value">@item.Text</option>
+                                                }
+                                                @*<option value="Non-HDI">Non-HDI</option>
+                                                <option value="HDI">HDI</option>
+                                                <option value="Anylayer">Anylayer</option>
+                                                <option value="FPC">FPC</option>
+                                                <option value="Rigid-flex">Rigid-flex</option>*@
+                                            </select>
+                                            <div class="input-group">
+                                                <span asp-validation-for="m_PDC_Form.PCBType" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Project</label>
+                                            <input type="text" asp-for="m_PDC_Form.ProjectName" class="form-control">
+                                            <div class="input-group">
+                                                <span asp-validation-for="m_PDC_Form.ProjectName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Board Type</label>
+                                            <input type="text" asp-for="m_PDC_Form.BoardTypeName" class="form-control">
+                                            <div class="input-group">
+                                                <span asp-validation-for="m_PDC_Form.BoardTypeName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Rev.</label>
+                                            <input type="text" asp-for="m_PDC_Form.Revision" class="form-control">
+                                            <div class="input-group">
+                                                <span asp-validation-for="m_PDC_Form.Revision" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-title">Constraint Files</p>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <span>1. BRD 壓縮檔(限制Zip/rar/7z格式)</span>
+                                            <div>
+                                                <span id="UplpadBRDFileError" style="display:none" class="text-danger">必填</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="custom-file mb-3">
+                                                <input type="file" class="custom-file-input" id="UplpadBRDFile" accept=".zip,.rar,.7z">
+                                                <label id="UplpadBRDFileLabel" class="custom-file-label" for="UplpadBRDFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5" id="UplpadBRDFileDiv">
+                                            @if (Model.m_BRDFile != null)
+                                            {
+                                                <a href="#">@Model.m_BRDFile.FileName (@Model.m_BRDFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                                <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <span>2. Constraint Excel</span>
+                                            <div>
+                                                <span id="UplpadExcelFileError" style="display:none" class="text-danger">必填</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="custom-file mb-3">
+                                                <input type="file" class="custom-file-input" id="UplpadExcelFile" accept=".xlsx">
+                                                <label id="UplpadExcelFileLabel" class="custom-file-label" for="UplpadExcelFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5" id="UplpadExcelFileDiv">
+                                            @if (Model.m_ExcelFile != null)
+                                            {
+                                                <a href="#">@Model.m_ExcelFile.FileName (@Model.m_ExcelFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                                <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <span>3. pstchip.dat</span>
+                                            <div>
+                                                <span id="UplpadpstchipFileError" style="display:none" class="text-danger">必填</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="custom-file mb-3">
+                                                <input type="file" class="custom-file-input" id="UplpadpstchipFile" accept=".dat">
+                                                <label id="UplpadpstchipFileLabel" class="custom-file-label" for="UplpadpstchipFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5" id="UplpadpstchipFileDiv">
+                                            @if (Model.m_pstchipFile != null)
+                                            {
+                                                <a href="#">@Model.m_pstchipFile.FileName (@Model.m_pstchipFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                                <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <span>4. pstxnet.dat</span>
+                                            <div>
+                                                <span id="UplpadpstxnetFileError" style="display:none" class="text-danger">必填</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="custom-file mb-3">
+                                                <input type="file" class="custom-file-input" id="UplpadpstxnetFile" accept=".dat">
+                                                <label id="UplpadpstxnetFileLabel" class="custom-file-label" for="UplpadpstxnetFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5" id="UplpadpstxnetFileDiv">
+                                            @if (Model.m_pstxnetFile != null)
+                                            {
+                                                <a href="#">@Model.m_pstxnetFile.FileName (@Model.m_pstxnetFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                                <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <span>5. pstxprt.dat</span>
+                                            <div>
+                                                <span id="UplpadpstxprtFileError" style="display:none" class="text-danger">必填</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="custom-file mb-3">
+                                                <input type="file" class="custom-file-input" id="UplpadpstxprtFile" accept=".dat">
+                                                <label id="UplpadpstxprtFileLabel" class="custom-file-label" for="UplpadpstxprtFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5" id="UplpadpstxprtFileDiv">
+                                            @if (Model.m_pstxprtFile != null)
+                                            {
+                                                <a href="#">@Model.m_pstxprtFile.FileName (@Model.m_pstxprtFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
+                                                <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <span>6. 其他檔案</span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="custom-file mb-3">
+                                                <input type="file" class="custom-file-input" id="UplpadOtherFile">
+                                                <label id="UplpadOtherFileLabel" class="custom-file-label" for="UplpadOtherFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5" style="padding-bottom: 10px;" id="UplpadOtherFileDiv">
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <span>意見</span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <textarea class="form-control" id="StageResult" asp-for="m_PDC_Form.Result" rows="3"></textarea>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="list-group">
+                                                @foreach (var item in Model.FormApplyResultList)
+                                                {
+                                                    <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action active" aria-current="true">@item.ParameterText</a>
+                                                }
+                                                @*<a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action active" aria-current="true">增加減 Region</a>
+                                                <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
+                                                <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action">其他</a>*@
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="hidden" asp-for="IsSendApply" id="IsSeedApply" value="false" />
+                                            <button type="button" class="btn btn-outline-success" onclick="SaveTemp()" style=" padding: 4px 25px;">暫存</button>
+                                            <button type="submit" class="btn btn-outline-success" id="SaveApply" style=" padding: 4px 25px; display:none"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
                     <div class="card">
-                        <div class="card-body">
-                            <p class="card-title">@ViewData["Title"]</p>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>申請單編號</label>
-                                        <input type="text" class="form-control" placeholder="(系統自動產生)" disabled="disabled">
-                                        <input type="hidden" asp-for="GUID" id="GUID" />
-                                    </div>
+                        <div class="card-body" style="padding-bottom: 0px;">
+                            <p class="card-title">Stackup</p>
+                            <div class="row align-items-end">
+                                <div class="col-md-9">
+                                    <span style="color: red;">*STACK UP皆以「mil」填寫，取至小數點後兩位，超過將以四捨五入處理。</span>
+                                    <button class="btn btn-outline-success" id="showLayer" onclick="GridShow(this)">顯示疊構</button>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>申請日期</label>
-                                        <input type="text" class="form-control" disabled="disabled" value="">
-                                    </div>
+                                <div class="col-md-1" style="text-align: center;">
+                                    <br>unit: mil
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>申請單狀態</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.FormStatus" value="未送件" disabled="disabled">
-                                    </div>
+                                <div class="col-md-2" style="text-align: center;">
+                                    總板厚 = <label id="ThicknessTotal">0.00</label>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>公司別</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.CompCode" value="@Model.Member.CompCode" disabled="disabled">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>部門</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.BUCode" value="@Model.Member.BUName" disabled="disabled">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>申請者</label>
-                                        <input type="text" class="form-control" asp-for="m_PDC_Form.ApplierID" value="@Model.Member.UserEngName" disabled="disabled">
-                                    </div>
-                                </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="grid">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col" style="width: 5%;">層別<br />(LAYER)</th>
+                                            <th scope="col" style="width: 15%;">LAYOUT疊構<br />(Stack up Type)</th>
+                                            <th scope="col" style="width: 7%;">名稱<br />（NAME）</th>
+                                            <th scope="col" style="width: 15%;">代碼<br /> (NAME CODE)</th>
+                                            <th scope="col" style="width: 13%;">線寬<br />(LINE WIDTH)</th>
+                                            <th scope="col" style="width: 13%;">間距<br />(SPACING)</th>
+                                            <th scope="col" style="width: 25%;">PCB疊構<br />(Stack up)</th>
+                                            <th scope="col" style="width: 7%;">板厚<br />(Thickness)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>PCB Layout Status</label>
-                                        <select class="select2 form-control" asp-for="m_PDC_Form.PCBLayoutStatus">
-                                            @foreach (var item in Model.PCBLayoutStatusList)
-                                            {
-                                                <option value="@item.Value">@item.Text</option>
-                                            }
-                                            @*<option value="New">New</option>
-                                            <option value="RFQ">RFQ</option>
-                                            <option value="Modify">Modify</option>*@
-                                        </select>
-                                        @*<input type="email" class="form-control" value="New" placeholder="New/RFQ/Modify" disabled="disabled">*@
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>是否為MB</label>
-                                        <div class="input-group">
-                                            <div class="custom-control custom-radio">
-                                                <input class="custom-control-input" asp-for="m_PDC_Form.IsMB" id="IsMBYes" type="radio" value="true">
-                                                <label class="custom-control-label" for="exampleRadios3" style="padding-right: 10px;" onclick="ClickMB('IsMBYes')">
-                                                    MB
-                                                </label>
-                                            </div>
-                                            <div class="custom-control custom-radio">
-                                                <input class="custom-control-input" asp-for="m_PDC_Form.IsMB" id="IsMBNo" type="radio" value="false">
-                                                <label class="custom-control-label" for="exampleRadios3" onclick="ClickMB('IsMBNo')">
-                                                    其他
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="input-group">
-                                            <span asp-validation-for="m_PDC_Form.IsMB" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>PCB Type</label>
-                                        @*<input type="email" class="form-control" placeholder="Non-HDI/HDI/Anylayer/FPC/Rigid-flex" disabled="disabled">*@
-                                    <select class="select2 form-control" asp-for="m_PDC_Form.PCBType">
-                                        @foreach (var item in Model.PCBTypeList)
-                                        {
-                                            <option value="@item.Value">@item.Text</option>
-                                        }
-                                        @*<option value="Non-HDI">Non-HDI</option>
-                                        <option value="HDI">HDI</option>
-                                        <option value="Anylayer">Anylayer</option>
-                                        <option value="FPC">FPC</option>
-                                        <option value="Rigid-flex">Rigid-flex</option>*@
-                                    </select>
-                                        <div class="input-group">
-                                            <span asp-validation-for="m_PDC_Form.PCBType" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Project</label>
-                                        <input type="text" asp-for="m_PDC_Form.ProjectName" class="form-control">
-                                        <div class="input-group">
-                                            <span asp-validation-for="m_PDC_Form.ProjectName" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Board Type</label>
-                                        <input type="text" asp-for="m_PDC_Form.BoardTypeName" class="form-control">
-                                        <div class="input-group">
-                                            <span asp-validation-for="m_PDC_Form.BoardTypeName" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Rev.</label>
-                                        <input type="text" asp-for="m_PDC_Form.Revision" class="form-control">
-                                        <div class="input-group">
-                                            <span asp-validation-for="m_PDC_Form.Revision" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-title">Constraint Files</p>
-                            <div class="form-group">
+                            <div class="card-body">
+                                <p class="card-title">Stackup 檢測</p>
                                 <div class="row">
-                                    <div class="col-md-3">
-                                        <span>1. BRD 壓縮檔(限制Zip/rar/7z格式)</span>
-                                        <div>
-                                            <span id="UplpadBRDFileError" style="display:none" class="text-danger">必填</span>
-                                        </div>
+                                    <div class="col-md-8">
+                                        <textarea class="form-control" id="ErrorMsg" rows="3" disabled="disabled"></textarea>
                                     </div>
                                     <div class="col-md-4">
-                                        <div class="custom-file mb-3">
-                                            <input type="file"  class="custom-file-input" id="UplpadBRDFile" accept=".zip,.rar,.7z">
-                                            <label id="UplpadBRDFileLabel" class="custom-file-label" for="UplpadBRDFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5" id="UplpadBRDFileDiv">
-                                        @if (Model.m_BRDFile != null)
-                                        {
-                                            <a href="#">@Model.m_BRDFile.FileName (@Model.m_BRDFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                            <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                        }
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <span>2. Constraint Excel</span>
-                                        <div>
-                                            <span id="UplpadExcelFileError" style="display:none" class="text-danger">必填</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="custom-file mb-3">
-                                            <input type="file"  class="custom-file-input" id="UplpadExcelFile" accept=".xlsx">
-                                            <label id="UplpadExcelFileLabel" class="custom-file-label" for="UplpadExcelFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5" id="UplpadExcelFileDiv">
-                                        @if (Model.m_ExcelFile != null)
-                                        {
-                                            <a href="#">@Model.m_ExcelFile.FileName (@Model.m_ExcelFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                            <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                        }
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <span>3. pstchip.dat</span>
-                                        <div>
-                                            <span id="UplpadpstchipFileError" style="display:none" class="text-danger">必填</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="custom-file mb-3">
-                                            <input type="file"  class="custom-file-input" id="UplpadpstchipFile" accept=".dat">
-                                            <label id="UplpadpstchipFileLabel" class="custom-file-label" for="UplpadpstchipFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5" id="UplpadpstchipFileDiv">
-                                        @if (Model.m_pstchipFile != null)
-                                        {
-                                            <a href="#">@Model.m_pstchipFile.FileName (@Model.m_pstchipFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                            <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                        }
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <span>4. pstxnet.dat</span>
-                                        <div>
-                                            <span id="UplpadpstxnetFileError" style="display:none" class="text-danger">必填</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="custom-file mb-3">
-                                            <input type="file"  class="custom-file-input" id="UplpadpstxnetFile" accept=".dat">
-                                            <label id="UplpadpstxnetFileLabel" class="custom-file-label" for="UplpadpstxnetFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5" id="UplpadpstxnetFileDiv">
-                                        @if (Model.m_pstxnetFile != null)
-                                        {
-                                            <a href="#">@Model.m_pstxnetFile.FileName (@Model.m_pstxnetFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                            <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                        }
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <span>5. pstxprt.dat</span>
-                                        <div>
-                                            <span id="UplpadpstxprtFileError" style="display:none" class="text-danger">必填</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="custom-file mb-3">
-                                            <input type="file"  class="custom-file-input" id="UplpadpstxprtFile" accept=".dat">
-                                            <label id="UplpadpstxprtFileLabel" class="custom-file-label" for="UplpadpstxprtFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5" id="UplpadpstxprtFileDiv">
-                                        @if (Model.m_pstxprtFile != null)
-                                        {
-                                            <a href="#">@Model.m_pstxprtFile.FileName (@Model.m_pstxprtFile.CreatorDate.ToString("yyyy/MM/dd"))</a>
-                                            <a href="javascript:return false;" alt="刪除"><i style="color: #f05154;" class="fas fa-trash-alt"></i></a>
-                                        }
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <span>6. 其他檔案</span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="custom-file mb-3">
-                                            <input type="file"  class="custom-file-input" id="UplpadOtherFile">
-                                            <label id="UplpadOtherFileLabel" class="custom-file-label" for="UplpadOtherFile" style="background-color: #1F2128; color: #adb5bd;">Choose file</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5" style="padding-bottom: 10px;" id="UplpadOtherFileDiv">
-
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <span>意見</span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <textarea class="form-control" id="StageResult" asp-for="m_PDC_Form.Result" rows="3"></textarea>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="list-group">
-                                            @foreach (var item in Model.FormApplyResultList)
-                                            {
-                                                <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action active" aria-current="true">@item.ParameterText</a>
-                                            }
-                                            @*<a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action active" aria-current="true">增加減 Region</a>
-                                            <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action">增加減 TP、VIA</a>
-                                            <a href="javascript:return false;" onclick="SetResult(this)" class="list-group-item list-group-item-action">其他</a>*@
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="hidden" asp-for="IsSendApply" id="IsSeedApply" value="false" />
-                                        <button type="button" class="btn btn-outline-success" onclick="SaveTemp()" style=" padding: 4px 25px;">暫存</button>
-                                        <button type="submit" class="btn btn-outline-success" id="SaveApply" style=" padding: 4px 25px; display:none"></button>
+                                        <a href="javascript:return false;" onclick="ExcelEdit()" class="btn btn-outline-success" style=" padding: 4px 25px; display:none" id="OpenOnlineEdit">開啟線上編輯</a>
+                                        @*<a href="#" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose">執行檢測</a>*@
+                                        <br />
+                                        <br />
+                                        <a href="javascript:return false;" class="btn btn-outline-danger" style=" padding: 4px 25px;display:none" onclick="DownloadError()" id="downloadError">下載錯誤明細</a>
+                                        <a href="javascript:return false;" class="btn btn-outline-warning" style=" padding: 4px 25px;display:none" onclick="SeedApply()" id="SendApply">送出申請</a>
+                                        @*<a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;display:none" id="disApply">抽單</a>*@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </form>
-
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body" style="padding-bottom: 0px;">
-                        <p class="card-title">Stackup</p>
-                        <div class="row align-items-end">
-                            <div class="col-md-9">
-                                <span style="color: red;">*STACK UP皆以「mil」填寫，取至小數點後兩位，超過將以四捨五入處理。</span>
-                                <button class="btn btn-outline-success" id="showLayer" onclick="GridShow(this)">顯示疊構</button>
-                            </div>
-                            <div class="col-md-1" style="text-align: center;">
-                                <br>unit: mil
-                            </div>
-                            <div class="col-md-2" style="text-align: center;">
-                                總板厚 = <label id="ThicknessTotal">0.00</label>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover" id="grid">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th scope="col" style="width: 5%;">層別<br />(LAYER)</th>
-                                        <th scope="col" style="width: 15%;">LAYOUT疊構<br />(Stack up Type)</th>
-                                        <th scope="col" style="width: 7%;">名稱<br />（NAME）</th>
-                                        <th scope="col" style="width: 15%;">代碼<br /> (NAME CODE)</th>
-                                        <th scope="col" style="width: 13%;">線寬<br />(LINE WIDTH)</th>
-                                        <th scope="col" style="width: 13%;">間距<br />(SPACING)</th>
-                                        <th scope="col" style="width: 25%;">PCB疊構<br />(Stack up)</th>
-                                        <th scope="col" style="width: 7%;">板厚<br />(Thickness)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-title">Stackup 檢測</p>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <textarea class="form-control" id="ErrorMsg" rows="3" disabled="disabled"></textarea>
-                                </div>
-                                <div class="col-md-4">
-                                    <a href="javascript:return false;" onclick="ExcelEdit()" class="btn btn-outline-success" style=" padding: 4px 25px; display:none" id="OpenOnlineEdit">開啟線上編輯</a>
-                                    @*<a href="#" class="btn btn-outline-warning" style=" padding: 4px 25px;" id="mail-compose">執行檢測</a>*@
-                                    <br />
-                                    <br />
-                                    <a href="javascript:return false;" class="btn btn-outline-danger" style=" padding: 4px 25px;display:none" onclick="DownloadError()" id="downloadError">下載錯誤明細</a>
-                                    <a href="javascript:return false;" class="btn btn-outline-warning" style=" padding: 4px 25px;display:none" onclick="SeedApply()" id="SendApply">送出申請</a>
-                                    @*<a href="javascript:return false;" class="btn btn-outline-info" style=" padding: 4px 25px;display:none" id="disApply">抽單</a>*@
-                                </div>
-                            </div>
-                        </div>
-                        @*<div class="card-body">
+                            @*<div class="card-body">
                                 <p class="card-title">檢核結果</p>
                                 <div class="col-md-3">
                                                 <a href="javascript:return false;" onclick="window.location.href='/Form/Download/?FileID=42'">test.dat (2021/02/23)</a>
@@ -368,15 +368,17 @@
                                                 <input type="hidden" data-val="true" data-val-required="The FileID field is required." id="m_pstchipFile_FileID" name="m_pstchipFile.FileID" value="42">
                                 </div>
                             </div>*@
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- End of Main -->
         </div>
-
-        <!-- End of Main -->
+        <input type="hidden" id="RuleCategory" value="@Model.m_ExcelRule.ParameterText" />
+        <input type="hidden" id="RuleValue" value="@Model.m_ExcelRule.ParameterValue" />
+        <input type="hidden" id="RuleDesc" value="@Model.m_ExcelRule.ParameterDesc" />
     </div>
-
-</div>
 
 @section Styles{
     <!-- data tables css -->
@@ -473,6 +475,81 @@
                 uploadFile("UplpadOtherFile","","m_OtherFileList", 0);
             });
         });
+
+        //檢查線寬線距
+        function CheckNumRule() {
+            var IsCheck = true;
+            //取得規則
+            var RuleCategory = $('#RuleCategory').val();
+            var RuleValue = parseFloat($('#RuleValue').val());
+            var RuleDesc = $('#RuleDesc').val();
+            //有設定才檢查
+            if (RuleCategory && RuleValue) {
+                $('#grid > tbody > tr').each(function (index, row) {
+                    //去除除數字內容
+                    var Line = $(row).find('td').eq(4).text().replace(/[^0-9.]/ig, "");          
+                    var width = $(row).find('td').eq(5).text().replace(/[^0-9.]/ig, "");    
+                    if ($.isNumeric(Line)) {
+                        if (RuleCategory == "1") {
+                            if (parseFloat(Line) <= RuleValue)
+                                IsCheck = false;
+                        }
+
+                        if (RuleCategory == "2") {
+                            if (parseFloat(Line) < RuleValue)
+                                IsCheck = false;
+                        }
+
+                        if (RuleCategory == "3") {
+                            if (parseFloat(Line) = RuleValue)
+                                IsCheck = false;
+                        }
+
+                        if (RuleCategory == "4") {
+                            if (parseFloat(Line) > RuleValue)
+                                IsCheck = false;
+                        }
+
+                        if (RuleCategory == "5") {
+                            if (parseFloat(Line) >= RuleValue)
+                                IsCheck = false;
+                        }
+                    }
+
+                    if ($.isNumeric(width)) {
+                        if (RuleCategory == "1") {
+                            if (parseFloat(width) <= RuleValue)
+                                IsCheck = false;
+                        }
+
+                        if (RuleCategory == "2") {
+                            if (parseFloat(width) < RuleValue)
+                                IsCheck = false;
+                        }
+
+                        if (RuleCategory == "3") {
+                            if (parseFloat(width) = RuleValue)
+                                IsCheck = false;
+                        }
+
+                        if (RuleCategory == "4") {
+                            if (parseFloat(width) > RuleValue)
+                                IsCheck = false;
+                        }
+
+                        if (RuleCategory == "5") {
+                            if (parseFloat(width) >= RuleValue)
+                                IsCheck = false;
+                        }
+                    }
+                });
+
+                if (IsCheck == false) {
+                    alert(RuleDesc);
+                }
+            }
+        }
+
         //上傳檔案
         function uploadFile(type, Extension, model, OldFileID) {
             if ($('#' + type)[0].files[0]) {
@@ -513,6 +590,7 @@
 
                             SetDataTable(result.Excel);
 
+                            CheckNumRule();
 
                             var Html = "<div><a href=\"javascript:return false;\" onclick=\"window.location.href='/Form/Download/?FileID="+ result.File.FileID +"'\">"+result.File.FileName + " ("+ date.getFullYear().toString() + "/" + (date.getMonth() + 1).toString()  + "/" + date.getDate().toString() +")</a>";
                             Html += " <a href=\"javascript:return false;\" onclick=\"FileDelete(" + result.File.FileID + ",this)\" alt=\"刪除\"><i style=\"color: #f05154;\" class=\"fas fa-trash-alt\"></i></a>";

@@ -39,12 +39,13 @@ namespace cns.Controllers
             ParameterService ParameterService = new ParameterService(_context, UserInfo.User);
             m_ExcelPartial model = new m_ExcelPartial();
             //取得要同步驗證的資料
-            model.FastLinkList = ParameterService.GetParameterList("Configuration_HomeLink").Where(x => x.IsSync == true).OrderBy(x => x.OrderNo).ToList();
+            model.FastLinkList = ParameterService.GetParameterList(ParameterKey.Configuration_HomeLink).Where(x => x.IsSync == true).OrderBy(x => x.OrderNo).ToList();
             //取得要同步驗證的連結
-            model.FastLinkFileList = FileService.GetFileList("Configuration_HomeLink").Where(x => model.FastLinkList.Select(pa => pa.ParameterID).Contains(x.SourceID)).ToList();
+            model.FastLinkFileList = FileService.GetFileList(FileKey.Configuration_HomeLink).Where(x => model.FastLinkList.Select(pa => pa.ParameterID).Contains(x.SourceID)).ToList();
             //取得Excel範本
-            model.m_CNSSampleFile = FileService.GetFileList("ConfigurationSample").FirstOrDefault();
-
+            model.m_CNSSampleFile = FileService.GetFileList(FileKey.ConfigurationSample).FirstOrDefault();
+            //組態設定線寬線距規則
+            model.m_ExcelRule = ParameterService.GetParameterOne(ParameterKey.ConfigurationFormApply);
             return View(model);
         }
 
@@ -61,7 +62,7 @@ namespace cns.Controllers
             m_ExcelPartial model = new m_ExcelPartial();
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             //FormApply用，這邊要清掉
-            HttpContext.Session.SetString("SessionFileID", "");
+            HttpContext.Session.SetString(SessionKey.SessionFileID, "");
 
             if (file == null)
             {
@@ -72,8 +73,8 @@ namespace cns.Controllers
                 model.Errmsg = Helper.ExcelStackupCheck(sheetDt);
                 model.ExcelSheetDts.Add(sheetDt);
                 //Session紀錄
-                HttpContext.Session.SetObjectAsJson("SessionExcelData", sheetDt);
-                HttpContext.Session.SetString("SessionFileName", "");
+                HttpContext.Session.SetObjectAsJson(SessionKey.SessionExcelData, sheetDt);
+                HttpContext.Session.SetString(SessionKey.SessionFileName, "");
                 //TempData["SessionExcelData"] = JsonConvert.SerializeObject(sheetDt);
 
                 //return PartialView("m_ExcelPartial", model);
@@ -99,8 +100,8 @@ namespace cns.Controllers
             
             //List<ExcelRow> excelRows = Helper.GetExcelRowFromExcel(xSSFSheet, true);
             //Session紀錄
-            HttpContext.Session.SetObjectAsJson("SessionExcelData", ExcelDt);
-            HttpContext.Session.SetString("SessionFileName", Path.GetFileName(file.FileName));
+            HttpContext.Session.SetObjectAsJson(SessionKey.SessionExcelData, ExcelDt);
+            HttpContext.Session.SetString(SessionKey.SessionFileName, Path.GetFileName(file.FileName));
             //TempData["SessionExcelData"] = JsonConvert.SerializeObject(ExcelDt);
             //    DataTable StackupDetalDt = Helper.GetDataTableFromStackupDetail(ViewModel.StackupDetalList);
             //    //
@@ -117,8 +118,8 @@ namespace cns.Controllers
             CurrentUser UserInfo = HttpContext.Session.GetObjectFromJson<CurrentUser>(SessionKey.usrInfo);
             FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
             string SampleFilePath = "";
-            if (FileService.GetFileList("ConfigurationSample").Any())
-                SampleFilePath = FileService.GetFileList("ConfigurationSample").OrderByDescending(x => x.CreatorDate).FirstOrDefault().FileFullName;
+            if (FileService.GetFileList(FileKey.ConfigurationSample).Any())
+                SampleFilePath = FileService.GetFileList(FileKey.ConfigurationSample).OrderByDescending(x => x.CreatorDate).FirstOrDefault().FileFullName;
 
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment, SampleFilePath);
 
@@ -153,7 +154,7 @@ namespace cns.Controllers
             ViewModel.ExcelSheetDts.Add(StackupDetalDt);
 
             long FileID = 0;
-            Int64.TryParse(HttpContext.Session.GetString("SessionFileID"), out FileID);
+            Int64.TryParse(HttpContext.Session.GetString(SessionKey.SessionFileID), out FileID);
 
             //if (string.IsNullOrWhiteSpace(ViewModel.Errmsg) && FileID > 0)
             //{
@@ -187,7 +188,7 @@ namespace cns.Controllers
             m_ExcelPartial ViewModel = JsonConvert.DeserializeObject<m_ExcelPartial>(jsonString);
 
             long FileID = 0;
-            Int64.TryParse(HttpContext.Session.GetString("SessionFileID"), out FileID);
+            Int64.TryParse(HttpContext.Session.GetString(SessionKey.SessionFileID), out FileID);
 
             if (FileID > 0)
             {
@@ -195,9 +196,9 @@ namespace cns.Controllers
                 PDC_File File = FileService.GetFileOne(FileID);
                 string FilePath = string.Empty;
                 if (File.SourceID == 0)
-                    FilePath = _hostingEnvironment.WebRootPath + "\\Temp\\" + File.FileFullName;
+                    FilePath = _hostingEnvironment.WebRootPath + "\\" + FileKey.Temp + "\\" + File.FileFullName;
                 else
-                    FilePath = _hostingEnvironment.WebRootPath + "\\FileUpload\\" + File.FileFullName;
+                    FilePath = _hostingEnvironment.WebRootPath + "\\" + FileKey.FileUpload + "\\" + File.FileFullName;
 
                 //取得範例
                 Stream stream = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
@@ -223,9 +224,9 @@ namespace cns.Controllers
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
 
-            if(FileService.GetFileList("ConfigurationSample").Any())
+            if(FileService.GetFileList(FileKey.ConfigurationSample).Any())
             {
-                PDC_File Sample = FileService.GetFileList("ConfigurationSample").OrderByDescending(x => x.CreatorDate).FirstOrDefault();
+                PDC_File Sample = FileService.GetFileList(FileKey.ConfigurationSample).OrderByDescending(x => x.CreatorDate).FirstOrDefault();
 
                 //取得範例
                 MemoryStream stream = FileService.DownloadFile(Sample.FileFullName);
@@ -257,8 +258,8 @@ namespace cns.Controllers
 
             FileService FileService = new FileService(_hostingEnvironment, _context,UserInfo.User);
             string SampleFilePath = "";
-            if (FileService.GetFileList("ConfigurationSample").Any())
-                SampleFilePath = FileService.GetFileList("ConfigurationSample").OrderByDescending(x=>x.CreatorDate).FirstOrDefault().FileFullName;
+            if (FileService.GetFileList(FileKey.ConfigurationSample).Any())
+                SampleFilePath = FileService.GetFileList(FileKey.ConfigurationSample).OrderByDescending(x=>x.CreatorDate).FirstOrDefault().FileFullName;
 
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment, SampleFilePath);
 
@@ -300,12 +301,12 @@ namespace cns.Controllers
             ParameterService parameterService = new ParameterService(_context, UserInfo.User);
 
             //組態設定線寬線距規則
-            ViewModel.m_ExcelRule = parameterService.GetParameterOne("ConfigurationFormApply");
+            ViewModel.m_ExcelRule = parameterService.GetParameterOne(ParameterKey.ConfigurationFormApply);
             //Session紀錄
-            DataTable ExcelDt = HttpContext.Session.GetObjectFromJson<DataTable>("SessionExcelData");
+            DataTable ExcelDt = HttpContext.Session.GetObjectFromJson<DataTable>(SessionKey.SessionExcelData);
 
             long FileID = 0;
-            Int64.TryParse(HttpContext.Session.GetString("SessionFileID"), out FileID);
+            Int64.TryParse(HttpContext.Session.GetString(SessionKey.SessionFileID), out FileID);
 
             ViewModel.IsFormApplyEdit = FileID > 0 ? true : false;
             //移除Session
@@ -340,7 +341,7 @@ namespace cns.Controllers
             ExcelHepler Helper = new ExcelHepler(_hostingEnvironment);
             FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
 
-            string RealFileName = HttpContext.Session.GetString("SessionFileName");
+            string RealFileName = HttpContext.Session.GetString(SessionKey.SessionFileName);
 
             if (string.IsNullOrWhiteSpace(RealFileName))
                 RealFileName = "CNS";
@@ -348,7 +349,7 @@ namespace cns.Controllers
             MemoryStream stream = FileService.DownloadFile(fileName);
 
 
-            string sFileName = HttpUtility.UrlEncode(Path.GetFileNameWithoutExtension(RealFileName) + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx");
+            string sFileName = HttpUtility.UrlEncode(Path.GetFileNameWithoutExtension(RealFileName) + "-" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx");
 
 
             return File(stream.ToArray(), "application/vnd.ms-excel", sFileName);
@@ -397,15 +398,15 @@ namespace cns.Controllers
             FileService FileService = new FileService(_hostingEnvironment, _context, UserInfo.User);
             string OutFileName = string.Empty;
 
-            var RealFileName = HttpContext.Session.GetString("SessionFileName");
+            var RealFileName = HttpContext.Session.GetString(SessionKey.SessionFileName);
 
             if (string.IsNullOrWhiteSpace(RealFileName))
             {
-                OutFileName = "Error" + DateTime.Now.ToString("yyyyMMddHHmmss") + Path.GetExtension(FileName);
+                OutFileName = "Error-" + DateTime.Now.ToString("yyyyMMddHHmmss") + Path.GetExtension(FileName);
             }
             else
             {
-                OutFileName = Path.GetFileNameWithoutExtension(RealFileName) + "Error" + DateTime.Now.ToString("yyyyMMddHHmmss") + Path.GetExtension(FileName);
+                OutFileName = Path.GetFileNameWithoutExtension(RealFileName) + "Error-" + DateTime.Now.ToString("yyyyMMddHHmmss") + Path.GetExtension(FileName);
             }
 
             //取得範例
